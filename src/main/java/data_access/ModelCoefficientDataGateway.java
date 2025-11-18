@@ -58,12 +58,29 @@ public class ModelCoefficientDataGateway implements ModelCoefficientDataAccessIn
 
     /**
      * Load and parse coefficients from JSON file.
+     * First tries to load from classpath resources, then falls back to file system.
      */
     private void loadCoefficients() throws IOException {
-        // Read JSON file
-        String content = new String(Files.readAllBytes(Paths.get(filePath)));
-        JSONObject root = new JSONObject(content);
+        String content;
 
+        // Try loading from classpath first (for resources folder)
+        try (java.io.InputStream inputStream = getClass().getClassLoader()
+                .getResourceAsStream(filePath)) {
+
+            if (inputStream != null) {
+                // Found in classpath - read it
+                content = new String(inputStream.readAllBytes());
+            } else {
+                // Not in classpath - try file system
+                content = new String(Files.readAllBytes(Paths.get(filePath)));
+            }
+        } catch (IOException e) {
+            // If classpath failed, try file system as fallback
+            content = new String(Files.readAllBytes(Paths.get(filePath)));
+        }
+
+        // Parse JSON
+        JSONObject root = new JSONObject(content);
         cachedCoefficients = new HashMap<>();
 
         // Parse each position (1-4)
