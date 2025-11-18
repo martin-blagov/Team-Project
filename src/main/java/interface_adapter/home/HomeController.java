@@ -2,6 +2,7 @@ package interface_adapter.home;
 
 import interface_adapter.open_team_entry.OpenTeamEntryController;
 import interface_adapter.open_team_entry.OpenTeamEntryViewModel;
+import interface_adapter.starting_lineup.StartingLineupController;
 import use_case.open_team_entry.OpenTeamEntryInputBoundary;
 
 /**
@@ -12,11 +13,16 @@ public class HomeController {
     private final HomeViewModel homeViewModel;
     private final OpenTeamEntryController openTeamEntryController;
     private final OpenTeamEntryInputBoundary openTeamEntryInputBoundary;
+    private final StartingLineupController startingLineupController;
 
-    public HomeController(HomeViewModel homeViewModel, OpenTeamEntryController openTeamEntryController, OpenTeamEntryInputBoundary openTeamEntryInputBoundary) {
+    public HomeController(HomeViewModel homeViewModel,
+                          OpenTeamEntryController openTeamEntryController,
+                          OpenTeamEntryInputBoundary openTeamEntryInputBoundary,
+                          StartingLineupController startingLineupController) {
         this.homeViewModel = homeViewModel;
         this.openTeamEntryInputBoundary = openTeamEntryInputBoundary;
         this.openTeamEntryController = openTeamEntryController;
+        this.startingLineupController = startingLineupController;
     }
 
     // Placeholder print statements to confirm buttons work until we can implement the actual pages
@@ -45,6 +51,10 @@ public class HomeController {
     }
 
     public void openLineupPage() {
-        System.out.println("Navigating to Starting Lineup Page...");
+        if (startingLineupController != null) {
+            startingLineupController.execute();
+        } else {
+            System.out.println("Navigating to Starting Lineup Page...");
+        }
     }
 }
