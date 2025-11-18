@@ -11,9 +11,6 @@ public class TeamViewModel extends ViewModel<Team>{
     public static final String TEAM_STATE_LABEL = "team";
     private final DisplayConfig displayConfig;
 
-    /**
-     * Creates a view model for a specific use case.
-     */
     public TeamViewModel(String viewName, DisplayConfig displayConfig){
         super(viewName);
         this.displayConfig = displayConfig;
@@ -29,24 +26,30 @@ public class TeamViewModel extends ViewModel<Team>{
     /**
      * Updates the current team and notifies listeners that TEAM_STATE_LABEL changed.
      *
-     * @param team team to render, or {@code null} to clear the table
+     * @param team team to render.
      */
     public void setTeam(Team team) {
         this.setState(team);
         this.firePropertyChange(TEAM_STATE_LABEL);
     }
 
-
+    /**
+     * @return the current team being stored.
+     */
     public Team getTeam() {
         return this.getState();
     }
 
-
+    /**
+     * @return true if a non-null team is currently stored.
+     */
     public boolean hasTeam() {
         return this.getState() != null;
     }
 
-
+    /**
+     * Clears the current team and notifies listeners.
+     */
     public void clearTeam() {
         this.setState(null);
         this.firePropertyChange(TEAM_STATE_LABEL);
@@ -71,21 +74,17 @@ public class TeamViewModel extends ViewModel<Team>{
             this.columnHeaders = columnHeaders;
         }
 
-
         public String getTitle() {
             return title;
         }
-
 
         public String getEmptyStateMessage() {
             return emptyStateMessage;
         }
 
-
         public boolean shouldShowBudget() {
             return showBudget;
         }
-
 
         public String[] getColumnHeaders() {
             return columnHeaders;
