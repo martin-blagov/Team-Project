@@ -143,9 +143,9 @@ public class AppBuilder {
     public AppBuilder addStartingLineupView() {
         TeamViewModel.DisplayConfig lineupConfig = new TeamViewModel.DisplayConfig(
                 "Starting Lineup",
-                "No lineup selected.",
+                "No valid lineup available.",
                 false,
-                new String[]{"Name", "Position", "Club"}
+                new String[]{"Name", "Position", "Club", "Price", "Points"}
         );
         startingLineupViewModel = new TeamViewModel("starting lineup", lineupConfig);
         startingLineupView = new TeamDisplayView(startingLineupViewModel);
@@ -176,7 +176,8 @@ public class AppBuilder {
     public AppBuilder addStartingLineupUseCase() {
         startingLineupPresenter = new StartingLineupPresenter(viewManagerModel, startingLineupViewModelAdapter);
         StartingLineupOutputBoundary outputBoundary = startingLineupPresenter;
-        startingLineupInputBoundary = new StartingLineupInteractor(outputBoundary);
+
+        startingLineupInputBoundary = new StartingLineupInteractor(outputBoundary, playerDataAccess);
         startingLineupController = new StartingLineupController(startingLineupInputBoundary);
         return this;
     }
