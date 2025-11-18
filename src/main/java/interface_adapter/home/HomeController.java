@@ -51,10 +51,6 @@ public class HomeController {
     }
 
     public void openLineupPage() {
-        if (startingLineupController != null) {
             startingLineupController.execute();
-        } else {
-            System.out.println("Navigating to Starting Lineup Page...");
-        }
     }
 }
