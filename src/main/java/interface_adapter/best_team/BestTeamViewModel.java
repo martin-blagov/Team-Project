@@ -25,8 +25,8 @@ public class BestTeamViewModel {
     }
 
     public void setTotalPredictedPoints(double totalPredictedPoints){
-        this.totalCost = totalCost;
-        support.firePropertyChange("totalCost", null, totalCost);
+        this.totalPredictedPoints = totalPredictedPoints;
+        support.firePropertyChange("totalPredictedPoints", null, totalPredictedPoints);
     }
 
     public List<Player> getPlayers(){return players;}

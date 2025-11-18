@@ -1,6 +1,6 @@
 package app;
 
-import data_access.BestTeamDataAccessObject;
+import data_access.InMemoryPlayerDataAccess;
 import entity.Player;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.home.HomeController;
@@ -20,7 +20,7 @@ import use_case.open_team_entry.OpenTeamEntryInteractor;
 import use_case.starting_lineup.StartingLineupInputBoundary;
 import use_case.starting_lineup.StartingLineupInteractor;
 import use_case.starting_lineup.StartingLineupOutputBoundary;
-import use_case.best_team.BestTeamDataAccessInterface;
+import use_case.PlayerDataAccessInterface;
 import use_case.best_team.BestTeamInputBoundary;
 import use_case.best_team.BestTeamInteractor;
 import view.HomePageView;
@@ -72,20 +72,14 @@ public class AppBuilder {
     private InitialisePredictionsView initView;
     private InitialisePredictionsViewModel initViewModel;
     private InitialisePredictionsController initController;
-    private InMemoryPlayerDataAccess playerDataAccess;
-
+    private final PlayerDataAccessInterface playerDataAccess = new InMemoryPlayerDataAccess();
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
     }
 
-    public InMemoryPlayerDataAccess getPlayerDataAccess() {
-        return playerDataAccess;
-    }
-
     public AppBuilder addInitialisePredictions() {
         // Create shared player data access (will be used by other use cases)
-        playerDataAccess = new InMemoryPlayerDataAccess();
 
         // Create ViewModel
         initViewModel = new InitialisePredictionsViewModel();
@@ -209,10 +203,13 @@ public class AppBuilder {
     }
 
     public AppBuilder addBestTeamUseCase() {
-        BestTeamDataAccessInterface dataAccess = new BestTeamDataAccessObject();
+        // pushes data into BestTeamViewModel and changes view
         BestTeamPresenter presenter = new BestTeamPresenter(bestTeamViewModel, viewManagerModel);
-        BestTeamInteractor interactor = new BestTeamInteractor(dataAccess, presenter);
+        // uses shared playerDataAccess (InMemoryPlayerDataAccess)
+        BestTeamInteractor interactor = new BestTeamInteractor(playerDataAccess, presenter);
+        // called from HomePageView when "Best Team" is clicked
         bestTeamController = new BestTeamController(interactor);
+        // connect controller to home page
         homePageView.setBestTeamController(bestTeamController);
         return this;
     }
