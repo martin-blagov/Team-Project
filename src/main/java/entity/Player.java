@@ -17,6 +17,7 @@ public class Player {
     private final String status;
     private final double nowCost;
     private final int position;
+    private final String team;
 
     // Feature maps
     private final Map<String, Double> seasonTotalStats;  // NEW: cumulative totals
@@ -28,7 +29,7 @@ public class Player {
     private Double predictedPoints;
 
     public Player(int id, String webName, int elementType, String status,
-                  double nowCost, int position, Map<String, Double> seasonTotalStats, Map<String, Double> seasonAvgStats,
+                  double nowCost, int position, String team, Map<String, Double> seasonTotalStats, Map<String, Double> seasonAvgStats,
                   Map<String, Double> last3Stats, Map<String, Double> last5Stats) {
         this.id = id;
         this.webName = webName;
@@ -36,6 +37,7 @@ public class Player {
         this.status = status;
         this.nowCost = nowCost;
         this.position = position;
+        this.team = team;
         this.seasonTotalStats = seasonTotalStats;
         this.seasonAvgStats = seasonAvgStats;
         this.last3Stats = last3Stats;
@@ -48,7 +50,29 @@ public class Player {
     public int getElementType() { return elementType; }
     public String getStatus() { return status; }
     public double getNowCost() { return nowCost; }
+    public String getTeamName() { return team; }
+
     public Double getPredictedPoints() { return predictedPoints; }
+    /**
+     * Get position string based on the integer value.
+     */
+    public String getPosition() {
+        if (position == 1) {
+            return "goalkeeper";
+        }
+        else if (position == 2){
+            return "defender";
+        }
+        else if (position == 3){
+            return "midfielder";
+        }
+        else if (position == 4){
+            return "forward";
+        }
+        else{
+            return "unknown";
+        }
+    }
 
     // ========== NEW: Stat Retrieval Methods ==========
 
@@ -165,27 +189,5 @@ public class Player {
 
         return 0.0;
     }
-
-    /**
-     * Get position string based on the integer value.
-     */
-    public String getPosition() {
-        if (position == 1) {
-            return "goalkeeper";
-        }
-        else if (position == 2){
-            return "defender";
-        }
-        else if (position == 3){
-            return "midfielder";
-        }
-        else if (position == 4){
-            return "forward";
-        }
-        else{
-            return "unknown";
-        }
-    }
-
 
 }
