@@ -2,6 +2,7 @@ package interface_adapter.home;
 
 import interface_adapter.open_team_entry.OpenTeamEntryController;
 import interface_adapter.open_team_entry.OpenTeamEntryViewModel;
+import interface_adapter.starting_lineup.StartingLineupController;
 import use_case.open_team_entry.OpenTeamEntryInputBoundary;
 
 //TODO Check whether to remove:
@@ -15,15 +16,19 @@ public class HomeController {
     private final HomeViewModel homeViewModel;
     private final OpenTeamEntryController openTeamEntryController;
     private final OpenTeamEntryInputBoundary openTeamEntryInputBoundary;
+    private final StartingLineupController startingLineupController;
 
     //TODO Check whether to remove:
     private final ViewManagerModel viewManagerModel;
 
     public HomeController(HomeViewModel homeViewModel, OpenTeamEntryController openTeamEntryController,
-                          OpenTeamEntryInputBoundary openTeamEntryInputBoundary, ViewManagerModel viewManagerModel) {
+                          OpenTeamEntryInputBoundary openTeamEntryInputBoundary,
+                          StartingLineupController startingLineupController,
+                          ViewManagerModel viewManagerModel) {
         this.homeViewModel = homeViewModel;
         this.openTeamEntryInputBoundary = openTeamEntryInputBoundary;
         this.openTeamEntryController = openTeamEntryController;
+        this.startingLineupController = startingLineupController;
         //TODO Check whether to remove:
         this.viewManagerModel = viewManagerModel;
     }
@@ -54,7 +59,11 @@ public class HomeController {
     }
 
     public void openLineupPage() {
-        System.out.println("Navigating to Starting Lineup Page...");
+        if (startingLineupController != null) {
+            startingLineupController.execute();
+        } else {
+            System.out.println("Navigating to Starting Lineup Page...");
+        }
     }
 
     public void openTestScrollableListPage() {
