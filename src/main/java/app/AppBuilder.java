@@ -1,6 +1,9 @@
 package app;
 
 import interface_adapter.ViewManagerModel;
+import interface_adapter.display_individual_stat.DisplayIndividualStatController;
+import interface_adapter.display_individual_stat.DisplayIndividualStatPresenter;
+import interface_adapter.display_individual_stat.DisplayIndividualStatViewModel;
 import interface_adapter.home.HomeController;
 import interface_adapter.home.HomeViewModel;
 import interface_adapter.open_team_entry.OpenTeamEntryController;
@@ -10,15 +13,15 @@ import interface_adapter.starting_lineup.StartingLineupController;
 import interface_adapter.starting_lineup.StartingLineupPresenter;
 import interface_adapter.starting_lineup.StartingLineupViewModel;
 import interface_adapter.team_view.TeamViewModel;
+import use_case.display_individual_stat.DisplayIndividualStatInputBoundary;
+import use_case.display_individual_stat.DisplayIndividualStatInteractor;
+import use_case.display_individual_stat.DisplayIndividualStatOutputBoundary;
 import use_case.open_team_entry.OpenTeamEntryInputBoundary;
 import use_case.open_team_entry.OpenTeamEntryInteractor;
 import use_case.starting_lineup.StartingLineupInputBoundary;
 import use_case.starting_lineup.StartingLineupInteractor;
 import use_case.starting_lineup.StartingLineupOutputBoundary;
-import view.HomePageView;
-import view.TeamDisplayView;
-import view.TeamEntryView;
-import view.ViewManager;
+import view.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,6 +40,11 @@ public class AppBuilder {
     private OpenTeamEntryInputBoundary openTeamEntryInputBoundary;
     private TeamViewModel startingLineupViewModel;
     private TeamDisplayView startingLineupView;
+    private IndividualStatsPageView displayIndividualStatsView;
+    private DisplayIndividualStatViewModel displayIndividualStatViewModel;
+    private DisplayIndividualStatController displayIndividualStatController;
+    private DisplayIndividualStatInputBoundary displayIndividualStatInputBoundary;
+    private DisplayIndividualStatPresenter displayIndividualStatPresenter;
     private StartingLineupController startingLineupController;
     private StartingLineupViewModel startingLineupViewModelAdapter;
     private StartingLineupPresenter startingLineupPresenter;
@@ -59,7 +67,8 @@ public class AppBuilder {
                 homeViewModel,
                 openTeamEntryController,
                 openTeamEntryInputBoundary,
-                startingLineupController
+                startingLineupController,
+                displayIndividualStatController
         );
         homePageView.setHomeController(homeController);
         return this;
@@ -69,6 +78,13 @@ public class AppBuilder {
         teamEntryViewModel = new OpenTeamEntryViewModel();
         teamEntryView = new TeamEntryView(teamEntryViewModel);
         cardPanel.add(teamEntryView, teamEntryView.getViewName());
+        return this;
+    }
+
+    public AppBuilder addDisplayIndividualStatsView() {
+        displayIndividualStatViewModel = new DisplayIndividualStatViewModel();
+        displayIndividualStatsView = new IndividualStatsPageView(displayIndividualStatViewModel);
+        cardPanel.add(displayIndividualStatsView, displayIndividualStatsView.getViewName());
         return this;
     }
 
@@ -103,6 +119,26 @@ public class AppBuilder {
 
         teamEntryView.setTeamEntryController(openTeamEntryController);
         return this;
+    }
+
+    public AppBuilder addDisplayIndividualStatUseCase() {
+        final DisplayIndividualStatOutputBoundary outputBoundary = new DisplayIndividualStatPresenter(
+                viewManagerModel,displayIndividualStatViewModel);
+        final DisplayIndividualStatInputBoundary interactor = new DisplayIndividualStatInteractor(
+                outputBoundary);
+
+        displayIndividualStatController = new DisplayIndividualStatController(
+                interactor);
+        displayIndividualStatsView.setDisplayIndividualStatController(displayIndividualStatController);
+        return this;
+
+        // displayIndividualStatPresenter = new DisplayIndividualStatPresenter(viewManagerModel,
+        //        displayIndividualStatViewModel);
+        //displayIndividualStatInputBoundary = new DisplayIndividualStatInteractor(displayIndividualStatPresenter);
+        //displayIndividualStatController = new DisplayIndividualStatController(displayIndividualStatInputBoundary);
+
+        //IndividualStatsPageView.setDisplayIndividualStatController(displayIndividualStatController);
+        // return this;
     }
 
     public AppBuilder addStartingLineupUseCase() {

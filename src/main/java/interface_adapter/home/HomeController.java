@@ -1,7 +1,7 @@
 package interface_adapter.home;
 
+import interface_adapter.display_individual_stat.DisplayIndividualStatController;
 import interface_adapter.open_team_entry.OpenTeamEntryController;
-import interface_adapter.open_team_entry.OpenTeamEntryViewModel;
 import interface_adapter.starting_lineup.StartingLineupController;
 import use_case.open_team_entry.OpenTeamEntryInputBoundary;
 
@@ -14,15 +14,17 @@ public class HomeController {
     private final OpenTeamEntryController openTeamEntryController;
     private final OpenTeamEntryInputBoundary openTeamEntryInputBoundary;
     private final StartingLineupController startingLineupController;
+    private final DisplayIndividualStatController displayIndividualStatController;
 
     public HomeController(HomeViewModel homeViewModel,
                           OpenTeamEntryController openTeamEntryController,
                           OpenTeamEntryInputBoundary openTeamEntryInputBoundary,
-                          StartingLineupController startingLineupController) {
+                          StartingLineupController startingLineupController, DisplayIndividualStatController displayIndividualStatController) {
         this.homeViewModel = homeViewModel;
         this.openTeamEntryInputBoundary = openTeamEntryInputBoundary;
         this.openTeamEntryController = openTeamEntryController;
         this.startingLineupController = startingLineupController;
+        this.displayIndividualStatController = displayIndividualStatController;
     }
 
     // Placeholder print statements to confirm buttons work until we can implement the actual pages
@@ -46,9 +48,7 @@ public class HomeController {
         System.out.println("Navigating to Transfer Page...");
     }
 
-    public void openStatsPage() {
-        System.out.println("Navigating to Player Stats Page...");
-    }
+    public void openStatsPage() {displayIndividualStatController.execute();}
 
     public void openLineupPage() {
         if (startingLineupController != null) {

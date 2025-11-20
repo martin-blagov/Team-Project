@@ -8,7 +8,9 @@ public class   Main {
         JFrame application = appBuilder
                 .addHomePageView()
                 .addTeamEntryView()
+                .addDisplayIndividualStatsView()
                 .addStartingLineupView()
+                .addDisplayIndividualStatUseCase()
                 .addOpenTeamEntryViewUseCase()
                 .addStartingLineupUseCase()
                 .addHomeUseCase()
