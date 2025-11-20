@@ -148,8 +148,8 @@ public class AppBuilder {
                 new String[]{"Name", "Position", "Club", "Price", "Points"}
         );
         startingLineupViewModel = new TeamViewModel("starting lineup", lineupConfig);
-        startingLineupView = new TeamDisplayView(startingLineupViewModel);
         startingLineupViewModelAdapter = new StartingLineupViewModel(startingLineupViewModel);
+        startingLineupView = new TeamDisplayView(startingLineupViewModel, startingLineupViewModelAdapter);
         cardPanel.add(startingLineupView, startingLineupView.getViewName());
         startingLineupView.setBackAction("Back", () -> {
             if (homePageView != null) {

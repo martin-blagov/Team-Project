@@ -26,52 +26,66 @@ public class StartingLineupInteractor implements StartingLineupInputBoundary {
 
     @Override
     public void execute() {
-        // Retrieve all players available to the user (their team/squad).
+        // Create a team for test purposes.
         List<Player> allPlayers = dataAccess.getAllPlayers();
-
-        // Keep only players with a prediction to avoid nulls when sorting.
         List<Player> candidates = allPlayers.stream()
                 .filter(p -> p.getPredictedPoints() != null)
                 .collect(Collectors.toList());
-
-        if (candidates.isEmpty()) {
-            // No players with predictions: return an empty lineup.
-            outputBoundary.presentLineup(new StartingLineupOutputData(null, new ArrayList<>()));
-            return;
-        }
-
-        // Sort candidate pool by predicted points with the highest first.
         candidates.sort(Comparator.comparing(Player::getPredictedPoints).reversed());
+        List<Player> players_in_team = new ArrayList<>();
 
-        // Group by position using elementType (1=GK, 2=DEF, 3=MID, 4=FWD).
         List<Player> goalkeepers = filterByPosition(candidates, 1);
         List<Player> defenders = filterByPosition(candidates, 2);
         List<Player> midfielders = filterByPosition(candidates, 3);
         List<Player> forwards = filterByPosition(candidates, 4);
 
-        List<Player> starting = new ArrayList<>();
-        List<Player> bench = new ArrayList<>();
-
-        if (!goalkeepers.isEmpty()) {
-            starting.add(goalkeepers.get(0));
+        for (int i = 0; i < Math.min(2, goalkeepers.size()); i++) {
+            players_in_team.add(defenders.get(i));
         }
-
-        for (int i = 0; i < Math.min(4, defenders.size()); i++) {
-            starting.add(defenders.get(i));
+        for (int i = 0; i < Math.min(5, defenders.size()); i++) {
+            players_in_team.add(defenders.get(i));
         }
-
-        for (int i = 0; i < Math.min(3, midfielders.size()); i++) {
-            starting.add(midfielders.get(i));
+        for (int i = 0; i < Math.min(5, midfielders.size()); i++) {
+            players_in_team.add(midfielders.get(i));
         }
-
         for (int i = 0; i < Math.min(3, forwards.size()); i++) {
-            starting.add(forwards.get(i));
+            players_in_team.add(forwards.get(i));
         }
 
-        // Wrap starting players as a Team entity. Budget and confirmation are placeholders.
+        Team testTeam = new Team(players_in_team, 0.0f, true);
+
+        // Starting lineup computation.
+
+        List<Player> teamPlayers = testTeam.getPlayers();
+
+        List<Player> gkp = filterByPosition(candidates, 1);
+        List<Player> dfd = filterByPosition(candidates, 2);
+        List<Player> mdf = filterByPosition(candidates, 3);
+        List<Player> fwd = filterByPosition(candidates, 4);
+
+        List<Player> starting = new ArrayList<>();
+
+        addTopPlayers(gkp, starting, 1);
+        addTopPlayers(dfd, starting, 3);
+        addTopPlayers(mdf, starting, 2);
+        addTopPlayers(fwd, starting, 1);
+
+        List<Player> remaining = new ArrayList<>(teamPlayers);
+        remaining.removeAll(starting);
+
+        addTopPlayers(remaining, starting, 11 - starting.size());
+
+        if(starting.isEmpty()) {
+            outputBoundary.presentLineup(new StartingLineupOutputData(null, new ArrayList<>()));
+            return;
+        }
+
+        List<Player> bench = testTeam.getPlayers();
+        bench.removeAll(starting);
+
         Team startingTeam = new Team(starting, 0.0f, true);
 
-        // Output both the starting team and bench list.
+        // Output the starting team and bench list.
         StartingLineupOutputData outputData = new StartingLineupOutputData(startingTeam, bench);
         outputBoundary.presentLineup(outputData);
     }
@@ -80,5 +94,14 @@ public class StartingLineupInteractor implements StartingLineupInputBoundary {
         return players.stream()
                 .filter(p -> p.getElementType() == elementType)
                 .collect(Collectors.toList());
+    }
+
+    private void addTopPlayers(List<Player> source, List<Player> dest, int count) {
+        List<Player> sorted = source.stream()
+                .sorted(Comparator.comparing(Player::getPredictedPoints).reversed())
+                .collect(Collectors.toList());
+        for (int i = 0; i < Math.min(count, sorted.size()); i++) {
+            dest.add(sorted.get(i));
+        }
     }
 }

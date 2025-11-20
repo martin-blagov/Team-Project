@@ -3,6 +3,7 @@ package view;
 import entity.Player;
 import entity.Team;
 import interface_adapter.team_view.TeamViewModel;
+import interface_adapter.starting_lineup.StartingLineupViewModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -30,15 +31,21 @@ public class TeamDisplayView extends JPanel implements PropertyChangeListener {
     private final JButton backButton;
     private JTable benchTable;
     private DefaultTableModel benchTableModel;
+    private final StartingLineupViewModel startingLineupViewModel; // may be null for non-lineup views
 
-    /**
-     * Creates a reusable team display and renders the current team state.
-     */
     public TeamDisplayView(TeamViewModel teamViewModel) {
+        this(teamViewModel, null);
+    }
+
+    public TeamDisplayView(TeamViewModel teamViewModel, StartingLineupViewModel startingLineupViewModel) {
         this.teamViewModel = teamViewModel;
+        this.startingLineupViewModel = startingLineupViewModel;
         this.displayConfig = teamViewModel.getDisplayConfig();
         this.viewName = teamViewModel.getViewName();
         teamViewModel.addPropertyChangeListener(this);
+        if (this.startingLineupViewModel != null) {
+            this.startingLineupViewModel.addPropertyChangeListener(this);
+        }
 
         this.setLayout(new BorderLayout());
         this.setBackground(Color.WHITE);
@@ -109,7 +116,7 @@ public class TeamDisplayView extends JPanel implements PropertyChangeListener {
         };
         this.benchTable = new JTable(benchTableModel);
         this.benchTable.setRowHeight(22);
-        this.benchTable.setFont(new Font(DEFAULT_FONT_FAMILY, Font.PLAIN, 10));
+        this.benchTable.setFont(new Font(DEFAULT_FONT_FAMILY, Font.PLAIN, 11));
         this.benchTable.getTableHeader().setFont(new Font(DEFAULT_FONT_FAMILY, Font.BOLD, 10));
 
         if ("starting lineup".equalsIgnoreCase(this.viewName)) {
@@ -117,7 +124,7 @@ public class TeamDisplayView extends JPanel implements PropertyChangeListener {
             benchPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 10, 10));
             benchPanel.setBackground(Color.WHITE);
             JLabel benchTitle = new JLabel("Bench");
-            benchTitle.setFont(new Font(DEFAULT_FONT_FAMILY, Font.BOLD, 11));
+            benchTitle.setFont(new Font(DEFAULT_FONT_FAMILY, Font.BOLD, 12));
             benchPanel.add(benchTitle, BorderLayout.NORTH);
             JScrollPane benchScroll = new JScrollPane(benchTable);
             benchScroll.setPreferredSize(new Dimension(0, 120)); // smaller height than main table
@@ -247,9 +254,20 @@ public class TeamDisplayView extends JPanel implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (TeamViewModel.TEAM_STATE_LABEL.equals(evt.getPropertyName())) {
+        String property = evt.getPropertyName();
+        if (TeamViewModel.TEAM_STATE_LABEL.equals(property)) {
+            // Team has changed (starting lineup or other team view)
             Team team = this.teamViewModel.getTeam();
-            displayTeam(team);
+            // If we have a startingLineupViewModel, also pass its bench players
+            if (startingLineupViewModel != null) {
+                displayTeam(team, startingLineupViewModel.getBenchPlayers());
+            } else {
+                displayTeam(team);
+            }
+        } else if ("startingLineup".equals(property) && startingLineupViewModel != null) {
+            // Starting lineup state changed (bench or starting team updated)
+            Team team = this.teamViewModel.getTeam();
+            displayTeam(team, startingLineupViewModel.getBenchPlayers());
         }
     }
 
