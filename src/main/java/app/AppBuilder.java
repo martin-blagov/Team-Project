@@ -23,6 +23,23 @@ import use_case.starting_lineup.StartingLineupInteractor;
 import use_case.starting_lineup.StartingLineupOutputBoundary;
 import view.*;
 
+import data_access.BootstrapDataGateway;
+import data_access.GameWeekDataGateway;
+import data_access.InMemoryPlayerDataAccess;
+import data_access.ModelCoefficientDataGateway;
+import interface_adapter.initialise_predictions.InitialisePredictionsController;
+import interface_adapter.initialise_predictions.InitialisePredictionsPresenter;
+import interface_adapter.initialise_predictions.InitialisePredictionsViewModel;
+import use_case.initialise_predictions.BootstrapDataAccessInterface;
+import use_case.initialise_predictions.GameWeekDataAccessInterface;
+import use_case.initialise_predictions.InitialisePredictionsInputBoundary;
+import use_case.initialise_predictions.InitialisePredictionsInteractor;
+import use_case.initialise_predictions.ModelCoefficientDataAccessInterface;
+import view.InitialisePredictionsView;
+
+//TODO REMOVE
+import view.TestScrollableListView;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -48,10 +65,73 @@ public class AppBuilder {
     private StartingLineupPresenter startingLineupPresenter;
     private StartingLineupInputBoundary startingLineupInputBoundary;
 
+    private InitialisePredictionsView initView;
+    private InitialisePredictionsViewModel initViewModel;
+    private InitialisePredictionsController initController;
+    private InMemoryPlayerDataAccess playerDataAccess;
+
+    //TODO REMOVE
+    private TestScrollableListView testScrollableListView;
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
     }
+
+    public InMemoryPlayerDataAccess getPlayerDataAccess() {
+        return playerDataAccess;
+    }
+
+    //TODO REMOVE
+    public AppBuilder addTestScrollableListView() {
+        testScrollableListView = new TestScrollableListView(playerDataAccess, viewManagerModel);
+        cardPanel.add(testScrollableListView, testScrollableListView.getViewName());
+        return this;
+    }
+
+    public AppBuilder addInitialisePredictions() {
+        // Create shared player data access (will be used by other use cases)
+        playerDataAccess = new InMemoryPlayerDataAccess();
+
+        // Create ViewModel
+        initViewModel = new InitialisePredictionsViewModel();
+
+        // Create View (loading screen)
+        initView = new InitialisePredictionsView(initViewModel);
+        cardPanel.add(initView, initView.getViewName());
+
+        // Create Presenter (needs ViewManagerModel to switch views)
+        InitialisePredictionsPresenter presenter =
+                new InitialisePredictionsPresenter(
+                        initViewModel,
+                        viewManagerModel,
+                        "home"  // Name of the home view to switch to when done
+                );
+
+        // Create Data Access objects
+        BootstrapDataAccessInterface bootstrapAccess = new BootstrapDataGateway();
+        GameWeekDataAccessInterface gameweekAccess = new GameWeekDataGateway();
+        ModelCoefficientDataAccessInterface coefficientAccess =
+                new ModelCoefficientDataGateway();
+
+        // Create Interactor
+        InitialisePredictionsInputBoundary interactor =
+                new InitialisePredictionsInteractor(
+                        bootstrapAccess,
+                        gameweekAccess,
+                        coefficientAccess,
+                        presenter,
+                        playerDataAccess
+                );
+
+        // Create Controller
+        initController = new InitialisePredictionsController(interactor);
+
+        // Inject controller into view (view will call it automatically)
+        initView.setInitialisePredictionsController(initController);
+
+        return this;
+    }
+
 
     public AppBuilder addHomePageView() {
         homeViewModel = new HomeViewModel();
@@ -66,7 +146,8 @@ public class AppBuilder {
                 openTeamEntryController,
                 openTeamEntryInputBoundary,
                 startingLineupController,
-                displayIndividualStatController
+                displayIndividualStatController,
+                viewManagerModel
         );
         homePageView.setHomeController(homeController);
         return this;
@@ -147,8 +228,13 @@ public class AppBuilder {
 
         application.add(cardPanel);
 
-        viewManagerModel.setState(homePageView.getViewName());
+        // Set initial view to initialization screen
+        viewManagerModel.setState(initView.getViewName());
         viewManagerModel.firePropertyChange();
+
+//        viewManagerModel.setState(homePageView.getViewName());
+//        viewManagerModel.firePropertyChange();
+
 
         return application;
     }
