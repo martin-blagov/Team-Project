@@ -28,9 +28,6 @@ public class HomePageView extends JPanel implements PropertyChangeListener {
     private final JButton statsButton;
     private final JButton lineupButton;
 
-    //TODO REMOVE
-    private final JButton testScrollableListButton;
-
     public HomePageView(HomeViewModel homeViewModel) {
         this.homeViewModel = homeViewModel;
         homeViewModel.addPropertyChangeListener(this);
@@ -54,15 +51,11 @@ public class HomePageView extends JPanel implements PropertyChangeListener {
         statsButton = new JButton(HomeViewModel.STATS_BUTTON_LABEL);
         lineupButton = new JButton(HomeViewModel.LINEUP_BUTTON_LABEL);
 
-        //TODO REMOVE
-        this.testScrollableListButton = new JButton(HomeViewModel.TEST_SCROLLABLE_LIST_BUTTON_LABEL);
-
         // Set consistent button size
         Dimension buttonSize = new Dimension(250, 40);
         JButton[] buttons = {
                 bestTeamButton, teamInputButton, replacementButton,
-                bestPlayersButton, transferButton, statsButton, lineupButton,
-                testScrollableListButton //TODO REMOVE
+                bestPlayersButton, transferButton, statsButton, lineupButton
         };
 
         for (JButton button : buttons) {
@@ -125,15 +118,6 @@ public class HomePageView extends JPanel implements PropertyChangeListener {
                 new ActionListener() {
                     public void actionPerformed(ActionEvent evt) {
                         homeController.openLineupPage();
-                    }
-                }
-        );
-
-        //TODO REMOVE
-        testScrollableListButton.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        homeController.openTestScrollableListPage();
                     }
                 }
         );

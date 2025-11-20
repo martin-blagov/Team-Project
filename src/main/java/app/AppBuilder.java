@@ -34,9 +34,6 @@ import use_case.initialise_predictions.InitialisePredictionsInteractor;
 import use_case.initialise_predictions.ModelCoefficientDataAccessInterface;
 import view.InitialisePredictionsView;
 
-//TODO REMOVE
-import view.TestScrollableListView;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -64,8 +61,6 @@ public class AppBuilder {
     private InitialisePredictionsController initController;
     private InMemoryPlayerDataAccess playerDataAccess;
 
-    //TODO REMOVE
-    private TestScrollableListView testScrollableListView;
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -73,13 +68,6 @@ public class AppBuilder {
 
     public InMemoryPlayerDataAccess getPlayerDataAccess() {
         return playerDataAccess;
-    }
-
-    //TODO REMOVE
-    public AppBuilder addTestScrollableListView() {
-        testScrollableListView = new TestScrollableListView(playerDataAccess, viewManagerModel);
-        cardPanel.add(testScrollableListView, testScrollableListView.getViewName());
-        return this;
     }
 
     public AppBuilder addInitialisePredictions() {
@@ -135,8 +123,12 @@ public class AppBuilder {
     }
 
     public AppBuilder addHomeUseCase() {
-        final HomeController homeController = new HomeController(homeViewModel, openTeamEntryController,
-                openTeamEntryInputBoundary,startingLineupController, viewManagerModel);
+        final HomeController homeController = new HomeController(
+                homeViewModel,
+                openTeamEntryController,
+                openTeamEntryInputBoundary,
+                startingLineupController
+        );
         homePageView.setHomeController(homeController);
         return this;
     }

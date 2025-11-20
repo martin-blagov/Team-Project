@@ -18,9 +18,6 @@ public class HomeViewModel extends ViewModel<Void> {
     public static final String STATS_BUTTON_LABEL = "Player Stats";
     public static final String LINEUP_BUTTON_LABEL = "Starting Lineup";
 
-    //TODO REMOVE
-    public static final String TEST_SCROLLABLE_LIST_BUTTON_LABEL = "Test Scrollable List";
-
     public HomeViewModel() {
         super("home");
     }

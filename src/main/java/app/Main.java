@@ -11,7 +11,6 @@ public class   Main {
                 .addTeamEntryView()
                 .addStartingLineupView()
                 .addOpenTeamEntryViewUseCase()
-                .addTestScrollableListView()  // TODO REMOVE
                 .addStartingLineupUseCase()
                 .addHomeUseCase()
                 .build();
