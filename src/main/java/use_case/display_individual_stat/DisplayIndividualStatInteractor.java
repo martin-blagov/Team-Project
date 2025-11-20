@@ -6,6 +6,7 @@ public class DisplayIndividualStatInteractor implements DisplayIndividualStatInp
     public DisplayIndividualStatInteractor(DisplayIndividualStatOutputBoundary presenter) {
         this.presenter = presenter;
     }
+
     public void execute() {
         DisplayIndividualStatOutputData outputData= new DisplayIndividualStatOutputData();
         presenter.presentView(outputData);

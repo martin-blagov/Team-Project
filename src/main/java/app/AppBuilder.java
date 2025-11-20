@@ -43,8 +43,6 @@ public class AppBuilder {
     private IndividualStatsPageView displayIndividualStatsView;
     private DisplayIndividualStatViewModel displayIndividualStatViewModel;
     private DisplayIndividualStatController displayIndividualStatController;
-    private DisplayIndividualStatInputBoundary displayIndividualStatInputBoundary;
-    private DisplayIndividualStatPresenter displayIndividualStatPresenter;
     private StartingLineupController startingLineupController;
     private StartingLineupViewModel startingLineupViewModelAdapter;
     private StartingLineupPresenter startingLineupPresenter;
@@ -124,21 +122,15 @@ public class AppBuilder {
     public AppBuilder addDisplayIndividualStatUseCase() {
         final DisplayIndividualStatOutputBoundary outputBoundary = new DisplayIndividualStatPresenter(
                 viewManagerModel,displayIndividualStatViewModel);
+
         final DisplayIndividualStatInputBoundary interactor = new DisplayIndividualStatInteractor(
                 outputBoundary);
 
         displayIndividualStatController = new DisplayIndividualStatController(
                 interactor);
         displayIndividualStatsView.setDisplayIndividualStatController(displayIndividualStatController);
+
         return this;
-
-        // displayIndividualStatPresenter = new DisplayIndividualStatPresenter(viewManagerModel,
-        //        displayIndividualStatViewModel);
-        //displayIndividualStatInputBoundary = new DisplayIndividualStatInteractor(displayIndividualStatPresenter);
-        //displayIndividualStatController = new DisplayIndividualStatController(displayIndividualStatInputBoundary);
-
-        //IndividualStatsPageView.setDisplayIndividualStatController(displayIndividualStatController);
-        // return this;
     }
 
     public AppBuilder addStartingLineupUseCase() {
@@ -160,6 +152,4 @@ public class AppBuilder {
 
         return application;
     }
-
-
 }

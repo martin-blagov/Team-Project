@@ -14,29 +14,25 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
     private final DisplayIndividualStatViewModel viewModel;
     private DisplayIndividualStatController displayIndividualStatController;
 
-    // Display Basic Player Info
     private final JLabel playerNameLabel = new JLabel("Name: ");
-    private final JLabel playerNameField = new JLabel();
+    private JLabel playerNameField;
 
     private final JLabel playerTeamLabel = new JLabel("Team: ");
-    private final JLabel playerTeamField = new JLabel();
+    private JLabel playerTeamField;
 
     private final JLabel playerPositionLabel = new JLabel("Position: ");
-    private final JLabel playerPositionField = new JLabel();;
+    private JLabel playerPositionField;;
 
     private final JLabel playerCurrentCostLabel = new JLabel("Current Cost: ");
-    private final JLabel playerCurrentCostField = new JLabel();;
+    private JLabel playerCurrentCostField;
 
-    // Display Current Season Stat
     private final JLabel currentSeasonStatsLabel = new JLabel("Current Season Stats: ");
 
-    private final JLabel goalsScoredLabel = new JLabel("Goals Scored: ");
-    private final JLabel goalsScoredField = new JLabel();;
+    private final JLabel goalsScoredLabel1 = new JLabel("Goals Scored: ");
+    private JLabel goalsScoredField1;
 
     private final JLabel goalsAssistedLabel = new JLabel("Goals Assisted: ");
-    private final JLabel goalsAssistedField = new JLabel();;
-
-
+    private JLabel goalsAssistedField1;
 
 
     public IndividualStatsPageView(DisplayIndividualStatViewModel viewModel) {
@@ -44,20 +40,16 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         viewModel.addPropertyChangeListener(this);
 
         this.setLayout(new BorderLayout());
-
         this.add(playerNameLabel);
     }
 
     public String getViewName() { return viewName;}
 
-
     public void propertyChange(PropertyChangeEvent evt) {
         final DisplayIndividualStatState state = (DisplayIndividualStatState) evt.getNewValue();
     }
 
-
     public void setDisplayIndividualStatController(DisplayIndividualStatController controller) {
         this.displayIndividualStatController = controller;
     }
-
 }

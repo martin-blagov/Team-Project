@@ -21,7 +21,6 @@ public class DisplayIndividualStatPresenter implements DisplayIndividualStatOutp
 
     @Override
     public void presentView(DisplayIndividualStatOutputData outputData) {
-        viewModel.setState(new DisplayIndividualStatState()); // r
         viewManagerModel.setState(viewModel.getViewName());
         viewManagerModel.firePropertyChange();
     }
