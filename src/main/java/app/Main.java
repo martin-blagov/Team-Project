@@ -10,6 +10,7 @@ public class Main {
                 .addHomePageView()
                 .addTeamEntryView()
                 .addOpenTeamEntryViewUseCase()
+                .addTestScrollableListView()  // TODO REMOVE
                 .addHomeUseCase()
                 .build();
         application.setSize(500, 500);  // width=1000px, height=700px

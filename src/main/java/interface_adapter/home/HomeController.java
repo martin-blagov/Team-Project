@@ -4,6 +4,9 @@ import interface_adapter.open_team_entry.OpenTeamEntryController;
 import interface_adapter.open_team_entry.OpenTeamEntryViewModel;
 import use_case.open_team_entry.OpenTeamEntryInputBoundary;
 
+//TODO Check whether to remove:
+import interface_adapter.ViewManagerModel;
+
 /**
  * Controller for the Signup Use Case.
  */
@@ -13,10 +16,16 @@ public class HomeController {
     private final OpenTeamEntryController openTeamEntryController;
     private final OpenTeamEntryInputBoundary openTeamEntryInputBoundary;
 
-    public HomeController(HomeViewModel homeViewModel, OpenTeamEntryController openTeamEntryController, OpenTeamEntryInputBoundary openTeamEntryInputBoundary) {
+    //TODO Check whether to remove:
+    private final ViewManagerModel viewManagerModel;
+
+    public HomeController(HomeViewModel homeViewModel, OpenTeamEntryController openTeamEntryController,
+                          OpenTeamEntryInputBoundary openTeamEntryInputBoundary, ViewManagerModel viewManagerModel) {
         this.homeViewModel = homeViewModel;
         this.openTeamEntryInputBoundary = openTeamEntryInputBoundary;
         this.openTeamEntryController = openTeamEntryController;
+        //TODO Check whether to remove:
+        this.viewManagerModel = viewManagerModel;
     }
 
     // Placeholder print statements to confirm buttons work until we can implement the actual pages
@@ -46,5 +55,10 @@ public class HomeController {
 
     public void openLineupPage() {
         System.out.println("Navigating to Starting Lineup Page...");
+    }
+
+    public void openTestScrollableListPage() {
+        viewManagerModel.setState("test scrollable list");
+        viewManagerModel.firePropertyChange();
     }
 }
