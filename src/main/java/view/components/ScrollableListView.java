@@ -120,11 +120,11 @@ public class ScrollableListView extends JPanel {
     }
 
     public void refresh() {
-        System.out.println("refresh() called");
+        //System.out.println("refresh() called");
 
         // Get all players from data access and STORE them
         allPlayers = playerDataAccess.getAllPlayers();  // CHANGED: store in allPlayers
-        System.out.println("Number of players loaded: " + allPlayers.size());
+        //System.out.println("Number of players loaded: " + allPlayers.size());
 
         // Sort by predicted points (highest first)
         allPlayers.sort((a, b) -> {

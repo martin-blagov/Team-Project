@@ -1,14 +1,19 @@
-package use_case.open_team_entry;
+package use_case.team_entry;
 
 /**
  * Input Boundary for actions which are related to opening the team entry page.
  */
-public interface OpenTeamEntryInputBoundary {
+public interface TeamEntryInputBoundary {
 
     /**
      * Executes the open team entry page use case.
      */
-    void execute();
+    void execute(TeamEntryInputData inputData);
+
+    /**
+     * Open team entry page
+     */
+    void openPage();
 
     /**
      * Executes the switch to home page use case.
