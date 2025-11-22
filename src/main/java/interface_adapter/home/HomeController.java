@@ -1,9 +1,12 @@
 package interface_adapter.home;
 
+import interface_adapter.display_individual_stat.DisplayIndividualStatController;
 import interface_adapter.open_team_entry.OpenTeamEntryController;
-import interface_adapter.open_team_entry.OpenTeamEntryViewModel;
 import interface_adapter.starting_lineup.StartingLineupController;
 import use_case.open_team_entry.OpenTeamEntryInputBoundary;
+
+//TODO Check whether to remove:
+import interface_adapter.ViewManagerModel;
 
 /**
  * Controller for the Signup Use Case.
@@ -14,15 +17,23 @@ public class HomeController {
     private final OpenTeamEntryController openTeamEntryController;
     private final OpenTeamEntryInputBoundary openTeamEntryInputBoundary;
     private final StartingLineupController startingLineupController;
+    private final DisplayIndividualStatController displayIndividualStatController;
 
-    public HomeController(HomeViewModel homeViewModel,
-                          OpenTeamEntryController openTeamEntryController,
+    //TODO Check whether to remove:
+    private final ViewManagerModel viewManagerModel;
+
+    public HomeController(HomeViewModel homeViewModel, OpenTeamEntryController openTeamEntryController,
                           OpenTeamEntryInputBoundary openTeamEntryInputBoundary,
-                          StartingLineupController startingLineupController) {
+                          StartingLineupController startingLineupController, DisplayIndividualStatController displayIndividualStatController,
+                          ViewManagerModel viewManagerModel) {
         this.homeViewModel = homeViewModel;
         this.openTeamEntryInputBoundary = openTeamEntryInputBoundary;
         this.openTeamEntryController = openTeamEntryController;
         this.startingLineupController = startingLineupController;
+        this.displayIndividualStatController = displayIndividualStatController;
+        
+        //TODO Check whether to remove:
+        this.viewManagerModel = viewManagerModel;
     }
 
     // Placeholder print statements to confirm buttons work until we can implement the actual pages
@@ -46,9 +57,7 @@ public class HomeController {
         System.out.println("Navigating to Transfer Page...");
     }
 
-    public void openStatsPage() {
-        System.out.println("Navigating to Player Stats Page...");
-    }
+    public void openStatsPage() {displayIndividualStatController.execute();}
 
     public void openLineupPage() {
         if (startingLineupController != null) {
@@ -56,5 +65,10 @@ public class HomeController {
         } else {
             System.out.println("Navigating to Starting Lineup Page...");
         }
+    }
+
+    public void openTestScrollableListPage() {
+        viewManagerModel.setState("test scrollable list");
+        viewManagerModel.firePropertyChange();
     }
 }

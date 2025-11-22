@@ -9,9 +9,12 @@ public class Main {
                 .addInitialisePredictions()
                 .addHomePageView()
                 .addTeamEntryView()
+                .addDisplayIndividualStatsView()
                 .addStartingLineupView()
                 .addBestTeamView()
+                .addDisplayIndividualStatUseCase()
                 .addOpenTeamEntryViewUseCase()
+                .addTestScrollableListView()  // TODO REMOVE
                 .addStartingLineupUseCase()
                 .addHomeUseCase()
                 .addBestTeamUseCase()
