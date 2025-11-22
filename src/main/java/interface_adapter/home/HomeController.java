@@ -60,11 +60,7 @@ public class HomeController {
     public void openStatsPage() {displayIndividualStatController.execute();}
 
     public void openLineupPage() {
-        if (startingLineupController != null) {
             startingLineupController.execute();
-        } else {
-            System.out.println("Navigating to Starting Lineup Page...");
-        }
     }
 
     public void openTestScrollableListPage() {
