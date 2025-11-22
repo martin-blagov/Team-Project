@@ -39,33 +39,73 @@ public class BestTeamInteractor implements BestTeamInputBoundary {
         // get all players with predictions
         List<Player> all = playerDataAccess.getAllPlayers().stream().filter(p -> p.getPredictedPoints() != null).collect(Collectors.toList());
 
-        List<Player> gks = topByPosition(all, POS_GK, GK_MAX);
-        List<Player> defs = topByPosition(all, POS_DEF, DEF_MAX);
-        List<Player> mids = topByPosition(all, POS_MID, MID_MAX);
-        List<Player> fwds = topByPosition(all, POS_FWD, FWD_MAX);
+        // start with the original per-position candidates limits
+        int GK_LIMIT = GK_MAX;
+        int DEF_LIMIT = DEF_MAX;
+        int MID_LIMIT = MID_MAX;
+        int FWD_LIMIT = FWD_MAX;
 
-        if (gks.size() < GK_COUNT || defs.size() < DEF_COUNT ||  mids.size() < MID_COUNT || fwds.size() < FWD_COUNT) {
-            BestTeamResponseModel response = new BestTeamResponseModel(new ArrayList<>(), 0.0, 0.0);
-            presenter.present(response);
-            return;
+        // remember candidate list size
+        // start at -1 so the loop always goes at least once
+        int prevGKsize = -1;
+        int prevDEFsize = -1;
+        int prevMIDsize = -1;
+        int prevFWDsize = -1;
+
+        BestResult bestOverall = null;
+        boolean found = false;
+
+        // keep expanding the candidate pools until a squad is found or there are no more players to add to MAX
+        while (true) {
+            List<Player> gks = topByPosition(all, POS_GK, GK_LIMIT);
+            List<Player> defs = topByPosition(all, POS_DEF, DEF_LIMIT);
+            List<Player> mids = topByPosition(all, POS_MID, MID_LIMIT);
+            List<Player> fwds = topByPosition(all, POS_FWD, FWD_LIMIT);
+
+            // not enough players to fill slots and there is no possible valid squad
+            if (gks.size() < GK_COUNT || defs.size() < DEF_COUNT ||  mids.size() < MID_COUNT || fwds.size() < FWD_COUNT) {
+                break;
+            }
+
+            // increasing the limits no longer increases any list sizes
+            // we've tried all possible candidates so stop (avoid infinite loop)
+            if (gks.size() == prevGKsize || defs.size() == prevDEFsize ||  mids.size() == prevMIDsize || fwds.size() < prevFWDsize) {
+                break;
+            }
+
+            BestResult bestThisRound = new BestResult();
+            List<Player> current = new ArrayList<>();
+            Map<String, Integer> teamCounts = new HashMap<>();
+
+            searchGK(gks, 0, GK_COUNT, defs, mids, fwds, current, teamCounts, 0.0, 0.0, bestThisRound);
+
+            if (bestThisRound.squad != null && bestThisRound.squad.size()==15) {
+                bestOverall = bestThisRound;
+                found = true;
+                break;
+            }
+
+            // remember current sizes and expand candidate limits
+            prevGKsize = gks.size();
+            prevDEFsize = defs.size();
+            prevMIDsize = mids.size();
+            prevFWDsize = fwds.size();
+
+            GK_LIMIT++;
+            DEF_LIMIT++;
+            MID_LIMIT++;
+            FWD_LIMIT++;
         }
-
-        BestResult best = new BestResult();
-        List<Player> current = new ArrayList<>();
-        Map<String, Integer> teamCounts = new HashMap<>();
-
-        // fill positions in order
-        searchGK(gks, 0, GK_COUNT, defs, mids, fwds, current, teamCounts, 0.0, 0.0, best);
 
         // build response from best result
         List<Player> squad;
         double totalCost;
         double totalPoints;
 
-        if (best.squad != null && best.squad.size() == 15) {
-            squad = best.squad;
-            totalCost = best.totalCost;
-            totalPoints = best.totalPoints;
+        if (found && bestOverall != null) {
+            squad = bestOverall.squad;
+            totalCost = bestOverall.totalCost;
+            totalPoints = bestOverall.totalPoints;
         } else {
             squad = new ArrayList<>();
             totalCost = 0.0;
