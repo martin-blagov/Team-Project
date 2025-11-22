@@ -12,12 +12,12 @@ public class   Main {
                 .addDisplayIndividualStatsView()
                 .addStartingLineupView()
                 .addDisplayIndividualStatUseCase()
-                .addOpenTeamEntryViewUseCase()
+                .addTeamEntryViewUseCase()
                 .addTestScrollableListView()  // TODO REMOVE
                 .addStartingLineupUseCase()
                 .addHomeUseCase()
                 .build();
-        application.setSize(500, 500);  // width=1000px, height=700px
+        application.setSize(1100, 800);  // width=1000px, height=700px
         application.setLocationRelativeTo(null); // center on screen
         application.setVisible(true);
     }
