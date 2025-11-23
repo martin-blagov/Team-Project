@@ -13,4 +13,9 @@ public interface TransferSuggestionsInputBoundary {
      * @param inputData Contains the number of transfers to suggest
      */
     void execute(TransferSuggestionsInputData inputData);
+
+    /**
+     * Switch to the home page view.
+     */
+    void switchToHomePage();
 }

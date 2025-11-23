@@ -19,4 +19,9 @@ public interface TransferSuggestionsOutputBoundary {
      * @param errorMessage Description of why suggestions failed
      */
     void presentFailure(String errorMessage);
+
+    /**
+     * Switch to the home page view.
+     */
+    void switchToHomePage();
 }

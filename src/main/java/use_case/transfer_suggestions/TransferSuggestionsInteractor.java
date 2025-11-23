@@ -43,13 +43,26 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
             int numberOfTransfers = inputData.getNumberOfTransfers();
 
             // Validate input
-            if (numberOfTransfers < 1 || numberOfTransfers > 15) {
-                presenter.presentFailure("Number of transfers must be between 1 and 15.");
+            // Validate input
+            if (numberOfTransfers < 0 || numberOfTransfers > 15) {
+                presenter.presentFailure("Number of transfers must be between 0 and 15.");
                 return;
             }
 
             if (numberOfTransfers > currentTeam.getPlayers().size()) {
                 presenter.presentFailure("Cannot transfer more players than you have in your team.");
+                return;
+            }
+
+            // Handle 0 transfers - just return original team
+            if (numberOfTransfers == 0) {
+                TransferSuggestionsOutputData outputData = new TransferSuggestionsOutputData(
+                        currentTeam,
+                        currentTeam,  // Suggested team is same as original
+                        new ArrayList<>(),  // Empty swaps list
+                        0.0  // No improvement
+                );
+                presenter.presentSuccess(outputData);
                 return;
             }
 
@@ -523,5 +536,10 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
         }
 
         return false; // No violation
+    }
+
+    @Override
+    public void switchToHomePage() {
+        presenter.switchToHomePage();
     }
 }
