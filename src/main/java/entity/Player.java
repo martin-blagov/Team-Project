@@ -149,6 +149,12 @@ public class Player {
      * Works for all positions - just pass the appropriate coefficients.
      */
     public void calculatePredictedPoints(Map<String, Double> coefficients) {
+
+        if (coefficients == null || !coefficients.containsKey("intercept")) {
+            this.predictedPoints = 0.0;
+            return;
+        }
+
         double prediction = coefficients.get("intercept");
 
         // Loop through each coefficient and apply it
@@ -176,18 +182,20 @@ public class Player {
         }
 
         if (featureName.startsWith("season_avg_")) {
-            return seasonAvgStats.get(featureName);
+            Double value = seasonAvgStats.get(featureName);
+            return value != null ? value : 0.0;
         }
 
         if (featureName.endsWith("_last3")) {
-            return last3Stats.get(featureName);
+            Double value = last3Stats.get(featureName);
+            return value != null ? value : 0.0;
         }
 
         if (featureName.endsWith("_last5")) {
-            return last5Stats.get(featureName);
+            Double value = last5Stats.get(featureName);
+            return value != null ? value : 0.0;
         }
 
         return 0.0;
     }
-
 }

@@ -220,6 +220,21 @@ public class InitialisePredictionsInteractor implements InitialisePredictionsInp
         Map<String, Double> averages = new HashMap<>();
 
         if (gameweeks.isEmpty()) {
+            String[] allStats = {
+                    "total_points", "minutes", "goals_scored", "assists",
+                    "clean_sheets", "bonus", "bps", "saves", "penalties_saved",
+                    "goals_conceded", "influence", "creativity", "threat",
+                    "expected_goals", "expected_assists",
+                    "clearances_blocks_interceptions", "recoveries",
+                    "tackles", "defensive_contribution"
+            };
+
+            for (String stat : allStats) {
+                String featureName = suffix.startsWith("season_avg_")
+                        ? suffix + stat
+                        : stat + suffix;
+                averages.put(featureName, 0.0);
+            }
             return averages;
         }
 
@@ -265,8 +280,20 @@ public class InitialisePredictionsInteractor implements InitialisePredictionsInp
         Map<String, Double> totals = new HashMap<>();
 
         if (gameweeks.isEmpty()) {
-            return totals;
+            String[] allStats = {
+                    "total_points", "minutes", "goals_scored", "assists",
+                    "clean_sheets", "bonus", "bps", "saves", "penalties_saved",
+                    "goals_conceded", "influence", "creativity", "threat",
+                    "expected_goals", "expected_assists",
+                    "clearances_blocks_interceptions", "recoveries",
+                    "tackles", "defensive_contribution"
+            };
+
+            for (String stat : allStats) {
+                totals.put(stat, 0.0);
             }
+            return totals;
+        }
 
         // Get all stat names from first gameweek
         Set<String> statNames = gameweeks.get(0).keySet();
