@@ -16,7 +16,6 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
     private final PlayerDataAccessInterface dataAccess;
     private final TeamDataAccessInterface teamDataAccess;
 
-
     public TeamEntryInteractor(TeamEntryOutputBoundary presenter, PlayerDataAccessInterface dataAccess, TeamDataAccessInterface teamDataAccess) {
         this.presenter = presenter;
         this.dataAccess = dataAccess;
@@ -41,7 +40,7 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
         boolean inBudget = validateBudget(enteredPlayerObjects) <= 100;
         boolean correctPositions = validatePositions(enteredPlayerObjects);
 
-        //order: exists, duplicate, positions, budget
+        // Order of checks: empty fields, exists, duplicate, positions, budget
         if (!noEmptyFields) {
             presenter.prepareFailView("Please fill in all 15 player fields before confirming your team.");
             return;
