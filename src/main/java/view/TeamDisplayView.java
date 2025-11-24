@@ -3,6 +3,7 @@ package view;
 import entity.Player;
 import entity.Team;
 import interface_adapter.team_view.TeamViewModel;
+import interface_adapter.starting_lineup.StartingLineupViewModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -10,10 +11,14 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
+/**
+ * Reusable view for displaying players in the team.
+ */
+public class TeamDisplayView extends JPanel implements PropertyChangeListener {
 
-
-public class TeamDisplayView extends JPanel implements PropertyChangeListener{
+    private static final String DEFAULT_FONT_FAMILY = "Arial";
 
     private final TeamViewModel teamViewModel;
     private final JLabel headerLabel;
@@ -24,15 +29,23 @@ public class TeamDisplayView extends JPanel implements PropertyChangeListener{
     private final TeamViewModel.DisplayConfig displayConfig;
     private final String viewName;
     private final JButton backButton;
+    private JTable benchTable;
+    private DefaultTableModel benchTableModel;
+    private final StartingLineupViewModel startingLineupViewModel; // may be null for non-lineup views
 
-    /**
-     * Creates a reusable team display and renders the current team state.
-     */
     public TeamDisplayView(TeamViewModel teamViewModel) {
+        this(teamViewModel, null);
+    }
+
+    public TeamDisplayView(TeamViewModel teamViewModel, StartingLineupViewModel startingLineupViewModel) {
         this.teamViewModel = teamViewModel;
+        this.startingLineupViewModel = startingLineupViewModel;
         this.displayConfig = teamViewModel.getDisplayConfig();
         this.viewName = teamViewModel.getViewName();
         teamViewModel.addPropertyChangeListener(this);
+        if (this.startingLineupViewModel != null) {
+            this.startingLineupViewModel.addPropertyChangeListener(this);
+        }
 
         this.setLayout(new BorderLayout());
         this.setBackground(Color.WHITE);
@@ -43,33 +56,39 @@ public class TeamDisplayView extends JPanel implements PropertyChangeListener{
         infoPanel.setBackground(Color.WHITE);
 
         this.headerLabel = new JLabel(displayConfig.getTitle());
-        this.headerLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        this.headerLabel.setFont(new Font(DEFAULT_FONT_FAMILY, Font.BOLD, 16));
         infoPanel.add(this.headerLabel);
         infoPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         this.teamStatusLabel = new JLabel(displayConfig.getEmptyStateMessage());
-        this.teamStatusLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        this.teamStatusLabel.setFont(new Font(DEFAULT_FONT_FAMILY, Font.BOLD, 12));
         infoPanel.add(this.teamStatusLabel);
 
         infoPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 
         this.budgetLabel = new JLabel("Remaining Budget: N/A");
-        this.budgetLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        this.budgetLabel.setFont(new Font(DEFAULT_FONT_FAMILY, Font.PLAIN, 12));
         if (displayConfig.shouldShowBudget()) {
             infoPanel.add(this.budgetLabel);
         }
 
         this.add(infoPanel, BorderLayout.NORTH);
 
+        // Center panel will contain both the main table and optional bench table stacked vertically.
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        centerPanel.setBackground(Color.WHITE);
+
+        // Main players table
         JPanel tablePanel = new JPanel(new BorderLayout());
         tablePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         tablePanel.setBackground(Color.WHITE);
 
         JLabel tableTitle = new JLabel("Players");
-        tableTitle.setFont(new Font("Arial", Font.BOLD, 12));
+        tableTitle.setFont(new Font(DEFAULT_FONT_FAMILY, Font.BOLD, 12));
         tablePanel.add(tableTitle, BorderLayout.NORTH);
 
-        this.tableModel = new DefaultTableModel(displayConfig.getColumnHeaders(), 0){
+        this.tableModel = new DefaultTableModel(displayConfig.getColumnHeaders(), 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Make table cells non-editable
@@ -78,14 +97,43 @@ public class TeamDisplayView extends JPanel implements PropertyChangeListener{
 
         this.playersTable = new JTable(this.tableModel);
         this.playersTable.setRowHeight(25);
-        this.playersTable.setFont(new Font("Arial", Font.BOLD, 11));
-        this.playersTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 11));
-        this.playersTable.getSelectionBackground();
+        this.playersTable.setFont(new Font(DEFAULT_FONT_FAMILY, Font.BOLD, 11));
+        this.playersTable.getTableHeader().setFont(new Font(DEFAULT_FONT_FAMILY, Font.BOLD, 11));
 
         JScrollPane scrollPane = new JScrollPane(this.playersTable);
         tablePanel.add(scrollPane, BorderLayout.CENTER);
 
-        this.add(tablePanel, BorderLayout.CENTER);
+        // Wrap tablePanel in a container with a preferred height to emphasize it.
+        tablePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 400));
+        centerPanel.add(tablePanel);
+
+        // Optional bench table (for starting lineup view only).
+        this.benchTableModel = new DefaultTableModel(displayConfig.getColumnHeaders(), 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        this.benchTable = new JTable(benchTableModel);
+        this.benchTable.setRowHeight(22);
+        this.benchTable.setFont(new Font(DEFAULT_FONT_FAMILY, Font.PLAIN, 11));
+        this.benchTable.getTableHeader().setFont(new Font(DEFAULT_FONT_FAMILY, Font.BOLD, 10));
+
+        if ("starting lineup".equalsIgnoreCase(this.viewName)) {
+            JPanel benchPanel = new JPanel(new BorderLayout());
+            benchPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 10, 10));
+            benchPanel.setBackground(Color.WHITE);
+            JLabel benchTitle = new JLabel("Bench");
+            benchTitle.setFont(new Font(DEFAULT_FONT_FAMILY, Font.BOLD, 12));
+            benchPanel.add(benchTitle, BorderLayout.NORTH);
+            JScrollPane benchScroll = new JScrollPane(benchTable);
+            benchScroll.setPreferredSize(new Dimension(0, 120)); // smaller height than main table
+            benchPanel.add(benchScroll, BorderLayout.CENTER);
+            benchPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 150));
+            centerPanel.add(benchPanel);
+        }
+
+        this.add(centerPanel, BorderLayout.CENTER);
 
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         actionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -98,8 +146,14 @@ public class TeamDisplayView extends JPanel implements PropertyChangeListener{
         displayTeam(teamViewModel.getTeam());
     }
 
-
+    /**
+     * Renders the given team into the table.
+     */
     public void displayTeam(Team team) {
+        displayTeam(team, null);
+    }
+
+    public void displayTeam(Team team, List<Player> benchPlayers) {
         if (team == null) {
             this.teamStatusLabel.setText(displayConfig.getEmptyStateMessage());
             if (displayConfig.shouldShowBudget()) {
@@ -109,12 +163,7 @@ public class TeamDisplayView extends JPanel implements PropertyChangeListener{
             return;
         }
 
-        String statusText;
-        if (team.isConfirmed()) {
-            statusText = "Team Status: Confirmed";
-        } else {
-            statusText = "Team Status: Not Confirmed";
-        }
+        String statusText = team.isConfirmed() ? "Team Status: Confirmed" : "Team Status: Not Confirmed";
         this.teamStatusLabel.setText(statusText);
         this.teamStatusLabel.setForeground(Color.BLACK);
 
@@ -123,12 +172,22 @@ public class TeamDisplayView extends JPanel implements PropertyChangeListener{
             this.budgetLabel.setText(budgetText);
         }
 
-
         this.tableModel.setRowCount(0); // Clear existing rows
 
         for (Player player : team.getPlayers()) {
             Object[] rowData = createRow(player);
             this.tableModel.addRow(rowData);
+        }
+
+        // Populate bench table if present
+        if (benchTableModel != null) {
+            benchTableModel.setRowCount(0);
+            if (benchPlayers != null) {
+                for (Player player : benchPlayers) {
+                    Object[] rowData = createRow(player);
+                    benchTableModel.addRow(rowData);
+                }
+            }
         }
 
         resizeColumns();
@@ -150,7 +209,7 @@ public class TeamDisplayView extends JPanel implements PropertyChangeListener{
                     row[i] = player.getPosition();
                     break;
                 case "club":
-                    row[i] = player.getStatus();
+                    row[i] = player.getTeamName();
                     break;
                 case "price":
                     row[i] = String.format("£%.1fM", player.getNowCost());
@@ -165,14 +224,12 @@ public class TeamDisplayView extends JPanel implements PropertyChangeListener{
         return row;
     }
 
-
     public void clearTeamDisplay() {
         this.teamStatusLabel.setText("Team Status: Null");
         this.teamStatusLabel.setForeground(Color.BLACK);
         this.budgetLabel.setText("Remaining Budget: Null");
         this.tableModel.setRowCount(0);
     }
-
 
     private void resizeColumns() {
         for (int column = 0; column < playersTable.getColumnCount(); column++) {
@@ -187,25 +244,32 @@ public class TeamDisplayView extends JPanel implements PropertyChangeListener{
         }
     }
 
-
     public int getPlayerCount() {
         return this.tableModel.getRowCount();
     }
-
 
     public boolean hasTeamDisplayed() {
         return this.tableModel.getRowCount() > 0;
     }
 
-
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (TeamViewModel.TEAM_STATE_LABEL.equals(evt.getPropertyName())) {
+        String property = evt.getPropertyName();
+        if (TeamViewModel.TEAM_STATE_LABEL.equals(property)) {
+            // Team has changed (starting lineup or other team view)
             Team team = this.teamViewModel.getTeam();
-            displayTeam(team);
+            // If we have a startingLineupViewModel, also pass its bench players
+            if (startingLineupViewModel != null) {
+                displayTeam(team, startingLineupViewModel.getBenchPlayers());
+            } else {
+                displayTeam(team);
+            }
+        } else if ("startingLineup".equals(property) && startingLineupViewModel != null) {
+            // Starting lineup state changed (bench or starting team updated)
+            Team team = this.teamViewModel.getTeam();
+            displayTeam(team, startingLineupViewModel.getBenchPlayers());
         }
     }
-
 
     public String getViewName() {
         return viewName;

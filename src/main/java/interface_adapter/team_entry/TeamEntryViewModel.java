@@ -1,11 +1,11 @@
-package interface_adapter.open_team_entry;
+package interface_adapter.team_entry;
 
 import interface_adapter.ViewModel;
 
 /**
  * The ViewModel for the Team Entry View.
  */
-public class OpenTeamEntryViewModel extends ViewModel<OpenTeamEntryState> {
+public class TeamEntryViewModel extends ViewModel<TeamEntryState> {
 
     // Labels
     public static final String TITLE_LABEL = "Enter Your Team";
@@ -31,9 +31,9 @@ public class OpenTeamEntryViewModel extends ViewModel<OpenTeamEntryState> {
             "Goalkeeper 2"
     };
 
-    public OpenTeamEntryViewModel() {
+    public TeamEntryViewModel() {
         super("team entry");
-        setState(new OpenTeamEntryState());
+        setState(new TeamEntryState());
     }
 
     public String getTitleLabel() {

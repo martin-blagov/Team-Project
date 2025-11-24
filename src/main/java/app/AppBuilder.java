@@ -2,15 +2,16 @@ package app;
 
 import data_access.InMemoryPlayerDataAccess;
 import entity.Player;
+import data_access.*;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.display_individual_stat.DisplayIndividualStatController;
 import interface_adapter.display_individual_stat.DisplayIndividualStatPresenter;
 import interface_adapter.display_individual_stat.DisplayIndividualStatViewModel;
 import interface_adapter.home.HomeController;
 import interface_adapter.home.HomeViewModel;
-import interface_adapter.open_team_entry.OpenTeamEntryController;
-import interface_adapter.open_team_entry.OpenTeamEntryPresenter;
-import interface_adapter.open_team_entry.OpenTeamEntryViewModel;
+import interface_adapter.team_entry.TeamEntryController;
+import interface_adapter.team_entry.TeamEntryPresenter;
+import interface_adapter.team_entry.TeamEntryViewModel;
 import interface_adapter.starting_lineup.StartingLineupController;
 import interface_adapter.starting_lineup.StartingLineupPresenter;
 import interface_adapter.starting_lineup.StartingLineupViewModel;
@@ -18,11 +19,12 @@ import interface_adapter.team_view.TeamViewModel;
 import interface_adapter.best_team.BestTeamController;
 import interface_adapter.best_team.BestTeamPresenter;
 import interface_adapter.best_team.BestTeamViewModel;
+import use_case.TeamDataAccessInterface;
 import use_case.display_individual_stat.DisplayIndividualStatInputBoundary;
 import use_case.display_individual_stat.DisplayIndividualStatInteractor;
 import use_case.display_individual_stat.DisplayIndividualStatOutputBoundary;
-import use_case.open_team_entry.OpenTeamEntryInputBoundary;
-import use_case.open_team_entry.OpenTeamEntryInteractor;
+import use_case.team_entry.TeamEntryInputBoundary;
+import use_case.team_entry.TeamEntryInteractor;
 import use_case.starting_lineup.StartingLineupInputBoundary;
 import use_case.starting_lineup.StartingLineupInteractor;
 import use_case.starting_lineup.StartingLineupOutputBoundary;
@@ -31,10 +33,6 @@ import use_case.best_team.BestTeamInputBoundary;
 import use_case.best_team.BestTeamInteractor;
 import view.*;
 
-import data_access.BootstrapDataGateway;
-import data_access.GameWeekDataGateway;
-import data_access.InMemoryPlayerDataAccess;
-import data_access.ModelCoefficientDataGateway;
 import interface_adapter.initialise_predictions.InitialisePredictionsController;
 import interface_adapter.initialise_predictions.InitialisePredictionsPresenter;
 import interface_adapter.initialise_predictions.InitialisePredictionsViewModel;
@@ -61,9 +59,9 @@ public class AppBuilder {
     private HomePageView homePageView;
     private HomeViewModel homeViewModel;
     private TeamEntryView teamEntryView;
-    private OpenTeamEntryViewModel teamEntryViewModel;
-    private OpenTeamEntryController openTeamEntryController;
-    private OpenTeamEntryInputBoundary openTeamEntryInputBoundary;
+    private TeamEntryViewModel teamEntryViewModel;
+    private TeamEntryController teamEntryController;
+    private TeamEntryInputBoundary teamEntryInputBoundary;
     private TeamViewModel startingLineupViewModel;
     private TeamDisplayView startingLineupView;
     private IndividualStatsPageView displayIndividualStatsView;
@@ -82,6 +80,8 @@ public class AppBuilder {
     private InitialisePredictionsController initController;
     private final PlayerDataAccessInterface playerDataAccess = new InMemoryPlayerDataAccess();
     private InMemoryPlayerDataAccess playerDataAccess;
+    private TeamDataAccessInterface teamDataAccess;
+
 
     //TODO REMOVE
     private TestScrollableListView testScrollableListView;
@@ -155,8 +155,8 @@ public class AppBuilder {
     public AppBuilder addHomeUseCase() {
         final HomeController homeController = new HomeController(
                 homeViewModel,
-                openTeamEntryController,
-                openTeamEntryInputBoundary,
+                teamEntryController,
+                teamEntryInputBoundary,
                 startingLineupController,
                 displayIndividualStatController,
                 viewManagerModel
@@ -166,8 +166,8 @@ public class AppBuilder {
     }
 
     public AppBuilder addTeamEntryView() {
-        teamEntryViewModel = new OpenTeamEntryViewModel();
-        teamEntryView = new TeamEntryView(teamEntryViewModel);
+        teamEntryViewModel = new TeamEntryViewModel();
+        teamEntryView = new TeamEntryView(teamEntryViewModel, playerDataAccess);
         cardPanel.add(teamEntryView, teamEntryView.getViewName());
         return this;
     }
@@ -182,13 +182,13 @@ public class AppBuilder {
     public AppBuilder addStartingLineupView() {
         TeamViewModel.DisplayConfig lineupConfig = new TeamViewModel.DisplayConfig(
                 "Starting Lineup",
-                "No lineup selected.",
+                "No valid lineup available.",
                 false,
-                new String[]{"Name", "Position", "Club"}
+                new String[]{"Name", "Position", "Club", "Price", "Points"}
         );
         startingLineupViewModel = new TeamViewModel("starting lineup", lineupConfig);
-        startingLineupView = new TeamDisplayView(startingLineupViewModel);
         startingLineupViewModelAdapter = new StartingLineupViewModel(startingLineupViewModel);
+        startingLineupView = new TeamDisplayView(startingLineupViewModel, startingLineupViewModelAdapter);
         cardPanel.add(startingLineupView, startingLineupView.getViewName());
         startingLineupView.setBackAction("Back", () -> {
             if (homePageView != null) {
@@ -212,17 +212,18 @@ public class AppBuilder {
         });
         return this;
     }
+  
+    public AppBuilder addTeamEntryViewUseCase() {
+        teamDataAccess = new InMemoryTeamDataAccess();
+        final TeamEntryPresenter presenter =
+                new TeamEntryPresenter(viewManagerModel, teamEntryViewModel, homeViewModel);
 
-    public AppBuilder addOpenTeamEntryViewUseCase() {
-        final OpenTeamEntryPresenter presenter =
-                new OpenTeamEntryPresenter(viewManagerModel, teamEntryViewModel, homeViewModel);
+        final TeamEntryInteractor interactor =
+                new TeamEntryInteractor(presenter, playerDataAccess, teamDataAccess);
 
-        final OpenTeamEntryInteractor interactor =
-                new OpenTeamEntryInteractor(presenter);
+        teamEntryController = new TeamEntryController(interactor, teamEntryViewModel);
 
-        openTeamEntryController = new OpenTeamEntryController(interactor);
-
-        teamEntryView.setTeamEntryController(openTeamEntryController);
+        teamEntryView.setTeamEntryController(teamEntryController);
         return this;
     }
 
@@ -243,7 +244,8 @@ public class AppBuilder {
     public AppBuilder addStartingLineupUseCase() {
         startingLineupPresenter = new StartingLineupPresenter(viewManagerModel, startingLineupViewModelAdapter);
         StartingLineupOutputBoundary outputBoundary = startingLineupPresenter;
-        startingLineupInputBoundary = new StartingLineupInteractor(outputBoundary);
+
+        startingLineupInputBoundary = new StartingLineupInteractor(outputBoundary, playerDataAccess);
         startingLineupController = new StartingLineupController(startingLineupInputBoundary);
         return this;
     }

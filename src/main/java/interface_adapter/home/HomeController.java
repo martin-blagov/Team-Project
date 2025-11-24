@@ -1,9 +1,9 @@
 package interface_adapter.home;
 
 import interface_adapter.display_individual_stat.DisplayIndividualStatController;
-import interface_adapter.open_team_entry.OpenTeamEntryController;
+import interface_adapter.team_entry.TeamEntryController;
 import interface_adapter.starting_lineup.StartingLineupController;
-import use_case.open_team_entry.OpenTeamEntryInputBoundary;
+import use_case.team_entry.TeamEntryInputBoundary;
 
 //TODO Check whether to remove:
 import interface_adapter.ViewManagerModel;
@@ -14,21 +14,21 @@ import interface_adapter.ViewManagerModel;
 public class HomeController {
 
     private final HomeViewModel homeViewModel;
-    private final OpenTeamEntryController openTeamEntryController;
-    private final OpenTeamEntryInputBoundary openTeamEntryInputBoundary;
+    private final TeamEntryController teamEntryController;
+    private final TeamEntryInputBoundary teamEntryInputBoundary;
     private final StartingLineupController startingLineupController;
     private final DisplayIndividualStatController displayIndividualStatController;
 
     //TODO Check whether to remove:
     private final ViewManagerModel viewManagerModel;
 
-    public HomeController(HomeViewModel homeViewModel, OpenTeamEntryController openTeamEntryController,
-                          OpenTeamEntryInputBoundary openTeamEntryInputBoundary,
+    public HomeController(HomeViewModel homeViewModel, TeamEntryController teamEntryController,
+                          TeamEntryInputBoundary teamEntryInputBoundary,
                           StartingLineupController startingLineupController, DisplayIndividualStatController displayIndividualStatController,
                           ViewManagerModel viewManagerModel) {
         this.homeViewModel = homeViewModel;
-        this.openTeamEntryInputBoundary = openTeamEntryInputBoundary;
-        this.openTeamEntryController = openTeamEntryController;
+        this.teamEntryInputBoundary = teamEntryInputBoundary;
+        this.teamEntryController = teamEntryController;
         this.startingLineupController = startingLineupController;
         this.displayIndividualStatController = displayIndividualStatController;
         
@@ -42,7 +42,7 @@ public class HomeController {
     }
 
     public void openTeamInputPage() {
-        openTeamEntryController.execute();
+        teamEntryController.openPage();
     }
 
     public void openReplacementPage() {
@@ -60,11 +60,7 @@ public class HomeController {
     public void openStatsPage() {displayIndividualStatController.execute();}
 
     public void openLineupPage() {
-        if (startingLineupController != null) {
             startingLineupController.execute();
-        } else {
-            System.out.println("Navigating to Starting Lineup Page...");
-        }
     }
 
     public void openTestScrollableListPage() {
