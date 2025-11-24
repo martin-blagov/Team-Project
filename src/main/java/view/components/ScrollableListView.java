@@ -92,7 +92,7 @@ public class ScrollableListView extends JPanel {
         scrollPane.setPreferredSize(new Dimension(600, 400));
 //        scrollPane.setMinimumSize(new Dimension(400, 300));
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
         scrollPane.setMinimumSize(new Dimension(600, 400));
         scrollPane.getViewport().setViewPosition(new Point(0, 0));
