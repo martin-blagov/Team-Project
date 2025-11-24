@@ -79,7 +79,7 @@ public class AppBuilder {
     private InitialisePredictionsViewModel initViewModel;
     private InitialisePredictionsController initController;
     private final PlayerDataAccessInterface playerDataAccess = new InMemoryPlayerDataAccess();
-    private InMemoryPlayerDataAccess playerDataAccess;
+    // private InMemoryPlayerDataAccess playerDataAccess;
     private TeamDataAccessInterface teamDataAccess;
 
 
@@ -90,9 +90,9 @@ public class AppBuilder {
         cardPanel.setLayout(cardLayout);
     }
 
-    public InMemoryPlayerDataAccess getPlayerDataAccess() {
-        return playerDataAccess;
-    }
+//    public InMemoryPlayerDataAccess getPlayerDataAccess() {
+//        return playerDataAccess;
+//    }
 
     //TODO REMOVE
     public AppBuilder addTestScrollableListView() {
@@ -174,7 +174,7 @@ public class AppBuilder {
 
     public AppBuilder addDisplayIndividualStatsView() {
         displayIndividualStatViewModel = new DisplayIndividualStatViewModel();
-        displayIndividualStatsView = new IndividualStatsPageView(displayIndividualStatViewModel);
+        displayIndividualStatsView = new IndividualStatsPageView(displayIndividualStatViewModel, playerDataAccess, viewManagerModel);
         cardPanel.add(displayIndividualStatsView, displayIndividualStatsView.getViewName());
         return this;
     }
