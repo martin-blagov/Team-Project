@@ -1,5 +1,7 @@
 package app;
 
+import data_access.InMemoryPlayerDataAccess;
+import entity.Player;
 import data_access.*;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.display_individual_stat.DisplayIndividualStatController;
@@ -14,6 +16,9 @@ import interface_adapter.starting_lineup.StartingLineupController;
 import interface_adapter.starting_lineup.StartingLineupPresenter;
 import interface_adapter.starting_lineup.StartingLineupViewModel;
 import interface_adapter.team_view.TeamViewModel;
+import interface_adapter.best_team.BestTeamController;
+import interface_adapter.best_team.BestTeamPresenter;
+import interface_adapter.best_team.BestTeamViewModel;
 import use_case.TeamDataAccessInterface;
 import use_case.display_individual_stat.DisplayIndividualStatInputBoundary;
 import use_case.display_individual_stat.DisplayIndividualStatInteractor;
@@ -23,6 +28,9 @@ import use_case.team_entry.TeamEntryInteractor;
 import use_case.starting_lineup.StartingLineupInputBoundary;
 import use_case.starting_lineup.StartingLineupInteractor;
 import use_case.starting_lineup.StartingLineupOutputBoundary;
+import use_case.PlayerDataAccessInterface;
+import use_case.best_team.BestTeamInputBoundary;
+import use_case.best_team.BestTeamInteractor;
 import view.*;
 
 import interface_adapter.initialise_predictions.InitialisePredictionsController;
@@ -40,6 +48,7 @@ import view.TestScrollableListView;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class AppBuilder {
     private final JPanel cardPanel = new JPanel();
@@ -62,10 +71,14 @@ public class AppBuilder {
     private StartingLineupViewModel startingLineupViewModelAdapter;
     private StartingLineupPresenter startingLineupPresenter;
     private StartingLineupInputBoundary startingLineupInputBoundary;
+    private BestTeamViewModel bestTeamViewModel;
+    private BestTeamView bestTeamView;
+    private BestTeamController bestTeamController;
 
     private InitialisePredictionsView initView;
     private InitialisePredictionsViewModel initViewModel;
     private InitialisePredictionsController initController;
+    private final PlayerDataAccessInterface playerDataAccess = new InMemoryPlayerDataAccess();
     private InMemoryPlayerDataAccess playerDataAccess;
     private TeamDataAccessInterface teamDataAccess;
 
@@ -90,7 +103,6 @@ public class AppBuilder {
 
     public AppBuilder addInitialisePredictions() {
         // Create shared player data access (will be used by other use cases)
-        playerDataAccess = new InMemoryPlayerDataAccess();
 
         // Create ViewModel
         initViewModel = new InitialisePredictionsViewModel();
@@ -187,6 +199,20 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addBestTeamView() {
+        bestTeamViewModel = new BestTeamViewModel();
+        bestTeamView = new BestTeamView(bestTeamViewModel);
+        cardPanel.add(bestTeamView, bestTeamView.getViewTitle());
+
+        bestTeamView.setBackAction("Back", () -> {
+            if (homePageView != null) {
+                viewManagerModel.setState(homePageView.getViewName());
+                viewManagerModel.firePropertyChange();
+            }
+        });
+        return this;
+    }
+  
     public AppBuilder addTeamEntryViewUseCase() {
         teamDataAccess = new InMemoryTeamDataAccess();
         final TeamEntryPresenter presenter =
@@ -221,6 +247,18 @@ public class AppBuilder {
 
         startingLineupInputBoundary = new StartingLineupInteractor(outputBoundary, playerDataAccess);
         startingLineupController = new StartingLineupController(startingLineupInputBoundary);
+        return this;
+    }
+
+    public AppBuilder addBestTeamUseCase() {
+        // pushes data into BestTeamViewModel and changes view
+        BestTeamPresenter presenter = new BestTeamPresenter(bestTeamViewModel, viewManagerModel);
+        // uses shared playerDataAccess (InMemoryPlayerDataAccess)
+        BestTeamInteractor interactor = new BestTeamInteractor(playerDataAccess, presenter);
+        // called from HomePageView when "Best Team" is clicked
+        bestTeamController = new BestTeamController(interactor);
+        // connect controller to home page
+        homePageView.setBestTeamController(bestTeamController);
         return this;
     }
 

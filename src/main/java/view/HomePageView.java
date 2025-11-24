@@ -2,6 +2,7 @@ package view;
 
 import interface_adapter.home.HomeController;
 import interface_adapter.home.HomeViewModel;
+import interface_adapter.best_team.BestTeamController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +20,7 @@ public class HomePageView extends JPanel implements PropertyChangeListener {
 
     private final HomeViewModel homeViewModel;
     private HomeController homeController = null;
+    private BestTeamController bestTeamController = null;
 
     private final JButton bestTeamButton;
     private final JButton teamInputButton;
@@ -75,8 +77,11 @@ public class HomePageView extends JPanel implements PropertyChangeListener {
         // Action listeners for buttons
         bestTeamButton.addActionListener(
                 new ActionListener() {
+                    @Override
                     public void actionPerformed(ActionEvent evt) {
-                        homeController.openBestTeamPage();
+                        if (bestTeamController != null) {
+                            bestTeamController.showBestTeam();
+                        }
                     }
                 }
         );
@@ -145,6 +150,9 @@ public class HomePageView extends JPanel implements PropertyChangeListener {
 
     public void setHomeController(HomeController controller) {
         this.homeController = controller;
+    }
+    public void setBestTeamController(BestTeamController controller) {
+        this.bestTeamController = controller;
     }
 
     @Override

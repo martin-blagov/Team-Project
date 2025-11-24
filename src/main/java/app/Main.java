@@ -2,7 +2,7 @@ package app;
 
 import javax.swing.*;
 
-public class   Main {
+public class Main {
     public static void main(String[] args) {
         AppBuilder appBuilder = new AppBuilder();
         JFrame application = appBuilder
@@ -11,11 +11,13 @@ public class   Main {
                 .addTeamEntryView()
                 .addDisplayIndividualStatsView()
                 .addStartingLineupView()
+                .addBestTeamView()
                 .addDisplayIndividualStatUseCase()
                 .addTeamEntryViewUseCase()
                 .addTestScrollableListView()  // TODO REMOVE
                 .addStartingLineupUseCase()
                 .addHomeUseCase()
+                .addBestTeamUseCase()
                 .build();
         application.setSize(1100, 800);  // width=1000px, height=700px
         application.setLocationRelativeTo(null); // center on screen
