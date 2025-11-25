@@ -1,5 +1,6 @@
 package view;
 
+import entity.Player;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.display_individual_stat.DisplayIndividualStatController;
 import interface_adapter.display_individual_stat.DisplayIndividualStatState;
@@ -25,10 +26,14 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
     final JLabel nameLabel = new JLabel();
     final JLabel positionLabel = new JLabel();
     final JLabel teamLabel = new JLabel();
-    final JLabel priceLabel = new JLabel();
+    final JLabel costLabel = new JLabel();
     final JLabel goalsScoredLabel = new JLabel();
     final JLabel assistsLabel = new JLabel();
     final JLabel pointsLabel = new JLabel();
+    private Player currentPlayer = null;
+
+    final String[] filterOptions = {"Total", "Average", "Last 3", "Last 5"};
+    final JComboBox<String> filterComboBox = new JComboBox<>(filterOptions);
 
     public IndividualStatsPageView(DisplayIndividualStatViewModel viewModel, PlayerDataAccessInterface playerDataAccess,
                                    ViewManagerModel viewManagerModel) {
@@ -38,15 +43,24 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
 
         final JPanel statsPanel = new JPanel();
         statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
+        filterComboBox.setSelectedItem(filterOptions[0]); // Total stats is displayed by default
+        statsPanel.add(filterComboBox);
         statsPanel.add(nameLabel);
         statsPanel.add(positionLabel);
         statsPanel.add(teamLabel);
-        statsPanel.add(priceLabel);
+        statsPanel.add(costLabel);
         statsPanel.add(goalsScoredLabel);
         statsPanel.add(assistsLabel);
         statsPanel.add(pointsLabel);
 
+        // Update stats field based on filter selected
+        filterComboBox.addActionListener(e -> {
+            String filterOption = filterComboBox.getSelectedItem().toString();
+            DisplayIndividualStatInputData inputData = new DisplayIndividualStatInputData(currentPlayer.getId(), filterOption);
+            displayIndividualStatController.execute(inputData);
+        });
 
+        // All Player List
         // Use the scrollable list component
         scrollableListView = new ScrollableListView(playerDataAccess);
 
@@ -55,7 +69,9 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
 
         // Define what happens when a player is clicked
         scrollableListView.setPlayerSelectionListener(player -> {
-            DisplayIndividualStatInputData inputData = new DisplayIndividualStatInputData(player.getId());
+            currentPlayer = player;
+            String filterOption = filterComboBox.getSelectedItem().toString();
+            DisplayIndividualStatInputData inputData = new DisplayIndividualStatInputData(player.getId(), filterOption);
             displayIndividualStatController.execute(inputData);
         });
 
@@ -65,7 +81,11 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         wrapperPanel.add(statsPanel);
 
         JButton homeButton = new JButton("Home");
-        homeButton.addActionListener(e -> {viewManagerModel.setState("home"); viewManagerModel.firePropertyChange();});
+        homeButton.addActionListener(e -> {
+            viewManagerModel.setState("home");
+            viewManagerModel.firePropertyChange();
+        });
+
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(homeButton);
 
@@ -77,10 +97,6 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         this.setLayout(new BorderLayout());
         this.add(screen);
 
-
-
-
-        // THIS IS REQUIRED FOR THE LIST TO WORK PROPERLY. COPY AND PASTE THIS.
         addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentShown(java.awt.event.ComponentEvent e) {
@@ -98,7 +114,10 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         nameLabel.setText("Name: " + state.getPlayerName());
         positionLabel.setText("Position: " + state.getPlayerPosition());
         teamLabel.setText("Team: " + state.getPlayerTeam());
-        // priceLabel.setText("Price: " + state.getPlayerCost());
+        costLabel.setText("Cost: €" + state.getPlayerCost());
+        goalsScoredLabel.setText("Goals: " + state.getPlayerGoals());
+        assistsLabel.setText("Assists: " + state.getPlayerAssists());
+        pointsLabel.setText("Points: " + state.getPlayerPoints());
     }
 
     public void setDisplayIndividualStatController(DisplayIndividualStatController controller) {
