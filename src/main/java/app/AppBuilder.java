@@ -232,7 +232,7 @@ public class AppBuilder {
                 viewManagerModel,displayIndividualStatViewModel);
 
         final DisplayIndividualStatInputBoundary interactor = new DisplayIndividualStatInteractor(
-                outputBoundary);
+                outputBoundary, playerDataAccess, teamDataAccess);
 
         displayIndividualStatController = new DisplayIndividualStatController(
                 interactor);
