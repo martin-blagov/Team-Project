@@ -18,19 +18,21 @@ public class DisplayIndividualStatInteractor implements DisplayIndividualStatInp
 
     public void execute(DisplayIndividualStatInputData inputData) {
         int id = inputData.getPlayerID();
-
         Player p = playerDataAccess.getPlayerById(id);
         final String name = p.getWebName();
         final String position = p.getPosition();
         final String teamName = p.getTeamName();
-        // final String p.getStatus();
         final double cost = p.getNowCost();
         // final String goals = p.getSeasonTotalStat("goals_scored");
         // final String assists = p.getSeasonAvgStat("goals_scored");
         // final String p.getLast3Stat("goals_scored");
         // final String p.getLast5Stat("goals_scored");
 
-        DisplayIndividualStatOutputData outputData = new DisplayIndividualStatOutputData(name, position, teamName, cost);
+        DisplayIndividualStatOutputData outputData = new DisplayIndividualStatOutputData(
+                name,
+                position,
+                teamName,
+                cost);
         presenter.presentView(outputData);
     }
 }

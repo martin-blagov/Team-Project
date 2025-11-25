@@ -23,6 +23,6 @@ public class DisplayIndividualStatOutputData {
     public String getPlayerName() { return playerName; }
     public String getPlayerPosition() { return playerPosition; }
     public String getPlayerTeam() { return playerTeam; }
-    public double getPlayerCost() { return playerCost; }
+    // public String getPlayerCost() { return playerCost; }
     // public String getPlayerPoints() { return playerPoints; }
 }

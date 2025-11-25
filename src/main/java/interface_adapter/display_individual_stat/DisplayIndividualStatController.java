@@ -14,8 +14,7 @@ public class DisplayIndividualStatController {
     /**
      * Executes the Individual Stats Use Case.
      */
-    public void execute(int playerID) {
-        DisplayIndividualStatInputData inputData = new DisplayIndividualStatInputData(playerID);
-        displayIndividualStatInteractor.execute(inputData);
+    public void execute(DisplayIndividualStatInputData displayIndividualStatInputData) {
+        displayIndividualStatInteractor.execute(displayIndividualStatInputData);
     }
 }
