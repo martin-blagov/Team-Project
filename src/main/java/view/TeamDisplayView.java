@@ -135,7 +135,7 @@ public class TeamDisplayView extends JPanel implements PropertyChangeListener {
 
         this.add(centerPanel, BorderLayout.CENTER);
 
-        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         actionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         actionPanel.setBackground(Color.WHITE);
         this.backButton = new JButton("Back");
