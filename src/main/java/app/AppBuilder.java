@@ -78,8 +78,7 @@ public class AppBuilder {
     private InitialisePredictionsView initView;
     private InitialisePredictionsViewModel initViewModel;
     private InitialisePredictionsController initController;
-    private final PlayerDataAccessInterface playerDataAccess = new InMemoryPlayerDataAccess();
-    private InMemoryPlayerDataAccess playerDataAccess;
+    private InMemoryPlayerDataAccess playerDataAccess = new InMemoryPlayerDataAccess();
     private TeamDataAccessInterface teamDataAccess;
 
 

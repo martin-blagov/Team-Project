@@ -16,7 +16,6 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
     private final PlayerDataAccessInterface dataAccess;
     private final TeamDataAccessInterface teamDataAccess;
 
-
     public TeamEntryInteractor(TeamEntryOutputBoundary presenter, PlayerDataAccessInterface dataAccess, TeamDataAccessInterface teamDataAccess) {
         this.presenter = presenter;
         this.dataAccess = dataAccess;
@@ -27,6 +26,11 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
 
         String[] players = inputData.getPlayerNames();
         int[] ids = inputData.getPlayerIds();
+
+        boolean noEmptyFields = validateNoEmptyFields(players);
+        boolean playerExists = validatePlayersExist(ids);
+        boolean isDuplicate = validateNonDuplicate(inputData.getPlayerIds());
+
         List<Player> enteredPlayerObjects = new ArrayList<>();
 
         // Create arraylist of player objects that match entered players
@@ -35,13 +39,10 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
             enteredPlayerObjects.add(p); // p can be null, validation will handle that
         }
 
-        boolean noEmptyFields = validateNoEmptyFields(players);
-        boolean playerExists = validatePlayersExist(ids);
-        boolean isDuplicate = validateNonDuplicate(inputData.getPlayerIds());
         boolean inBudget = validateBudget(enteredPlayerObjects) <= 100;
         boolean correctPositions = validatePositions(enteredPlayerObjects);
 
-        //order: exists, duplicate, positions, budget
+        // Order of checks: empty fields, exists, duplicate, positions, budget
         if (!noEmptyFields) {
             presenter.prepareFailView("Please fill in all 15 player fields before confirming your team.");
             return;
@@ -143,7 +144,11 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
 
         // Check if the entered name is a valid player name
         for (Player player : enteredPlayerObjects) {
-            totalCost += player.getNowCost();
+            if (player != null) {
+                totalCost += player.getNowCost();
+            } else {
+                return 0;
+            }
         }
 
         return totalCost;
