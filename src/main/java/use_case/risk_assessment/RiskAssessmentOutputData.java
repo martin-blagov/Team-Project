@@ -5,8 +5,8 @@ import java.util.List;
 public class RiskAssessmentOutputData {
     private final List<String> underperformingPlayers;
 
-    public RiskAssessmentOutputData(List<String> underperformingPlayers) {
-        this.underperformingPlayers = underperformingPlayers;
+    public RiskAssessmentOutputData(List<String> riskItems) {
+        this.underperformingPlayers = riskItems;
     }
 
     public List<String> getUnderperformingPlayers() {

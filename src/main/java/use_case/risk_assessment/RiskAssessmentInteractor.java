@@ -19,7 +19,7 @@ public class RiskAssessmentInteractor implements RiskAssessmentInputBoundary {
     }
 
     @Override
-    public RiskAssessmentOutputData execute(RiskAssessmentInputData inputData) {
+    public void execute(RiskAssessmentInputData inputData) {
 
         Team team = inputData.getCurrentTeam();
 
@@ -27,7 +27,7 @@ public class RiskAssessmentInteractor implements RiskAssessmentInputBoundary {
         if (team == null || team.getPlayers() == null || team.getPlayers().isEmpty()) {
             List<String> underperformingPlayers = new ArrayList<>();
             RiskAssessmentOutputData outputData = new RiskAssessmentOutputData(underperformingPlayers);
-            presenter.presentUnderperformingPlayers(outputData);
+            presenter.presentRiskPlayers(outputData);
             return outputData;
         }
 
@@ -58,7 +58,7 @@ public class RiskAssessmentInteractor implements RiskAssessmentInputBoundary {
 
         // Wrap output + call presenter
         RiskAssessmentOutputData outputData = new RiskAssessmentOutputData(underperformingPlayers);
-        presenter.presentUnderperformingPlayers(outputData);
+        presenter.presentRiskPlayers(outputData);
         return outputData;
     }
 }
