@@ -79,7 +79,7 @@ public class AppBuilder {
     private InitialisePredictionsViewModel initViewModel;
     private InitialisePredictionsController initController;
     private InMemoryPlayerDataAccess playerDataAccess = new InMemoryPlayerDataAccess();
-    private TeamDataAccessInterface teamDataAccess;
+    private TeamDataAccessInterface teamDataAccess = new FileTeamDataAccessObject("team.json");;
 
 
     //TODO REMOVE
@@ -213,7 +213,6 @@ public class AppBuilder {
     }
   
     public AppBuilder addTeamEntryViewUseCase() {
-        teamDataAccess = new InMemoryTeamDataAccess();
         final TeamEntryPresenter presenter =
                 new TeamEntryPresenter(viewManagerModel, teamEntryViewModel, homeViewModel);
 

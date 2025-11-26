@@ -80,6 +80,15 @@ public class TeamEntryView extends JPanel implements PropertyChangeListener {
             teamEntryPanel.add(row);
         }
 
+        String budgetLabel = teamEntryViewModel.getBudgetLabel();
+        JPanel row = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // right-justify textfields
+        row.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel label = new JLabel(budgetLabel);
+        JTextField budgetField = new JTextField(15);
+        row.add(label);
+        row.add(budgetField);
+        teamEntryPanel.add(row);
+
         // Add space
         teamEntryPanel.add(Box.createVerticalStrut(15));
 
@@ -123,8 +132,6 @@ public class TeamEntryView extends JPanel implements PropertyChangeListener {
             }
         });
 
-
-
         // Confirm button
         JPanel buttonPanel = new JPanel();
         confirmButton = new JButton(teamEntryViewModel.getConfirmButtonLabel());
@@ -145,6 +152,17 @@ public class TeamEntryView extends JPanel implements PropertyChangeListener {
             }
         });
 
+        budgetField.getDocument().addDocumentListener(new DocumentListener() {
+            private void documentListenerHelper() {
+                final TeamEntryState currentState = teamEntryViewModel.getState();
+                currentState.setBudget(budgetField.getText());
+                teamEntryViewModel.setState(currentState);
+            }
+
+            @Override public void insertUpdate(DocumentEvent e) { documentListenerHelper(); }
+            @Override public void removeUpdate(DocumentEvent e) { documentListenerHelper(); }
+            @Override public void changedUpdate(DocumentEvent e) { documentListenerHelper(); }
+        });
         addFieldListeners();
     }
 
@@ -164,6 +182,8 @@ public class TeamEntryView extends JPanel implements PropertyChangeListener {
                 @Override public void removeUpdate(DocumentEvent e) { update(); }
                 @Override public void changedUpdate(DocumentEvent e) { update(); }
             });
+
+
 
             // When the field is clicked, show the player list and remember which text field we're on
             playerInputFields[i].addFocusListener(new FocusAdapter() {
