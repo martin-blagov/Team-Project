@@ -1,11 +1,11 @@
-package use_case.underperforming;
+package use_case.risk_assessment;
 
 import entity.Team;
 
-public class UnderperformingInputData {
+public class RiskAssessmentInputData {
     private final Team currentTeam;
 
-    public UnderperformingInputData(Team currentTeam) {
+    public RiskAssessmentInputData(Team currentTeam) {
         this.currentTeam = currentTeam;
     }
 

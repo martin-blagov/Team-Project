@@ -1,4 +1,4 @@
-package use_case.underperforming;
+package use_case.risk_assessment;
 
 import entity.Team;
 import entity.Player;
@@ -7,26 +7,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class UnderperformingInteractor implements UnderperformingInputBoundary {
+public class RiskAssessmentInteractor implements RiskAssessmentInputBoundary {
 
-    private final UnderperformingOutputBoundary presenter;
+    private final RiskAssessmentOutputBoundary presenter;
     private final Map<Integer, Map<String, Double>> coefficientMap;
 
-    public UnderperformingInteractor(UnderperformingOutputBoundary presenter,
-                                     Map<Integer, Map<String, Double>> coefficientMap) {
+    public RiskAssessmentInteractor(RiskAssessmentOutputBoundary presenter,
+                                    Map<Integer, Map<String, Double>> coefficientMap) {
         this.presenter = presenter;
         this.coefficientMap = coefficientMap;
     }
 
     @Override
-    public UnderperformingOutputData execute(UnderperformingInputData inputData) {
+    public RiskAssessmentOutputData execute(RiskAssessmentInputData inputData) {
 
         Team team = inputData.getCurrentTeam();
 
         // CASE 1: No team selected → return empty list
         if (team == null || team.getPlayers() == null || team.getPlayers().isEmpty()) {
             List<String> underperformingPlayers = new ArrayList<>();
-            UnderperformingOutputData outputData = new UnderperformingOutputData(underperformingPlayers);
+            RiskAssessmentOutputData outputData = new RiskAssessmentOutputData(underperformingPlayers);
             presenter.presentUnderperformingPlayers(outputData);
             return outputData;
         }
@@ -57,7 +57,7 @@ public class UnderperformingInteractor implements UnderperformingInputBoundary {
         }
 
         // Wrap output + call presenter
-        UnderperformingOutputData outputData = new UnderperformingOutputData(underperformingPlayers);
+        RiskAssessmentOutputData outputData = new RiskAssessmentOutputData(underperformingPlayers);
         presenter.presentUnderperformingPlayers(outputData);
         return outputData;
     }

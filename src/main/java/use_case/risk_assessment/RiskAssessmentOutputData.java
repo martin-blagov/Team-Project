@@ -1,11 +1,11 @@
-package use_case.underperforming;
+package use_case.risk_assessment;
 
 import java.util.List;
 
-public class UnderperformingOutputData {
+public class RiskAssessmentOutputData {
     private final List<String> underperformingPlayers;
 
-    public UnderperformingOutputData(List<String> underperformingPlayers) {
+    public RiskAssessmentOutputData(List<String> underperformingPlayers) {
         this.underperformingPlayers = underperformingPlayers;
     }
 
