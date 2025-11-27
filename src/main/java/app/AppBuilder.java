@@ -243,7 +243,7 @@ public class AppBuilder {
         startingLineupPresenter = new StartingLineupPresenter(viewManagerModel, startingLineupViewModelAdapter);
         StartingLineupOutputBoundary outputBoundary = startingLineupPresenter;
 
-        startingLineupInputBoundary = new StartingLineupInteractor(outputBoundary, playerDataAccess);
+        startingLineupInputBoundary = new StartingLineupInteractor(outputBoundary, teamDataAccess);
         startingLineupController = new StartingLineupController(startingLineupInputBoundary);
         return this;
     }

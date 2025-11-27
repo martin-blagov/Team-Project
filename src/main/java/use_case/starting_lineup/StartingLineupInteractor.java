@@ -2,7 +2,7 @@ package use_case.starting_lineup;
 
 import entity.Player;
 import entity.Team;
-import use_case.PlayerDataAccessInterface;
+import use_case.TeamDataAccessInterface;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -16,71 +16,53 @@ import java.util.stream.Collectors;
 public class StartingLineupInteractor implements StartingLineupInputBoundary {
 
     private final StartingLineupOutputBoundary outputBoundary;
-    private final PlayerDataAccessInterface dataAccess;
+    private final TeamDataAccessInterface teamDataAccess;
 
+    /**
+     * Constructs a new interactor for the Starting Lineup use case.
+     *
+     * @param outputBoundary    presenter used to display the computed lineup
+     * @param teamDataAccess    gateway for reading the user's saved team
+     */
     public StartingLineupInteractor(StartingLineupOutputBoundary outputBoundary,
-                                    PlayerDataAccessInterface dataAccess) {
+                                    TeamDataAccessInterface teamDataAccess) {
         this.outputBoundary = outputBoundary;
-        this.dataAccess = dataAccess;
+        this.teamDataAccess = teamDataAccess;
     }
 
     @Override
     public void execute() {
-        // Create a team for test purposes.
-        List<Player> allPlayers = dataAccess.getAllPlayers();
-        List<Player> candidates = allPlayers.stream()
-                .filter(p -> p.getPredictedPoints() != null)
-                .collect(Collectors.toList());
-        candidates.sort(Comparator.comparing(Player::getPredictedPoints).reversed());
-        List<Player> players_in_team = new ArrayList<>();
+        // Access the user's team.
+        Team savedTeam = teamDataAccess.getTeam();
 
-        List<Player> goalkeepers = filterByPosition(candidates, 1);
-        List<Player> defenders = filterByPosition(candidates, 2);
-        List<Player> midfielders = filterByPosition(candidates, 3);
-        List<Player> forwards = filterByPosition(candidates, 4);
-
-        for (int i = 0; i < Math.min(2, goalkeepers.size()); i++) {
-            players_in_team.add(defenders.get(i));
-        }
-        for (int i = 0; i < Math.min(5, defenders.size()); i++) {
-            players_in_team.add(defenders.get(i));
-        }
-        for (int i = 0; i < Math.min(5, midfielders.size()); i++) {
-            players_in_team.add(midfielders.get(i));
-        }
-        for (int i = 0; i < Math.min(3, forwards.size()); i++) {
-            players_in_team.add(forwards.get(i));
+        // Empty starting lineup if user has no team saved.
+        if (savedTeam == null) {
+            outputBoundary.presentLineup(new StartingLineupOutputData(null, new ArrayList<>()));
+            return;
         }
 
-        Team testTeam = new Team(players_in_team, 0.0f, true);
+        // Get all players in the user's team.
+        List<Player> teamPlayers = savedTeam.getPlayers();
 
-        // Starting lineup computation.
-
-        List<Player> teamPlayers = testTeam.getPlayers();
-
-        List<Player> gkp = filterByPosition(candidates, 1);
-        List<Player> dfd = filterByPosition(candidates, 2);
-        List<Player> mdf = filterByPosition(candidates, 3);
-        List<Player> fwd = filterByPosition(candidates, 4);
+        List<Player> gkp = filterByPosition(teamPlayers, 1);
+        List<Player> dfd = filterByPosition(teamPlayers, 2);
+        List<Player> mdf = filterByPosition(teamPlayers, 3);
+        List<Player> fwd = filterByPosition(teamPlayers, 4);
 
         List<Player> starting = new ArrayList<>();
 
+        // Guarantees at least 1 GK, 3 DEF, 2 MID, 1 FWD.
         addTopPlayers(gkp, starting, 1);
         addTopPlayers(dfd, starting, 3);
         addTopPlayers(mdf, starting, 2);
         addTopPlayers(fwd, starting, 1);
 
+        // Fill remaining spots with the best remaining players.
         List<Player> remaining = new ArrayList<>(teamPlayers);
         remaining.removeAll(starting);
-
         addTopPlayers(remaining, starting, 11 - starting.size());
 
-        if(starting.isEmpty()) {
-            outputBoundary.presentLineup(new StartingLineupOutputData(null, new ArrayList<>()));
-            return;
-        }
-
-        List<Player> bench = testTeam.getPlayers();
+        List<Player> bench = new ArrayList<>(teamPlayers);
         bench.removeAll(starting);
 
         Team startingTeam = new Team(starting, 0.0f, true);
@@ -90,12 +72,26 @@ public class StartingLineupInteractor implements StartingLineupInputBoundary {
         outputBoundary.presentLineup(outputData);
     }
 
+    /**
+     * Returns a new list containing players of the desired position.
+     *
+     * @param players     list of players to filter.
+     * @param elementType position identifier.
+     * @return list of players that matches the given position.
+     */
     private List<Player> filterByPosition(List<Player> players, int elementType) {
         return players.stream()
                 .filter(p -> p.getElementType() == elementType)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Add players with the highest predicted points from source to dest.
+     *
+     * @param source the players to add from.
+     * @param dest   the collection to add top players.
+     * @param count  maximum number of players to add.
+     */
     private void addTopPlayers(List<Player> source, List<Player> dest, int count) {
         List<Player> sorted = source.stream()
                 .sorted(Comparator.comparing(Player::getPredictedPoints).reversed())
