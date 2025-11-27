@@ -18,6 +18,7 @@ import interface_adapter.team_view.TeamViewModel;
 import interface_adapter.best_team.BestTeamController;
 import interface_adapter.best_team.BestTeamPresenter;
 import interface_adapter.best_team.BestTeamViewModel;
+import use_case.starting_lineup.StartingLineupTeamDataAccessInterface;
 import use_case.team_entry.TeamDataAccessInterface;
 import use_case.display_individual_stat.DisplayIndividualStatInputBoundary;
 import use_case.display_individual_stat.DisplayIndividualStatInteractor;
@@ -82,7 +83,9 @@ public class AppBuilder {
     private InitialisePredictionsViewModel initViewModel;
     private InitialisePredictionsController initController;
     private InMemoryPlayerDataAccess playerDataAccess = new InMemoryPlayerDataAccess();
-    private TeamDataAccessInterface teamDataAccess = new FileTeamDataAccessObject("team.json");;
+    private final FileTeamDataAccessObject fileTeamDataAccess = new FileTeamDataAccessObject("team.json");
+    private final StartingLineupTeamDataAccessInterface startingLineupTeamDataAccess = fileTeamDataAccess;
+    private final TeamDataAccessInterface teamDataAccess = fileTeamDataAccess;
 
 
 
@@ -275,7 +278,7 @@ public class AppBuilder {
         startingLineupPresenter = new StartingLineupPresenter(viewManagerModel, startingLineupViewModelAdapter);
         StartingLineupOutputBoundary outputBoundary = startingLineupPresenter;
 
-        startingLineupInputBoundary = new StartingLineupInteractor(outputBoundary, teamDataAccess);
+        startingLineupInputBoundary = new StartingLineupInteractor(outputBoundary, startingLineupTeamDataAccess, playerDataAccess);
         startingLineupController = new StartingLineupController(startingLineupInputBoundary);
         return this;
     }

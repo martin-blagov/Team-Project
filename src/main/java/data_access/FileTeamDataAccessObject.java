@@ -3,6 +3,7 @@ package data_access;
 import entity.Player;
 import entity.Team;
 import use_case.team_entry.TeamDataAccessInterface;
+import use_case.starting_lineup.StartingLineupTeamDataAccessInterface;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,7 +18,7 @@ import java.util.Map;
 /**
  * DAO for saving/loading the user's confirmed FPL team to a local JSON file.
  */
-public class FileTeamDataAccessObject implements TeamDataAccessInterface {
+public class FileTeamDataAccessObject implements TeamDataAccessInterface, StartingLineupTeamDataAccessInterface {
 
     private final String filepath;
     private Team savedTeam;
