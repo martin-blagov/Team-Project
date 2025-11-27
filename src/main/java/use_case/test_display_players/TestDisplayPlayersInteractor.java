@@ -111,10 +111,10 @@ public class TestDisplayPlayersInteractor implements TestDisplayPlayersInputBoun
             });
 
             // Get filters from input
-            String searchText     = inputData.getSearchText();
+            String searchText = inputData.getSearchText();
             String positionFilter = inputData.getPositionFilter();
-            String teamFilter     = inputData.getTeamFilter();
-            Double maxPrice       = inputData.getMaxPrice();
+            String teamFilter = inputData.getTeamFilter();
+            Double maxPrice = inputData.getMaxPrice();
 
             // Normalize some values for comparisons
             String searchLower;
@@ -184,11 +184,6 @@ public class TestDisplayPlayersInteractor implements TestDisplayPlayersInputBoun
                     .distinct()                              // STEP 3: Get unique values
                     .sorted(String::compareToIgnoreCase)     // STEP 4: Sort alphabetically
                     .collect(Collectors.toList());           // STEP 5: Collect to list
-
-            // To go back to "All teams", otherwise the filter will last forever and can't go back
-            if (!availableTeams.contains("All teams")) {
-                availableTeams.add(0, "All teams");
-            }
 
             // STEP 5: Create OutputData
             TestDisplayPlayersOutputData outputData =
