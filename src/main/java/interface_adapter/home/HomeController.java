@@ -67,8 +67,9 @@ public class HomeController {
         }
     }
 
-    public void openTestScrollableListPage() {
-        viewManagerModel.setState("test scrollable list");
+    // TODO REMOVE
+    public void openTestDisplayPlayersPage() {
+        viewManagerModel.setState("test scrollable list v2");
         viewManagerModel.firePropertyChange();
     }
 }

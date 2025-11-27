@@ -13,7 +13,7 @@ public class   Main {
                 .addStartingLineupView()
                 .addDisplayIndividualStatUseCase()
                 .addTeamEntryViewUseCase()
-                .addTestScrollableListView()  // TODO REMOVE
+                .addTestDisplayPlayersUseCase()
                 .addStartingLineupUseCase()
                 .addHomeUseCase()
                 .build();
