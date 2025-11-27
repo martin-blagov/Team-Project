@@ -1,9 +1,11 @@
 package interface_adapter.home;
 
 import interface_adapter.display_individual_stat.DisplayIndividualStatController;
+import interface_adapter.risk_assessment.RiskAssessmentController;
 import interface_adapter.team_entry.TeamEntryController;
 import interface_adapter.starting_lineup.StartingLineupController;
 import use_case.team_entry.TeamEntryInputBoundary;
+
 
 //TODO Check whether to remove:
 import interface_adapter.ViewManagerModel;
@@ -18,20 +20,23 @@ public class HomeController {
     private final TeamEntryInputBoundary teamEntryInputBoundary;
     private final StartingLineupController startingLineupController;
     private final DisplayIndividualStatController displayIndividualStatController;
+    private final RiskAssessmentController riskAssessmentController;
+
 
     //TODO Check whether to remove:
     private final ViewManagerModel viewManagerModel;
 
     public HomeController(HomeViewModel homeViewModel, TeamEntryController teamEntryController,
                           TeamEntryInputBoundary teamEntryInputBoundary,
-                          StartingLineupController startingLineupController, DisplayIndividualStatController displayIndividualStatController,
+                          StartingLineupController startingLineupController, DisplayIndividualStatController displayIndividualStatController, RiskAssessmentController riskAssessmentController,
                           ViewManagerModel viewManagerModel) {
         this.homeViewModel = homeViewModel;
         this.teamEntryInputBoundary = teamEntryInputBoundary;
         this.teamEntryController = teamEntryController;
         this.startingLineupController = startingLineupController;
         this.displayIndividualStatController = displayIndividualStatController;
-        
+        this.riskAssessmentController = riskAssessmentController;
+
         //TODO Check whether to remove:
         this.viewManagerModel = viewManagerModel;
     }
@@ -45,9 +50,10 @@ public class HomeController {
         teamEntryController.openPage();
     }
 
-    public void openReplacementPage() {
-        System.out.println("Navigating to Replacement Suggestions Page...");
+    public void openRiskAssessmentPage() {
+        riskAssessmentController.execute();
     }
+
 
     public void openBestPlayersPage() {
         System.out.println("Navigating to Best Players Page...");

@@ -5,15 +5,24 @@ import entity.Player;
 public class PredictedPointsDeclineRule implements RiskRule {
 
     @Override
-    public String getRuleName() {
-        return "Low Predicted Points";
+    public boolean isTriggered(Player player) {
+
+        Double predicted = player.getPredictedPoints();
+        if (predicted == null) {
+            return false;
+        }
+
+        double last5 = player.getLast5Stat("total_points");
+        if (last5 <= 0) {
+            return false;
+        }
+
+        // predicted points drop significantly from last form
+        return predicted < last5 * 0.6; // 40% decline
     }
 
     @Override
-    public boolean evaluate(Player player) {
-        Double pred = player.getPredictedPoints();
-        if (pred == null) return false;
-
-        return pred < 3.5;  // tweakable
+    public String getName() {
+        return "Predicted Points Decline";
     }
 }

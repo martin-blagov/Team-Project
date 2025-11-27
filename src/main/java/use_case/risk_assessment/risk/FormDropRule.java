@@ -8,12 +8,12 @@ public class FormDropRule implements RiskRule {
     // last3 < 60% of seasonAvg = poor form
 
     @Override
-    public String getRuleName() {
+    public String getName() {
         return "Form Drop";
     }
 
     @Override
-    public boolean evaluate(Player p) {
+    public boolean isTriggered(Player p) {
         double last3 = p.getLast3Stat("total_points");
         double avg = p.getSeasonAvgStat("total_points");
 

@@ -8,12 +8,12 @@ public class MinutesDeclineRule implements RiskRule {
     // last3 < 50% of seasonAvg = risk
 
     @Override
-    public String getRuleName() {
+    public String getName() {
         return "Minutes Decline";
     }
 
     @Override
-    public boolean evaluate(Player player) {
+    public boolean isTriggered(Player player) {
         double last3 = player.getLast3Stat("minutes");
         double avg = player.getSeasonAvgStat("minutes");
 

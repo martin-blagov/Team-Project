@@ -11,6 +11,8 @@ public interface RiskRule {
      *
      */
 
-    boolean evaluate(Player player);
-    String getRuleName();
+    boolean isTriggered(Player player);
+    String getName();
+
 }
+

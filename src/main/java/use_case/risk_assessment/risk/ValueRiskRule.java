@@ -8,12 +8,12 @@ public class ValueRiskRule implements RiskRule {
     private static final double MIN_POINTS_PER_COST = 0.5;
 
     @Override
-    public String getRuleName() {
+    public String getName() {
         return "Value Risk";
     }
 
     @Override
-    public boolean evaluate(Player player) {
+    public boolean isTriggered(Player player) {
         Double predicted = player.getPredictedPoints();
         double cost = player.getNowCost();
 

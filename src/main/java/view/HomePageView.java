@@ -102,10 +102,11 @@ public class HomePageView extends JPanel implements PropertyChangeListener {
         riskAssessmentButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent evt) {
-                        homeController.openReplacementPage();
+                        homeController.openRiskAssessmentPage();
                     }
                 }
         );
+
 
         bestPlayersButton.addActionListener(
                 new ActionListener() {

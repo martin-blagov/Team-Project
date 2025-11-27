@@ -1,15 +1,8 @@
 package use_case.risk_assessment;
 
-import entity.Team;
-
+/**
+ * Empty input data — the interactor will fetch the team
+ * through TeamDataAccessInterface.
+ */
 public class RiskAssessmentInputData {
-    private final Team currentTeam;
-
-    public RiskAssessmentInputData(Team currentTeam) {
-        this.currentTeam = currentTeam;
-    }
-
-    public Team getCurrentTeam() {
-        return currentTeam;
-    }
 }
