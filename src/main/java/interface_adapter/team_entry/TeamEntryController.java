@@ -19,7 +19,7 @@ public class TeamEntryController {
     public void execute(String[] players) {
         TeamEntryState state = viewModel.getState();
         TeamEntryInputData inputData =
-                new TeamEntryInputData(state.getPlayers(), state.getPlayerIds());
+                new TeamEntryInputData(state.getPlayers(), state.getPlayerIds(), state.getBudget());
 
         teamEntryUseCaseInteractor.execute(inputData);
     }

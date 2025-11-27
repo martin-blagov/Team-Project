@@ -5,6 +5,7 @@ public class TeamEntryState {
     private String[] players;
     private String errorMessage;
     private String successMessage;
+    private String budget;
 
     /**
      * Initializes the state with empty player fields.
@@ -26,6 +27,8 @@ public class TeamEntryState {
 
     public int[] getPlayerIds() { return playerIds; }
 
+    public String getBudget() { return budget; }
+
     public void setPlayers(String[] players) { this.players = players; }
 
     public void setErrorMessage(String errorMessage) { this.errorMessage = errorMessage; }
@@ -33,6 +36,8 @@ public class TeamEntryState {
     public void setSuccessMessage(String successMessage) { this.successMessage = successMessage; }
 
     public void setPlayerIds(int[] playerIds) { this.playerIds = playerIds; }
+
+    public void setBudget(String budget) { this.budget = budget; }
 
     @Override
     public String toString() {

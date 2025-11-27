@@ -30,6 +30,22 @@ public class TeamEntryPresenter implements TeamEntryOutputBoundary {
     }
 
     @Override
+    public void prepareSavedTeamView(String[] names, int[] ids) {
+        TeamEntryState state = teamEntryViewModel.getState();
+
+        state.setPlayers(names);
+        state.setPlayerIds(ids);
+
+        teamEntryViewModel.setState(state);
+        teamEntryViewModel.firePropertyChange();
+
+        // switch to team entry view
+        viewManagerModel.setState(teamEntryViewModel.getViewName());
+        viewManagerModel.firePropertyChange();
+    }
+
+
+    @Override
     public void prepareSuccessView(TeamEntryOutputData outputData) {
         TeamEntryState state = teamEntryViewModel.getState();
         state.setSuccessMessage("Your team was successfully submitted! You may now return to the menu.");

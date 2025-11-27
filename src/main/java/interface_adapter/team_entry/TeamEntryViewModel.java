@@ -28,8 +28,10 @@ public class TeamEntryViewModel extends ViewModel<TeamEntryState> {
             "Defender 4",
             "Defender 5",
             "Goalkeeper 1",
-            "Goalkeeper 2"
+            "Goalkeeper 2",
     };
+
+    private final String budgetLabel = "Remaining Budget: ";
 
     public TeamEntryViewModel() {
         super("team entry");
@@ -51,4 +53,7 @@ public class TeamEntryViewModel extends ViewModel<TeamEntryState> {
     public String[] getPlayerLabels() {
         return playerLabels;
     }
+
+    public String getBudgetLabel() { return budgetLabel; }
+
 }
