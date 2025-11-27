@@ -197,5 +197,4 @@ public class TestDisplayPlayersInteractor implements TestDisplayPlayersInputBoun
             presenter.presentFailure(e.getMessage());
         }
     }
-
 }
