@@ -2,7 +2,7 @@ package data_access;
 
 import entity.Player;
 import entity.Team;
-import use_case.TeamDataAccessInterface;
+import use_case.team_entry.TeamDataAccessInterface;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -18,6 +18,7 @@ import java.beans.PropertyChangeListener;
 
 /**
  * The View for the Team Entry Page of the Premier League Fantasy App
+ * NOTES - add presetner + view model for test scrollable list view v2 in constructor, extend property change listener, replace current panel with code that displays panel in test scrollable list view v2
  */
 public class TeamEntryView extends JPanel implements PropertyChangeListener {
 
