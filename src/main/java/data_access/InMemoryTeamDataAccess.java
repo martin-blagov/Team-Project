@@ -1,7 +1,7 @@
 package data_access;
 
 import entity.Team;
-import use_case.TeamDataAccessInterface;
+import use_case.team_entry.TeamDataAccessInterface;
 
 public class InMemoryTeamDataAccess implements TeamDataAccessInterface {
 
