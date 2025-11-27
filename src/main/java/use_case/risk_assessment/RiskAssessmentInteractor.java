@@ -1,5 +1,4 @@
 package use_case.risk_assessment;
-
 import entity.Team;
 import entity.Player;
 
@@ -7,15 +6,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import use_case.risk_assessment.risk.MinutesDeclineRule;
+import use_case.risk_assessment.risk.ValueRiskRule;
+import use_case.risk_assessment.risk.FormDropRule;
+import use_case.risk_assessment.risk.PredictedPointsDeclineRule;
+import use_case.risk_assessment.risk.PlayerRisk;
+import use_case.risk_assessment.risk.RiskRule;
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Interactor for the Risk Assessment use case.
+ * Computes risk evaluations for each player using RiskRule strategies.
+ */
 public class RiskAssessmentInteractor implements RiskAssessmentInputBoundary {
 
     private final RiskAssessmentOutputBoundary presenter;
-    private final Map<Integer, Map<String, Double>> coefficientMap;
 
-    public RiskAssessmentInteractor(RiskAssessmentOutputBoundary presenter,
-                                    Map<Integer, Map<String, Double>> coefficientMap) {
+    public RiskAssessmentInteractor(RiskAssessmentOutputBoundary presenter) {
         this.presenter = presenter;
-        this.coefficientMap = coefficientMap;
     }
 
     @Override
@@ -23,43 +34,36 @@ public class RiskAssessmentInteractor implements RiskAssessmentInputBoundary {
 
         Team team = inputData.getCurrentTeam();
 
-        // CASE 1: No team selected → return empty list
+        // Handle case: no team
         if (team == null || team.getPlayers() == null || team.getPlayers().isEmpty()) {
-            List<String> underperformingPlayers = new ArrayList<>();
-            RiskAssessmentOutputData outputData = new RiskAssessmentOutputData(underperformingPlayers);
-            presenter.presentRiskPlayers(outputData);
-            return outputData;
+            presenter.presentFailView("No team data available for risk assessment.");
         }
+        else {
+            // 1. Construct list of risk rules (Strategy pattern)
+            List<RiskRule> rules = List.of(
+                    new MinutesDeclineRule(),
+                    new FormDropRule(),
+                    new ValueRiskRule(),
+                    new PredictedPointsDeclineRule()
+            );
 
-        List<String> underperformingPlayers = new ArrayList<>();
+            // 2. Evaluate each player and create PlayerRisk profiles
+            List<PlayerRisk> riskProfiles = new ArrayList<>();
 
-        // Iterate through each player in the team
-        for (Player p : team.getPlayers()) {
-
-            // 1. Predict upcoming points using the player's position
-            int pos = p.getElementType();  // 1=GK, 2=DEF, 3=MID, 4=FWD
-            Map<String, Double> coeffs = coefficientMap.get(pos);
-
-            if (coeffs == null) {
-                continue; // no coefficients for this position, skip
+            for (Player player : team.getPlayers()) {
+                PlayerRisk profile = new PlayerRisk(player, rules);
+                riskProfiles.add(profile);
             }
 
-            p.calculatePredictedPoints(coeffs);
-            double predicted = p.getPredictedPoints();
+            // 3. Sort players by total risk count (highest → lowest)
+            riskProfiles.sort((a, b) -> b.getRiskCount() - a.getRiskCount());
 
-            // 2. Get actual recent performance (average points last 3 GWs)
-            double actual = p.getLast3Stat("total_points");
+            // 4. Package into OutputData
+            RiskAssessmentOutputData outputData = new RiskAssessmentOutputData(riskProfiles);
 
-            // 3. Underperformance rule
-            if (actual < predicted * 0.7) {
-                underperformingPlayers.add(p.getWebName());
-            }
+            // 5. Send to presenter
+            presenter.presentRiskResults(outputData);
         }
-
-        // Wrap output + call presenter
-        RiskAssessmentOutputData outputData = new RiskAssessmentOutputData(underperformingPlayers);
-        presenter.presentRiskPlayers(outputData);
-        return outputData;
     }
-}
 
+}

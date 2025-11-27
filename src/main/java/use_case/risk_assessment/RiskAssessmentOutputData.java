@@ -1,15 +1,17 @@
 package use_case.risk_assessment;
 
+import use_case.risk_assessment.risk.PlayerRisk;
+
 import java.util.List;
 
 public class RiskAssessmentOutputData {
-    private final List<String> underperformingPlayers;
+    private final List<PlayerRisk> playerRisks;
 
-    public RiskAssessmentOutputData(List<String> riskItems) {
-        this.underperformingPlayers = riskItems;
+    public RiskAssessmentOutputData(List<PlayerRisk> riskItems) {
+        this.playerRisks = riskItems;
     }
 
-    public List<String> getUnderperformingPlayers() {
-        return underperformingPlayers;
+    public List<PlayerRisk> getPlayerRisks() {
+        return playerRisks;
     }
 }

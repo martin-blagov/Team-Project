@@ -6,8 +6,11 @@ import use_case.risk_assessment.RiskAssessmentOutputData;
 public class RiskAssessmentPresenter implements RiskAssessmentOutputBoundary {
 
     @Override
-    public void presentRiskPlayers(RiskAssessmentOutputData outputData) {
-        // Minimal placeholder: print to console
-        System.out.println("Underperforming players: " + outputData.getUnderperformingPlayers());
+    public void presentRiskResults(RiskAssessmentOutputData outputData) {
+    }
+
+    @Override
+    public void presentFailView(String s) {
+
     }
 }

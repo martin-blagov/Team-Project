@@ -8,8 +8,9 @@ public interface RiskRule {
      *
      * @param player The player to be evaluated.
      * @return true if the player meets the risk criteria defined by the rule, false otherwise.
-     * @return the name of the rule.
+     *
      */
-    String getRuleName();
+
     boolean evaluate(Player player);
+    String getRuleName();
 }
