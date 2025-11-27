@@ -1,7 +1,6 @@
 package app;
 
 import data_access.InMemoryPlayerDataAccess;
-import entity.Player;
 import data_access.*;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.display_individual_stat.DisplayIndividualStatController;
@@ -19,7 +18,7 @@ import interface_adapter.team_view.TeamViewModel;
 import interface_adapter.best_team.BestTeamController;
 import interface_adapter.best_team.BestTeamPresenter;
 import interface_adapter.best_team.BestTeamViewModel;
-import use_case.TeamDataAccessInterface;
+import use_case.team_entry.TeamDataAccessInterface;
 import use_case.display_individual_stat.DisplayIndividualStatInputBoundary;
 import use_case.display_individual_stat.DisplayIndividualStatInteractor;
 import use_case.display_individual_stat.DisplayIndividualStatOutputBoundary;
@@ -28,8 +27,6 @@ import use_case.team_entry.TeamEntryInteractor;
 import use_case.starting_lineup.StartingLineupInputBoundary;
 import use_case.starting_lineup.StartingLineupInteractor;
 import use_case.starting_lineup.StartingLineupOutputBoundary;
-import use_case.PlayerDataAccessInterface;
-import use_case.best_team.BestTeamInputBoundary;
 import use_case.best_team.BestTeamInteractor;
 import view.*;
 
@@ -55,7 +52,6 @@ import view.TestScrollableListViewV2;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 
 public class AppBuilder {
     private final JPanel cardPanel = new JPanel();
