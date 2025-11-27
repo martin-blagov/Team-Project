@@ -14,7 +14,7 @@ public class Main {
                 .addBestTeamView()
                 .addDisplayIndividualStatUseCase()
                 .addTeamEntryViewUseCase()
-                .addTestScrollableListView()  // TODO REMOVE
+                .addTestDisplayPlayersUseCase()
                 .addStartingLineupUseCase()
                 .addHomeUseCase()
                 .addBestTeamUseCase()

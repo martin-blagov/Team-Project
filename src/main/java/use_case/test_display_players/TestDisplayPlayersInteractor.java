@@ -34,10 +34,10 @@ public class TestDisplayPlayersInteractor implements TestDisplayPlayersInputBoun
      */
     public TestDisplayPlayersInteractor(
             PlayerDataAccessInterface playerDataAccess,
-            TestDisplayPlayersOutputBoundary presenter, PlayerDataAccessInterface playerDataAccess1, TestDisplayPlayersOutputBoundary presenter1) {
+            TestDisplayPlayersOutputBoundary presenter) {
 
-        this.playerDataAccess = playerDataAccess1;
-        this.presenter = presenter1;
+        this.playerDataAccess = playerDataAccess;
+        this.presenter = presenter;
     }
 
     /**

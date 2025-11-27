@@ -44,7 +44,14 @@ import use_case.initialise_predictions.ModelCoefficientDataAccessInterface;
 import view.InitialisePredictionsView;
 
 //TODO REMOVE
-import view.TestScrollableListView;
+import interface_adapter.test_display_players.TestDisplayPlayersController;
+import interface_adapter.test_display_players.TestDisplayPlayersPresenter;
+import interface_adapter.test_display_players.TestDisplayPlayersViewModel;
+
+import use_case.test_display_players.TestDisplayPlayersInteractor;
+
+import view.TestScrollableListViewV2;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -82,8 +89,6 @@ public class AppBuilder {
     private TeamDataAccessInterface teamDataAccess = new FileTeamDataAccessObject("team.json");;
 
 
-    //TODO REMOVE
-    private TestScrollableListView testScrollableListView;
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -93,10 +98,41 @@ public class AppBuilder {
         return playerDataAccess;
     }
 
-    //TODO REMOVE
-    public AppBuilder addTestScrollableListView() {
-        testScrollableListView = new TestScrollableListView(playerDataAccess, viewManagerModel);
-        cardPanel.add(testScrollableListView, testScrollableListView.getViewName());
+    // TODO remove
+
+    private TestScrollableListViewV2 testScrollableListViewV2;
+    private TestDisplayPlayersViewModel testDisplayPlayersViewModel;
+    private TestDisplayPlayersController testDisplayPlayersController;
+
+    public AppBuilder addTestDisplayPlayersUseCase() {
+        // 1. ViewModel
+        testDisplayPlayersViewModel = new TestDisplayPlayersViewModel();
+
+        // 2. View
+        testScrollableListViewV2 = new TestScrollableListViewV2(
+                testDisplayPlayersViewModel,
+                viewManagerModel
+        );
+        cardPanel.add(testScrollableListViewV2, testScrollableListViewV2.getViewName());
+
+        // 3. Presenter
+        TestDisplayPlayersPresenter presenter =
+                new TestDisplayPlayersPresenter(testDisplayPlayersViewModel);
+
+        // 4. Interactor
+        TestDisplayPlayersInteractor interactor =
+                new TestDisplayPlayersInteractor(
+                        playerDataAccess,  // Already exists
+                        presenter
+                );
+
+        // 5. Controller
+        testDisplayPlayersController =
+                new TestDisplayPlayersController(interactor);
+
+        // 6. Wire Controller to View
+        testScrollableListViewV2.setController(testDisplayPlayersController);
+
         return this;
     }
 
