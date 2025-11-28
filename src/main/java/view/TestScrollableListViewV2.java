@@ -94,6 +94,34 @@ public class TestScrollableListViewV2 extends JPanel implements PropertyChangeLi
             }
         });
 
+        // NEW: Add player selection listener for testing
+        scrollableListView.setPlayerSelectionListener(selectedPlayer -> {
+            // Show a simple message with player info
+            String message = String.format(
+                    "Selected: %s\n" +
+                            "Team: %s\n" +
+                            "Position: %s\n" +
+                            "Price: £%.1fm\n" +
+                            "Predicted Points: %.2f",
+                    selectedPlayer.getWebName(),
+                    selectedPlayer.getTeamName(),
+                    selectedPlayer.getPosition(),
+                    selectedPlayer.getNowCost(),
+                    selectedPlayer.getPredictedPoints() != null ? selectedPlayer.getPredictedPoints() : 0.0
+            );
+
+            // Update status label
+            statusLabel.setText("Selected: " + selectedPlayer.getWebName());
+
+            // Show popup dialog
+            JOptionPane.showMessageDialog(
+                    this,
+                    message,
+                    "Player Selected",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        });
+
         // Setting up how the list is displayed
         scrollableListView.setDimensions(550,500);
         JPanel wrapperPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
