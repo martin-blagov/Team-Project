@@ -1,13 +1,19 @@
 package use_case.team_entry;
 
 public class TeamEntryInputData {
-    private final String[] playerNames;
-    private int[] playerIds;
-    private String remainingBudget;
 
-    public TeamEntryInputData(String[] playerNames, int[] ids, String remainingBudget) {
+    private final String[] playerNames;
+    private final int[] playerIds;
+    private final String[] playerPositions;
+    private final String remainingBudget;
+
+    public TeamEntryInputData(String[] playerNames,
+                              int[] playerIds,
+                              String[] playerPositions,
+                              String remainingBudget) {
         this.playerNames = playerNames;
-        this.playerIds = ids;
+        this.playerIds = playerIds;
+        this.playerPositions = playerPositions;
         this.remainingBudget = remainingBudget;
     }
 
@@ -15,9 +21,15 @@ public class TeamEntryInputData {
         return playerNames;
     }
 
-    public String getRemainingBudet() { return remainingBudget; }
-
     public int[] getPlayerIds() {
         return playerIds;
+    }
+
+    public String[] getPlayerPositions() {
+        return playerPositions;
+    }
+
+    public String getRemainingBudet() {
+        return remainingBudget;
     }
 }

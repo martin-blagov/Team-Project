@@ -198,7 +198,7 @@ public class AppBuilder {
 
     public AppBuilder addTeamEntryView() {
         teamEntryViewModel = new TeamEntryViewModel();
-        teamEntryView = new TeamEntryView(teamEntryViewModel, playerDataAccess);
+        teamEntryView = new TeamEntryView(teamEntryViewModel, testDisplayPlayersViewModel);
         cardPanel.add(teamEntryView, teamEntryView.getViewName());
         return this;
     }
@@ -249,11 +249,13 @@ public class AppBuilder {
                 new TeamEntryPresenter(viewManagerModel, teamEntryViewModel, homeViewModel);
 
         final TeamEntryInteractor interactor =
-                new TeamEntryInteractor(presenter, playerDataAccess, teamDataAccess);
+                new TeamEntryInteractor(presenter, teamDataAccess);
 
         teamEntryController = new TeamEntryController(interactor, teamEntryViewModel);
 
         teamEntryView.setTeamEntryController(teamEntryController);
+        teamEntryView.setPlayerListController(testDisplayPlayersController);
+
         return this;
     }
 

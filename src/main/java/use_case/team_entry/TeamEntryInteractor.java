@@ -2,77 +2,92 @@ package use_case.team_entry;
 
 import entity.Player;
 import entity.Team;
-import use_case.PlayerDataAccessInterface;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class TeamEntryInteractor implements TeamEntryInputBoundary {
 
     private final TeamEntryOutputBoundary presenter;
-    private final PlayerDataAccessInterface dataAccess;
     private final TeamDataAccessInterface teamDataAccess;
 
-    public TeamEntryInteractor(TeamEntryOutputBoundary presenter, PlayerDataAccessInterface dataAccess, TeamDataAccessInterface teamDataAccess) {
+    public TeamEntryInteractor(
+            TeamEntryOutputBoundary presenter,
+            TeamDataAccessInterface teamDataAccess
+    ) {
         this.presenter = presenter;
-        this.dataAccess = dataAccess;
         this.teamDataAccess = teamDataAccess;
     }
 
+    @Override
     public void execute(TeamEntryInputData inputData) {
 
         String[] players = inputData.getPlayerNames();
         int[] ids = inputData.getPlayerIds();
+        String[] positions = inputData.getPlayerPositions();
         String budget = inputData.getRemainingBudet();
 
         boolean noEmptyFields = validateNoEmptyFields(players);
-        boolean playerExists = validatePlayersExist(ids);
-        boolean isDuplicate = validateNonDuplicate(inputData.getPlayerIds());
+        boolean isDuplicate = validateNonDuplicate(ids);
+        boolean validBudget = validateBudget(budget);
 
         List<Player> enteredPlayerObjects = new ArrayList<>();
-
-        // Create arraylist of player objects that match entered players
         for (int i = 0; i < ids.length; i++) {
-            int actualId = ids[i];
-            Player p = dataAccess.getPlayerById(actualId);
-            enteredPlayerObjects.add(p);
-        }
-
-        boolean validBudget = validateBudget(budget);
-        boolean correctPositions = validatePositions(enteredPlayerObjects);
-
-        // Order of checks: empty fields, exists, duplicate, positions, budget
-        if (!noEmptyFields) {
-            presenter.prepareFailView("Please fill in all 15 player fields before confirming your team.");
-            return;
-        } else if (!playerExists) {
-            presenter.prepareFailView("One or more entered players do not exist. Please check spelling and try again.");
-            return;
-        } else if (isDuplicate) {
-            presenter.prepareFailView("You have entered duplicate players. Please ensure each player appears only once.");
-            return;
-        } else if (!correctPositions) {
-            presenter.prepareFailView("One or more players are not in the correct position slots. Please check the lineup format.");
-            return;
-        } else if (!validBudget) {
-            presenter.prepareFailView("The remaining budget is not a valid number. Please try again.");
-            return;
-        } else {
-            // New Team object
-            Team confirmedTeam = new Team(
-                    enteredPlayerObjects,
-                    Float.parseFloat(budget), // get player's entered remaining budget
-                    true
+            enteredPlayerObjects.add(
+                    new Player(
+                            ids[i],
+                            players[i],
+                            -1,
+                            "a",
+                            0.0,
+                            mapPositionToInt(positions[i]),
+                            "ClubX",
+                            new HashMap<>(),
+                            new HashMap<>(),
+                            new HashMap<>(),
+                            new HashMap<>()
+                    )
             );
+        }
 
-            // Save it permanently
-            teamDataAccess.saveTeam(confirmedTeam);
+        boolean correctPositions =
+                validatePositions(enteredPlayerObjects);
 
-            presenter.prepareSuccessView(new TeamEntryOutputData(players));
+        if (!noEmptyFields) {
+            presenter.prepareFailView(
+                    "Please fill in all 15 player fields before confirming your team."
+            );
             return;
         }
+
+        if (isDuplicate) {
+            presenter.prepareFailView(
+                    "You have entered duplicate players. Please ensure each player appears only once."
+            );
+            return;
+        }
+
+        if (!correctPositions) {
+            presenter.prepareFailView(
+                    "One or more players are not in the correct position slots. Please check the lineup format."
+            );
+            return;
+        }
+
+        if (!validBudget) { presenter.prepareFailView(
+                    "The remaining budget is not a valid number. Please try again."
+            );
+            return;
+        }
+
+        Team confirmedTeam = new Team(
+                enteredPlayerObjects,
+                Float.parseFloat(budget),
+                true
+        );
+
+        teamDataAccess.saveTeam(confirmedTeam);
+
+        presenter.prepareSuccessView(new TeamEntryOutputData(players));
     }
 
     @Override
@@ -91,12 +106,10 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
             }
 
             presenter.prepareSavedTeamView(names, ids);
-        }
-        else {
-            presenter.prepareOpenPageView(); // empty view as usual
+        } else {
+            presenter.prepareOpenPageView();
         }
     }
-
 
     @Override
     public void switchToHomePage() {
@@ -108,14 +121,6 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
             if (name == null || name.trim().isEmpty()) {
                 return false;
             }
-        }
-        return true;
-    }
-
-    private boolean validatePlayersExist(int[] ids) {
-        for (int id : ids) {
-            if (id == -1) return false; // no player selected
-            if (dataAccess.getPlayerById(id) == null) return false; // invalid ID
         }
         return true;
     }
@@ -141,21 +146,27 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
                 "goalkeeper", "goalkeeper"
         };
 
+        // Safety check
+        if (enteredPlayerObjects.size() != requiredPositions.length) {
+            return false;
+        }
+
         for (int i = 0; i < enteredPlayerObjects.size(); i++) {
             Player p = enteredPlayerObjects.get(i);
             String required = requiredPositions[i];
 
-            if (p == null) {
+            if (p == null || p.getPosition() == null) {
                 return false;
             }
 
-            String actual = p.getPosition(); // already "forward" / "defender" / etc.
+            String actual = p.getPosition();
 
             if (!actual.equalsIgnoreCase(required)) {
-                return false; // wrong position in this slot
+                return false;
             }
         }
-        return true; // all positions correct
+
+        return true;
     }
 
     private boolean validateBudget(String remainingBudget) {
@@ -166,4 +177,26 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
             return false;
         }
     }
+
+    private int mapPositionToInt(String position) {
+        if (position == null) {
+            return -1;
+        }
+
+        String p = position.toLowerCase();
+
+        if (p.equals("goalkeeper")) {
+            return 1;
+        } else if (p.equals("defender")) {
+            return 2;
+        } else if (p.equals("midfielder")) {
+            return 3;
+        } else if (p.equals("forward")) {
+            return 4;
+        } else {
+            return -1;
+        }
+    }
+
+
 }

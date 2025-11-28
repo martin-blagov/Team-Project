@@ -35,6 +35,8 @@ public class TeamEntryPresenter implements TeamEntryOutputBoundary {
 
         state.setPlayers(names);
         state.setPlayerIds(ids);
+        state.setErrorMessage(null);
+        state.setSuccessMessage(null);
 
         teamEntryViewModel.setState(state);
         teamEntryViewModel.firePropertyChange();

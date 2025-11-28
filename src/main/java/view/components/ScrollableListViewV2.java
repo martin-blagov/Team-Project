@@ -39,6 +39,7 @@ public class ScrollableListViewV2 extends JPanel {
 
     // Callback for when filters change (using Java's Consumer)
     private Consumer<FilterCriteria> filterChangeCallback;
+    private Consumer<Player> playerSelectedCallback;
 
     /**
      * Simple data class to hold filter criteria.
@@ -133,6 +134,16 @@ public class ScrollableListViewV2 extends JPanel {
         playerList.setFixedCellWidth(550);
         playerList.setFixedCellHeight(20);
         playerList.setVisibleRowCount(30);
+
+        playerList.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && playerSelectedCallback != null) {
+                int index = playerList.getSelectedIndex();
+                if (index >= 0 && index < allPlayers.size()) {
+                    Player selectedPlayer = allPlayers.get(index);
+                    playerSelectedCallback.accept(selectedPlayer);
+                }
+            }
+        });
 
         // Make it scrollable with border
         scrollPane = new JScrollPane(playerList);
@@ -235,6 +246,10 @@ public class ScrollableListViewV2 extends JPanel {
 
         // Also apply UI-level filtering for instant feedback
         filterAndDisplayPlayers();
+    }
+
+    public void setOnPlayerSelected(Consumer<Player> callback) {
+        this.playerSelectedCallback = callback;
     }
 
     /**
