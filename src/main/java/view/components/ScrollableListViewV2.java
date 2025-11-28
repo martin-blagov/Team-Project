@@ -39,7 +39,7 @@ public class ScrollableListViewV2 extends JPanel {
 
     // Callback for when filters change (using Java's Consumer)
     private Consumer<FilterCriteria> filterChangeCallback;
-    private Consumer<Player> playerSelectedCallback;
+    private Consumer<Player> playerSelectionListener;
 
     /**
      * Simple data class to hold filter criteria.
@@ -135,16 +135,6 @@ public class ScrollableListViewV2 extends JPanel {
         playerList.setFixedCellHeight(20);
         playerList.setVisibleRowCount(30);
 
-        playerList.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting() && playerSelectedCallback != null) {
-                int index = playerList.getSelectedIndex();
-                if (index >= 0 && index < allPlayers.size()) {
-                    Player selectedPlayer = allPlayers.get(index);
-                    playerSelectedCallback.accept(selectedPlayer);
-                }
-            }
-        });
-
         // Make it scrollable with border
         scrollPane = new JScrollPane(playerList);
         scrollPane.setPreferredSize(new Dimension(550, 600));
@@ -162,6 +152,12 @@ public class ScrollableListViewV2 extends JPanel {
             @Override
             public void componentResized(java.awt. event.ComponentEvent e) {
                 SwingUtilities.invokeLater(() -> scrollToLeft());
+            }
+        });
+
+        playerList.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && playerList.getSelectedIndex() != -1) {
+                handlePlayerSelection();
             }
         });
     }
@@ -246,10 +242,6 @@ public class ScrollableListViewV2 extends JPanel {
 
         // Also apply UI-level filtering for instant feedback
         filterAndDisplayPlayers();
-    }
-
-    public void setOnPlayerSelected(Consumer<Player> callback) {
-        this.playerSelectedCallback = callback;
     }
 
     /**
@@ -360,4 +352,41 @@ public class ScrollableListViewV2 extends JPanel {
         scrollPane. setPreferredSize(new Dimension(width, height));
         setPreferredSize(new Dimension(width, height + 100));
     }
+
+    // NEW: Method to handle when a player is clicked
+    private void handlePlayerSelection() {
+        int selectedIndex = playerList.getSelectedIndex();
+        if (selectedIndex == -1 || playerSelectionListener == null) {
+            return;
+        }
+
+        // Get the player name from the selected line
+        String selectedLine = listModel.get(selectedIndex);
+
+        // Extract player name (first 20 characters of formatted string)
+        String playerName = selectedLine.substring(0, 20).trim();
+
+        // Find the actual Player object from allPlayers
+        Player selectedPlayer = allPlayers.stream()
+                .filter(p -> p.getWebName().equals(playerName))
+                .findFirst()
+                .orElse(null);
+
+        // Notify the parent view
+        if (selectedPlayer != null && playerSelectionListener != null) {
+            playerSelectionListener.accept(selectedPlayer);
+        }
+    }
+
+    // NEW: Setter for the selection listener
+    /**
+     * Set a listener to be called when a player is selected from the list.
+     *
+     * @param listener Consumer that receives the selected Player
+     */
+    public void setPlayerSelectionListener(Consumer<Player> listener) {
+        this.playerSelectionListener = listener;
+    }
+
+
 }
