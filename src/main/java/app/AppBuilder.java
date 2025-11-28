@@ -18,7 +18,7 @@ import interface_adapter.team_view.TeamViewModel;
 import interface_adapter.best_team.BestTeamController;
 import interface_adapter.best_team.BestTeamPresenter;
 import interface_adapter.best_team.BestTeamViewModel;
-import use_case.team_entry.TeamDataAccessInterface;
+import use_case.TeamDataAccessInterface;
 import use_case.display_individual_stat.DisplayIndividualStatInputBoundary;
 import use_case.display_individual_stat.DisplayIndividualStatInteractor;
 import use_case.display_individual_stat.DisplayIndividualStatOutputBoundary;

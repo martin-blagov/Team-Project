@@ -2,7 +2,7 @@ package use_case.starting_lineup;
 
 import entity.Player;
 import entity.Team;
-import use_case.team_entry.TeamDataAccessInterface;
+import use_case.TeamDataAccessInterface;
 
 import java.util.ArrayList;
 import java.util.Comparator;

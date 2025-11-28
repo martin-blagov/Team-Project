@@ -4,7 +4,7 @@ import entity.Player;
 import entity.Team;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import use_case.team_entry.TeamDataAccessInterface;
+import use_case.TeamDataAccessInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
