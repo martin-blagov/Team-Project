@@ -5,4 +5,5 @@ package use_case.risk_assessment;
  * through TeamDataAccessInterface.
  */
 public class RiskAssessmentInputData {
+
 }

@@ -8,6 +8,9 @@ import interface_adapter.display_individual_stat.DisplayIndividualStatPresenter;
 import interface_adapter.display_individual_stat.DisplayIndividualStatViewModel;
 import interface_adapter.home.HomeController;
 import interface_adapter.home.HomeViewModel;
+import interface_adapter.risk_assessment.RiskAssessmentController;
+import interface_adapter.risk_assessment.RiskAssessmentPresenter;
+import interface_adapter.risk_assessment.RiskAssessmentViewModel;
 import interface_adapter.team_entry.TeamEntryController;
 import interface_adapter.team_entry.TeamEntryPresenter;
 import interface_adapter.team_entry.TeamEntryViewModel;
@@ -22,6 +25,7 @@ import use_case.team_entry.TeamDataAccessInterface;
 import use_case.display_individual_stat.DisplayIndividualStatInputBoundary;
 import use_case.display_individual_stat.DisplayIndividualStatInteractor;
 import use_case.display_individual_stat.DisplayIndividualStatOutputBoundary;
+import use_case.risk_assessment.RiskAssessmentInteractor;
 import use_case.team_entry.TeamEntryInputBoundary;
 import use_case.team_entry.TeamEntryInteractor;
 import use_case.starting_lineup.StartingLineupInputBoundary;
@@ -89,6 +93,10 @@ public class AppBuilder {
     private InitialisePredictionsController initController;
     private InMemoryPlayerDataAccess playerDataAccess = new InMemoryPlayerDataAccess();
     private TeamDataAccessInterface teamDataAccess = new FileTeamDataAccessObject("team.json");;
+
+    private RiskAssessmentViewModel riskAssessmentViewModel;
+    private RiskAssessmentView riskAssessmentView;
+    private RiskAssessmentController riskAssessmentController;
 
 
 
@@ -217,6 +225,27 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addRiskAssessmentView() {
+        riskAssessmentViewModel = new RiskAssessmentViewModel();
+        riskAssessmentView = new RiskAssessmentView(riskAssessmentViewModel);
+        riskAssessmentView.setViewManagerModel(viewManagerModel);
+        cardPanel.add(riskAssessmentView, riskAssessmentView.getViewName());
+        return this;
+    }
+
+    public AppBuilder addRiskAssessmentUseCase() {
+
+        RiskAssessmentPresenter presenter =
+                new RiskAssessmentPresenter(riskAssessmentViewModel, viewManagerModel);
+
+        // Interactor depends on TeamDataAccessInterface
+        RiskAssessmentInteractor interactor =
+                new RiskAssessmentInteractor(teamDataAccess, presenter);
+
+        riskAssessmentController = new RiskAssessmentController(interactor);
+
+        return this;
+    }
 
     public AppBuilder addHomePageView() {
         homeViewModel = new HomeViewModel();
@@ -232,6 +261,7 @@ public class AppBuilder {
                 teamEntryInputBoundary,
                 startingLineupController,
                 displayIndividualStatController,
+                riskAssessmentController,
                 viewManagerModel
         );
         homePageView.setHomeController(homeController);
@@ -285,7 +315,7 @@ public class AppBuilder {
         });
         return this;
     }
-  
+
     public AppBuilder addTeamEntryViewUseCase() {
         final TeamEntryPresenter presenter =
                 new TeamEntryPresenter(viewManagerModel, teamEntryViewModel, homeViewModel);

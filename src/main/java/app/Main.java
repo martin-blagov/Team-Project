@@ -12,11 +12,13 @@ public class Main {
                 .addDisplayIndividualStatsView()
                 .addStartingLineupView()
                 .addBestTeamView()
+                .addRiskAssessmentView()
                 .addDisplayIndividualStatUseCase()
                 .addTeamEntryViewUseCase()
                 .addTestDisplayPlayersUseCase() //  todo remove
                 .addTestTeamVisualizationUseCase() // todo remove
                 .addStartingLineupUseCase()
+                .addRiskAssessmentUseCase()
                 .addHomeUseCase()
                 .addBestTeamUseCase()
                 .build();
