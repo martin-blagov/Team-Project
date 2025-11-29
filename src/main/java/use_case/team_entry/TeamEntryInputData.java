@@ -29,7 +29,7 @@ public class TeamEntryInputData {
         return playerPositions;
     }
 
-    public String getRemainingBudet() {
+    public String getRemainingBudget() {
         return remainingBudget;
     }
 }

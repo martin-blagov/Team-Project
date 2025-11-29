@@ -24,7 +24,7 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
         String[] players = inputData.getPlayerNames();
         int[] ids = inputData.getPlayerIds();
         String[] positions = inputData.getPlayerPositions();
-        String budget = inputData.getRemainingBudet();
+        String budget = inputData.getRemainingBudget();
 
         boolean noEmptyFields = validateNoEmptyFields(players);
         boolean isDuplicate = validateNonDuplicate(ids);
@@ -171,7 +171,7 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
 
     private boolean validateBudget(String remainingBudget) {
         try {
-            Integer.parseInt(remainingBudget);
+            Float.parseFloat(remainingBudget);
             return true;
         } catch (NumberFormatException e) {
             return false;

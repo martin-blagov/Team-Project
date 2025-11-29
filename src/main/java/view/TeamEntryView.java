@@ -247,9 +247,6 @@ public class TeamEntryView extends JPanel implements PropertyChangeListener {
         teamEntryViewModel.firePropertyChange();
     }
 
-    // =========================
-    // PROPERTY CHANGE
-    // =========================
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
 

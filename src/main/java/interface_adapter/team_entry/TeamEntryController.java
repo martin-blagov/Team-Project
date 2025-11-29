@@ -16,7 +16,6 @@ public class TeamEntryController {
 
     /**
      * Executes the Confirm Team Entry Use Case.
-     * NOW ACCEPTS POSITIONS (Option 2)
      */
     public void execute(String[] names,
                         int[] ids,
