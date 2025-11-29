@@ -44,10 +44,16 @@ import view.InitialisePredictionsView;
 import interface_adapter.test_display_players.TestDisplayPlayersController;
 import interface_adapter.test_display_players.TestDisplayPlayersPresenter;
 import interface_adapter.test_display_players.TestDisplayPlayersViewModel;
-
 import use_case.test_display_players.TestDisplayPlayersInteractor;
 
 import view.TestScrollableListViewV2;
+
+import interface_adapter.display_team. DisplayTeamController;
+import interface_adapter.display_team.DisplayTeamPresenter;
+import interface_adapter.display_team.DisplayTeamViewModel;
+import use_case.display_team.DisplayTeamInputBoundary;
+import use_case. display_team.DisplayTeamInteractor;
+import view.TestTeamVisualizationView;
 
 
 import javax.swing.*;
@@ -100,6 +106,12 @@ public class AppBuilder {
     private TestDisplayPlayersViewModel testDisplayPlayersViewModel;
     private TestDisplayPlayersController testDisplayPlayersController;
 
+    // Add with the other view/controller declarations
+    private TestTeamVisualizationView testTeamVisualizationView;
+    private DisplayTeamViewModel displayTeamViewModel;
+    private DisplayTeamController displayTeamController;
+
+    // TODO REMOVE
     public AppBuilder addTestDisplayPlayersUseCase() {
         // 1. ViewModel
         testDisplayPlayersViewModel = new TestDisplayPlayersViewModel();
@@ -128,6 +140,36 @@ public class AppBuilder {
 
         // 6. Wire Controller to View
         testScrollableListViewV2.setController(testDisplayPlayersController);
+
+        return this;
+    }
+
+    // TODO REMOVE
+    public AppBuilder addTestTeamVisualizationUseCase() {
+        // 1. ViewModel
+        displayTeamViewModel = new DisplayTeamViewModel();
+
+        // 2.  View
+        testTeamVisualizationView = new TestTeamVisualizationView(
+                displayTeamViewModel,
+                viewManagerModel
+        );
+        cardPanel.add(testTeamVisualizationView, testTeamVisualizationView.getViewName());
+
+        // 3.  Presenter
+        DisplayTeamPresenter presenter = new DisplayTeamPresenter(displayTeamViewModel);
+
+        // 4.  Interactor (uses shared teamDataAccess)
+        DisplayTeamInputBoundary interactor = new DisplayTeamInteractor(
+                teamDataAccess,  // Already exists - shared with other use cases
+                presenter
+        );
+
+        // 5. Controller
+        displayTeamController = new DisplayTeamController(interactor);
+
+        // 6. Wire Controller to View
+        testTeamVisualizationView.setController(displayTeamController);
 
         return this;
     }
