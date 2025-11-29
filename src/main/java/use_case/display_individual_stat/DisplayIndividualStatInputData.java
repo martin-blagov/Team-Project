@@ -1,7 +1,5 @@
 package use_case.display_individual_stat;
 
-import entity.Player;
-
 public class DisplayIndividualStatInputData {
     private final int playerID;
     private final String filterOption;

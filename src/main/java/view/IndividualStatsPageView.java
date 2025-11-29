@@ -22,7 +22,6 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
     private DisplayIndividualStatController displayIndividualStatController;
     private final ScrollableListView scrollableListView;
 
-
     final JLabel nameLabel = new JLabel();
     final JLabel positionLabel = new JLabel();
     final JLabel teamLabel = new JLabel();
@@ -37,13 +36,13 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
 
     public IndividualStatsPageView(DisplayIndividualStatViewModel viewModel, PlayerDataAccessInterface playerDataAccess,
                                    ViewManagerModel viewManagerModel) {
+
         this.viewModel = viewModel;
         this.viewManagerModel = viewManagerModel;
         viewModel.addPropertyChangeListener(this);
 
         final JPanel statsPanel = new JPanel();
         statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
-        filterComboBox.setSelectedItem(filterOptions[0]); // Total stats is displayed by default
         statsPanel.add(filterComboBox);
         statsPanel.add(nameLabel);
         statsPanel.add(positionLabel);
@@ -53,6 +52,9 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         statsPanel.add(assistsLabel);
         statsPanel.add(pointsLabel);
 
+        // Total stats is displayed by default
+        filterComboBox.setSelectedItem(filterOptions[0]);
+
         // Update stats field based on filter selected
         filterComboBox.addActionListener(e -> {
             String filterOption = filterComboBox.getSelectedItem().toString();
@@ -60,14 +62,13 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
             displayIndividualStatController.execute(inputData);
         });
 
-        // All Player List
-        // Use the scrollable list component
+        // Scrollable player list
         scrollableListView = new ScrollableListView(playerDataAccess);
 
-        // Set dimensions (optional)
+        // Set dimensions
         scrollableListView.setDimensions(600, 500);
 
-        // Define what happens when a player is clicked
+        // Player stats appear when selected
         scrollableListView.setPlayerSelectionListener(player -> {
             currentPlayer = player;
             String filterOption = filterComboBox.getSelectedItem().toString();
@@ -78,13 +79,17 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         // This is to decide how the panel looks.
         JPanel wrapperPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         wrapperPanel.add(scrollableListView);
+        wrapperPanel.add(Box.createHorizontalGlue());
         wrapperPanel.add(statsPanel);
 
+        // Home Button
         JButton homeButton = new JButton("Home");
+
         homeButton.addActionListener(e -> {
             viewManagerModel.setState("home");
             viewManagerModel.firePropertyChange();
         });
+
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(homeButton);

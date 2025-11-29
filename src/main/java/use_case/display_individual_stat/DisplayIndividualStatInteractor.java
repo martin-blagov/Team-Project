@@ -30,7 +30,6 @@ public class DisplayIndividualStatInteractor implements DisplayIndividualStatInp
         final String ASSISTANT_STAT_NAME = "assists";
         final String POINTS_STAT_NAME = "total_points";
 
-
         String goals;
         String assists;
         String points;
