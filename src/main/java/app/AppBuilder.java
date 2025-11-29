@@ -204,8 +204,9 @@ public class AppBuilder {
     }
 
     public AppBuilder addDisplayIndividualStatsView() {
+        System.out.println("AppBuilder: testDisplayPlayersViewModel: " + testDisplayPlayersViewModel);
         displayIndividualStatViewModel = new DisplayIndividualStatViewModel();
-        displayIndividualStatsView = new IndividualStatsPageView(displayIndividualStatViewModel, playerDataAccess, viewManagerModel);
+        displayIndividualStatsView = new IndividualStatsPageView(displayIndividualStatViewModel, testDisplayPlayersViewModel, playerDataAccess, viewManagerModel);
         cardPanel.add(displayIndividualStatsView, displayIndividualStatsView.getViewName());
         return this;
     }
@@ -245,6 +246,22 @@ public class AppBuilder {
     }
   
     public AppBuilder addTeamEntryViewUseCase() {
+//
+//        // 3. Presenter
+//        TestDisplayPlayersPresenter presenter1 =
+//                new TestDisplayPlayersPresenter(testDisplayPlayersViewModel);
+//
+//        // 4. Interactor
+//        TestDisplayPlayersInteractor interactor1 =
+//                new TestDisplayPlayersInteractor(
+//                        playerDataAccess,  // Already exists
+//                        presenter1
+//                );
+//
+//        // 5. Controller
+//        testDisplayPlayersController =
+//                new TestDisplayPlayersController(interactor1);
+
         final TeamEntryPresenter presenter =
                 new TeamEntryPresenter(viewManagerModel, teamEntryViewModel, homeViewModel);
 
@@ -267,7 +284,7 @@ public class AppBuilder {
         displayIndividualStatController = new DisplayIndividualStatController(
                 interactor);
         displayIndividualStatsView.setDisplayIndividualStatController(displayIndividualStatController);
-
+        displayIndividualStatsView.setPlayerListController(testDisplayPlayersController);
         return this;
     }
 

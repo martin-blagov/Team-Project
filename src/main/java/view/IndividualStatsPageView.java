@@ -5,9 +5,12 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.display_individual_stat.DisplayIndividualStatController;
 import interface_adapter.display_individual_stat.DisplayIndividualStatState;
 import interface_adapter.display_individual_stat.DisplayIndividualStatViewModel;
+import interface_adapter.test_display_players.TestDisplayPlayersController;
+import interface_adapter.test_display_players.TestDisplayPlayersState;
+import interface_adapter.test_display_players.TestDisplayPlayersViewModel;
 import use_case.PlayerDataAccessInterface;
 import use_case.display_individual_stat.DisplayIndividualStatInputData;
-import view.components.ScrollableListView;
+import view.components.ScrollableListViewV2;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,11 +20,17 @@ import java.beans.PropertyChangeListener;
 public class IndividualStatsPageView extends JPanel implements PropertyChangeListener {
     private final String viewName = "display individual stats";
 
-    private final DisplayIndividualStatViewModel viewModel;
     private final ViewManagerModel viewManagerModel;
-    private DisplayIndividualStatController displayIndividualStatController;
-    private final ScrollableListView scrollableListView;
+    private final ScrollableListViewV2 scrollableListView;
 
+    private final DisplayIndividualStatViewModel displayIndividualStatViewModel;
+    private DisplayIndividualStatController displayIndividualStatController;
+
+    private final TestDisplayPlayersViewModel playerListViewModel;
+    private TestDisplayPlayersController playerListController;
+
+    // Labels
+    private final JLabel statusLabel;
     final JLabel nameLabel = new JLabel();
     final JLabel positionLabel = new JLabel();
     final JLabel teamLabel = new JLabel();
@@ -31,16 +40,21 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
     final JLabel pointsLabel = new JLabel();
     private Player currentPlayer = null;
 
+    // Displaly Info Filtering Options
     final String[] filterOptions = {"Total", "Average", "Last 3", "Last 5"};
     final JComboBox<String> filterComboBox = new JComboBox<>(filterOptions);
 
-    public IndividualStatsPageView(DisplayIndividualStatViewModel viewModel, PlayerDataAccessInterface playerDataAccess,
-                                   ViewManagerModel viewManagerModel) {
+    public IndividualStatsPageView(DisplayIndividualStatViewModel displayIndividualStatViewModel, TestDisplayPlayersViewModel playerListViewModel,
+                                   PlayerDataAccessInterface playerDataAccess, ViewManagerModel viewManagerModel) {
 
-        this.viewModel = viewModel;
+        this.displayIndividualStatViewModel = displayIndividualStatViewModel;
+        this.playerListViewModel = playerListViewModel;
         this.viewManagerModel = viewManagerModel;
-        viewModel.addPropertyChangeListener(this);
 
+        displayIndividualStatViewModel.addPropertyChangeListener(this);
+        playerListViewModel.addPropertyChangeListener(this);
+
+        // Stats Display Layout Components
         final JPanel statsPanel = new JPanel();
         statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
         statsPanel.add(filterComboBox);
@@ -57,75 +71,154 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
 
         // Update stats field based on filter selected
         filterComboBox.addActionListener(e -> {
+            //if selected player == null, change filterOption
             String filterOption = filterComboBox.getSelectedItem().toString();
             DisplayIndividualStatInputData inputData = new DisplayIndividualStatInputData(currentPlayer.getId(), filterOption);
             displayIndividualStatController.execute(inputData);
         });
 
-        // Scrollable player list
-        scrollableListView = new ScrollableListView(playerDataAccess);
 
-        // Set dimensions
-        scrollableListView.setDimensions(600, 500);
+        setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Player stats appear when selected
-        scrollableListView.setPlayerSelectionListener(player -> {
-            currentPlayer = player;
-            String filterOption = filterComboBox.getSelectedItem().toString();
-            DisplayIndividualStatInputData inputData = new DisplayIndividualStatInputData(player.getId(), filterOption);
-            displayIndividualStatController.execute(inputData);
+        // Title panel at top
+        JPanel titlePanel = new JPanel(new BorderLayout());
+
+        JLabel titleLabel = new JLabel("Test Display Players - Clean Architecture Demo");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        titlePanel.add(titleLabel, BorderLayout.WEST);
+
+        statusLabel = new JLabel("Loading...");
+        statusLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        titlePanel.add(statusLabel, BorderLayout.EAST);
+
+
+
+        // Create the dumb ScrollableListView component (NO data access!)
+        scrollableListView = new ScrollableListViewV2();
+
+        // Wire up the callback - when filters change, call Controller
+        scrollableListView.setOnFilterChange(criteria -> {
+            System.out.println("Controller: " + playerListController);
+            if (playerListController != null) {
+                // THIS is Clean Architecture!
+                // View doesn't fetch data - it asks Controller to do it
+                playerListController.filterPlayers(
+                        criteria.searchText,
+                        criteria.positionFilter,
+                        criteria.teamFilter,
+                        criteria.maxPrice
+                );
+                statusLabel.setText("Filtering...");
+            }
         });
 
-        // This is to decide how the panel looks.
+        // NEW: Add player selection listener for testing
+        scrollableListView.setPlayerSelectionListener(selectedPlayer -> {
+            currentPlayer = selectedPlayer;
+            String filterOption = filterComboBox.getSelectedItem().toString();
+            DisplayIndividualStatInputData inputData = new DisplayIndividualStatInputData(selectedPlayer.getId(), filterOption);
+            displayIndividualStatController.execute(inputData);
+
+            // Update status label
+            statusLabel.setText("Selected: " + selectedPlayer.getWebName());
+        });
+
+
+
+        // Setting up how the list is displayed
+        scrollableListView.setDimensions(550, 500);
         JPanel wrapperPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         wrapperPanel.add(scrollableListView);
         wrapperPanel.add(Box.createHorizontalGlue());
         wrapperPanel.add(statsPanel);
+        add(wrapperPanel, BorderLayout.CENTER);
 
-        // Home Button
-        JButton homeButton = new JButton("Home");
+        // Button panel at bottom
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        homeButton.addActionListener(e -> {
+        JButton backButton = new JButton("Back to Home");
+        backButton.addActionListener(e -> {
             viewManagerModel.setState("home");
             viewManagerModel.firePropertyChange();
         });
 
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(homeButton);
+        buttonPanel.add(backButton);
+        add(buttonPanel, BorderLayout.SOUTH);
 
         JPanel screen = new JPanel();
         screen.setLayout(new BoxLayout(screen, BoxLayout.Y_AXIS));
+        screen.add(titlePanel);
         screen.add(wrapperPanel);
         screen.add(buttonPanel);
 
         this.setLayout(new BorderLayout());
         this.add(screen);
 
+        // Load data when component is actually shown (not when constructed)
         addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentShown(java.awt.event.ComponentEvent e) {
-                scrollableListView.refresh();
+                if (playerListController != null) {
+                    playerListController.loadAllPlayers();
+                    statusLabel.setText("Loading players...");
+                }
             }
         });
-
-
     }
 
-    public String getViewName() { return viewName;}
+
 
     public void propertyChange(PropertyChangeEvent evt) {
-        final DisplayIndividualStatState state = (DisplayIndividualStatState) evt.getNewValue();
-        nameLabel.setText("Name: " + state.getPlayerName());
-        positionLabel.setText("Position: " + state.getPlayerPosition());
-        teamLabel.setText("Team: " + state.getPlayerTeam());
-        costLabel.setText("Cost: €" + state.getPlayerCost());
-        goalsScoredLabel.setText("Goals: " + state.getPlayerGoals());
-        assistsLabel.setText("Assists: " + state.getPlayerAssists());
-        pointsLabel.setText("Points: " + state.getPlayerPoints());
+        System.out.println("property firing");
+
+        if (evt.getSource() == playerListViewModel) {
+            System.out.println("loading players");
+            TestDisplayPlayersState playerListState = playerListViewModel.getState();
+
+            if (playerListState.getErrorMessage() != null) {
+                statusLabel.setText("Error: " + playerListState.getErrorMessage());
+                JOptionPane.showMessageDialog(this,
+                        playerListState.getErrorMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Update the ScrollableListView with new data
+            // (Passing clean data - NOT fetching it ourselves!)
+            scrollableListView.setPlayers(
+                    playerListState.getPlayers(),
+                    playerListState.getAvailableTeams()
+            );
+
+            // Update status label
+            int playerCount = playerListState.getPlayers().size();
+            statusLabel.setText(playerCount + " players loaded");
+        }
+        else if (evt.getSource() == displayIndividualStatViewModel) {
+            DisplayIndividualStatState state = displayIndividualStatViewModel.getState();
+
+            // Player Update
+            nameLabel.setText("Name: " + state.getPlayerName());
+            positionLabel.setText("Position: " + state.getPlayerPosition());
+            teamLabel.setText("Team: " + state.getPlayerTeam());
+            costLabel.setText("Cost: €" + state.getPlayerCost());
+            goalsScoredLabel.setText("Goals: " + state.getPlayerGoals());
+            assistsLabel.setText("Assists: " + state.getPlayerAssists());
+            pointsLabel.setText("Points: " + state.getPlayerPoints());
+        }
     }
 
-    public void setDisplayIndividualStatController(DisplayIndividualStatController controller) {
-        this.displayIndividualStatController = controller;
+        public void setPlayerListController(TestDisplayPlayersController controller) {
+            this.playerListController = controller;
+        }
+
+        public void setDisplayIndividualStatController (DisplayIndividualStatController controller){
+            this.displayIndividualStatController = controller;
+        }
+
+        public String getViewName () {
+            return viewName;
+        }
     }
-}
