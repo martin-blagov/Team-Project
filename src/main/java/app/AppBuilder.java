@@ -82,7 +82,7 @@ public class AppBuilder {
     private InitialisePredictionsViewModel initViewModel;
     private InitialisePredictionsController initController;
     private InMemoryPlayerDataAccess playerDataAccess = new InMemoryPlayerDataAccess();
-    private TeamDataAccessInterface teamDataAccess = new FileTeamDataAccessObject("team.json");;
+    private TeamDataAccessInterface teamDataAccess = new FileTeamDataAccessObject("team.json");
 
 
 
@@ -205,7 +205,7 @@ public class AppBuilder {
 
     public AppBuilder addDisplayIndividualStatsView() {
         displayIndividualStatViewModel = new DisplayIndividualStatViewModel();
-        displayIndividualStatsView = new IndividualStatsPageView(displayIndividualStatViewModel);
+        displayIndividualStatsView = new IndividualStatsPageView(displayIndividualStatViewModel, playerDataAccess, viewManagerModel);
         cardPanel.add(displayIndividualStatsView, displayIndividualStatsView.getViewName());
         return this;
     }
@@ -262,7 +262,7 @@ public class AppBuilder {
                 viewManagerModel,displayIndividualStatViewModel);
 
         final DisplayIndividualStatInputBoundary interactor = new DisplayIndividualStatInteractor(
-                outputBoundary);
+                outputBoundary, playerDataAccess);
 
         displayIndividualStatController = new DisplayIndividualStatController(
                 interactor);

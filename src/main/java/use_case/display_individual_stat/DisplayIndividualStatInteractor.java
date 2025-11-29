@@ -2,15 +2,14 @@ package use_case.display_individual_stat;
 
 import entity.Player;
 import use_case.PlayerDataAccessInterface;
-import use_case.TeamDataAccessInterface;
+// import use_case.TeamDataAccessInterface;
 
 public class DisplayIndividualStatInteractor implements DisplayIndividualStatInputBoundary {
     private final DisplayIndividualStatOutputBoundary presenter;
     private final PlayerDataAccessInterface playerDataAccess;
     // private final TeamDataAccessInterface teamDataAccess;
 
-    public DisplayIndividualStatInteractor(DisplayIndividualStatOutputBoundary presenter, PlayerDataAccessInterface playerDataAccess,
-                                           TeamDataAccessInterface teamDataAccess) {
+    public DisplayIndividualStatInteractor(DisplayIndividualStatOutputBoundary presenter, PlayerDataAccessInterface playerDataAccess) {
         this.presenter = presenter;
         this.playerDataAccess = playerDataAccess;
         // this.teamDataAccess = teamDataAccess;
