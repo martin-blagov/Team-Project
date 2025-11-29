@@ -1,7 +1,6 @@
 package app;
 
 import data_access.InMemoryPlayerDataAccess;
-import entity.Player;
 import data_access.*;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.display_individual_stat.DisplayIndividualStatController;
@@ -19,7 +18,7 @@ import interface_adapter.team_view.TeamViewModel;
 import interface_adapter.best_team.BestTeamController;
 import interface_adapter.best_team.BestTeamPresenter;
 import interface_adapter.best_team.BestTeamViewModel;
-import use_case.TeamDataAccessInterface;
+import use_case.team_entry.TeamDataAccessInterface;
 import use_case.display_individual_stat.DisplayIndividualStatInputBoundary;
 import use_case.display_individual_stat.DisplayIndividualStatInteractor;
 import use_case.display_individual_stat.DisplayIndividualStatOutputBoundary;
@@ -28,8 +27,6 @@ import use_case.team_entry.TeamEntryInteractor;
 import use_case.starting_lineup.StartingLineupInputBoundary;
 import use_case.starting_lineup.StartingLineupInteractor;
 import use_case.starting_lineup.StartingLineupOutputBoundary;
-import use_case.PlayerDataAccessInterface;
-import use_case.best_team.BestTeamInputBoundary;
 import use_case.best_team.BestTeamInteractor;
 import view.*;
 
@@ -44,11 +41,17 @@ import use_case.initialise_predictions.ModelCoefficientDataAccessInterface;
 import view.InitialisePredictionsView;
 
 //TODO REMOVE
-import view.TestScrollableListView;
+import interface_adapter.test_display_players.TestDisplayPlayersController;
+import interface_adapter.test_display_players.TestDisplayPlayersPresenter;
+import interface_adapter.test_display_players.TestDisplayPlayersViewModel;
+
+import use_case.test_display_players.TestDisplayPlayersInteractor;
+
+import view.TestScrollableListViewV2;
+
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 
 public class AppBuilder {
     private final JPanel cardPanel = new JPanel();
@@ -78,26 +81,54 @@ public class AppBuilder {
     private InitialisePredictionsView initView;
     private InitialisePredictionsViewModel initViewModel;
     private InitialisePredictionsController initController;
-    private final PlayerDataAccessInterface playerDataAccess = new InMemoryPlayerDataAccess();
-    // private InMemoryPlayerDataAccess playerDataAccess;
-    private TeamDataAccessInterface teamDataAccess;
+    private InMemoryPlayerDataAccess playerDataAccess = new InMemoryPlayerDataAccess();
+    private TeamDataAccessInterface teamDataAccess = new FileTeamDataAccessObject("team.json");;
 
 
-    //TODO REMOVE
-    private TestScrollableListView testScrollableListView;
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
     }
 
-//    public InMemoryPlayerDataAccess getPlayerDataAccess() {
-//        return playerDataAccess;
-//    }
+    public InMemoryPlayerDataAccess getPlayerDataAccess() {
+        return playerDataAccess;
+    }
 
-    //TODO REMOVE
-    public AppBuilder addTestScrollableListView() {
-        testScrollableListView = new TestScrollableListView(playerDataAccess, viewManagerModel);
-        cardPanel.add(testScrollableListView, testScrollableListView.getViewName());
+    // TODO remove
+
+    private TestScrollableListViewV2 testScrollableListViewV2;
+    private TestDisplayPlayersViewModel testDisplayPlayersViewModel;
+    private TestDisplayPlayersController testDisplayPlayersController;
+
+    public AppBuilder addTestDisplayPlayersUseCase() {
+        // 1. ViewModel
+        testDisplayPlayersViewModel = new TestDisplayPlayersViewModel();
+
+        // 2. View
+        testScrollableListViewV2 = new TestScrollableListViewV2(
+                testDisplayPlayersViewModel,
+                viewManagerModel
+        );
+        cardPanel.add(testScrollableListViewV2, testScrollableListViewV2.getViewName());
+
+        // 3. Presenter
+        TestDisplayPlayersPresenter presenter =
+                new TestDisplayPlayersPresenter(testDisplayPlayersViewModel);
+
+        // 4. Interactor
+        TestDisplayPlayersInteractor interactor =
+                new TestDisplayPlayersInteractor(
+                        playerDataAccess,  // Already exists
+                        presenter
+                );
+
+        // 5. Controller
+        testDisplayPlayersController =
+                new TestDisplayPlayersController(interactor);
+
+        // 6. Wire Controller to View
+        testScrollableListViewV2.setController(testDisplayPlayersController);
+
         return this;
     }
 
@@ -174,7 +205,7 @@ public class AppBuilder {
 
     public AppBuilder addDisplayIndividualStatsView() {
         displayIndividualStatViewModel = new DisplayIndividualStatViewModel();
-        displayIndividualStatsView = new IndividualStatsPageView(displayIndividualStatViewModel, playerDataAccess, viewManagerModel);
+        displayIndividualStatsView = new IndividualStatsPageView(displayIndividualStatViewModel);
         cardPanel.add(displayIndividualStatsView, displayIndividualStatsView.getViewName());
         return this;
     }
@@ -214,7 +245,6 @@ public class AppBuilder {
     }
   
     public AppBuilder addTeamEntryViewUseCase() {
-        teamDataAccess = new InMemoryTeamDataAccess();
         final TeamEntryPresenter presenter =
                 new TeamEntryPresenter(viewManagerModel, teamEntryViewModel, homeViewModel);
 
@@ -232,7 +262,7 @@ public class AppBuilder {
                 viewManagerModel,displayIndividualStatViewModel);
 
         final DisplayIndividualStatInputBoundary interactor = new DisplayIndividualStatInteractor(
-                outputBoundary, playerDataAccess, teamDataAccess);
+                outputBoundary);
 
         displayIndividualStatController = new DisplayIndividualStatController(
                 interactor);
@@ -245,7 +275,7 @@ public class AppBuilder {
         startingLineupPresenter = new StartingLineupPresenter(viewManagerModel, startingLineupViewModelAdapter);
         StartingLineupOutputBoundary outputBoundary = startingLineupPresenter;
 
-        startingLineupInputBoundary = new StartingLineupInteractor(outputBoundary, playerDataAccess);
+        startingLineupInputBoundary = new StartingLineupInteractor(outputBoundary, teamDataAccess);
         startingLineupController = new StartingLineupController(startingLineupInputBoundary);
         return this;
     }

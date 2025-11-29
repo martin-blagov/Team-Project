@@ -20,7 +20,12 @@ public interface TeamEntryOutputBoundary {
     void switchToHomePage();
 
     /**
-     * Switches to the Home Page View.
+     * Opens default team entry page view
      */
     void prepareOpenPageView();
+
+    /**
+     * Opens team entry page view with saved players if user has already entered and confirmed a team in the past
+     */
+    void prepareSavedTeamView(String[] names, int[] ids);
 }

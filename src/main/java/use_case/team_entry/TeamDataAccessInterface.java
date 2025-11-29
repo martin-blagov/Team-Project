@@ -1,4 +1,4 @@
-package use_case;
+package use_case.team_entry;
 
 import entity.Team;
 

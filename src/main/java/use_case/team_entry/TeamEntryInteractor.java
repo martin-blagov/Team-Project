@@ -3,7 +3,6 @@ package use_case.team_entry;
 import entity.Player;
 import entity.Team;
 import use_case.PlayerDataAccessInterface;
-import use_case.TeamDataAccessInterface;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,7 +15,6 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
     private final PlayerDataAccessInterface dataAccess;
     private final TeamDataAccessInterface teamDataAccess;
 
-
     public TeamEntryInteractor(TeamEntryOutputBoundary presenter, PlayerDataAccessInterface dataAccess, TeamDataAccessInterface teamDataAccess) {
         this.presenter = presenter;
         this.dataAccess = dataAccess;
@@ -27,21 +25,25 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
 
         String[] players = inputData.getPlayerNames();
         int[] ids = inputData.getPlayerIds();
-        List<Player> enteredPlayerObjects = new ArrayList<>();
-
-        // Create arraylist of player objects that match entered players
-        for (int id : inputData.getPlayerIds()) {
-            Player p = dataAccess.getPlayerById(id);
-            enteredPlayerObjects.add(p); // p can be null, validation will handle that
-        }
+        String budget = inputData.getRemainingBudet();
 
         boolean noEmptyFields = validateNoEmptyFields(players);
         boolean playerExists = validatePlayersExist(ids);
         boolean isDuplicate = validateNonDuplicate(inputData.getPlayerIds());
-        boolean inBudget = validateBudget(enteredPlayerObjects) <= 100;
+
+        List<Player> enteredPlayerObjects = new ArrayList<>();
+
+        // Create arraylist of player objects that match entered players
+        for (int i = 0; i < ids.length; i++) {
+            int actualId = ids[i];
+            Player p = dataAccess.getPlayerById(actualId);
+            enteredPlayerObjects.add(p);
+        }
+
+        boolean validBudget = validateBudget(budget);
         boolean correctPositions = validatePositions(enteredPlayerObjects);
 
-        //order: exists, duplicate, positions, budget
+        // Order of checks: empty fields, exists, duplicate, positions, budget
         if (!noEmptyFields) {
             presenter.prepareFailView("Please fill in all 15 player fields before confirming your team.");
             return;
@@ -54,14 +56,14 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
         } else if (!correctPositions) {
             presenter.prepareFailView("One or more players are not in the correct position slots. Please check the lineup format.");
             return;
-        } else if (!inBudget) {
-            presenter.prepareFailView("Your team exceeds the £100.0m budget. Please adjust your selections.");
+        } else if (!validBudget) {
+            presenter.prepareFailView("The remaining budget is not a valid number. Please try again.");
             return;
         } else {
             // New Team object
             Team confirmedTeam = new Team(
                     enteredPlayerObjects,
-                    100 - validateBudget(enteredPlayerObjects),
+                    Float.parseFloat(budget), // get player's entered remaining budget
                     true
             );
 
@@ -73,9 +75,28 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
         }
     }
 
+    @Override
     public void openPage() {
-        presenter.prepareOpenPageView();
+        Team saved = teamDataAccess.getTeam();
+
+        if (saved != null && saved.getPlayers() != null && !saved.getPlayers().isEmpty()) {
+
+            String[] names = new String[saved.getPlayers().size()];
+            int[] ids = new int[saved.getPlayers().size()];
+
+            for (int i = 0; i < saved.getPlayers().size(); i++) {
+                Player p = saved.getPlayers().get(i);
+                names[i] = p.getWebName();
+                ids[i] = p.getId();
+            }
+
+            presenter.prepareSavedTeamView(names, ids);
+        }
+        else {
+            presenter.prepareOpenPageView(); // empty view as usual
+        }
     }
+
 
     @Override
     public void switchToHomePage() {
@@ -112,7 +133,7 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
 
     private boolean validatePositions(List<Player> enteredPlayerObjects) {
 
-        // Expected positional slots
+        // Expected position slots
         String[] requiredPositions = new String[]{
                 "forward", "forward", "forward",
                 "midfielder", "midfielder", "midfielder", "midfielder", "midfielder",
@@ -137,15 +158,12 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
         return true; // all positions correct
     }
 
-    private float validateBudget(List<Player> enteredPlayerObjects) {
-
-        float totalCost = 0;
-
-        // Check if the entered name is a valid player name
-        for (Player player : enteredPlayerObjects) {
-            totalCost += player.getNowCost();
+    private boolean validateBudget(String remainingBudget) {
+        try {
+            Integer.parseInt(remainingBudget);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
         }
-
-        return totalCost;
     }
 }

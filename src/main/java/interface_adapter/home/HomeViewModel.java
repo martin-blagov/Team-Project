@@ -20,6 +20,7 @@ public class HomeViewModel extends ViewModel<Void> {
 
     //TODO REMOVE
     public static final String TEST_SCROLLABLE_LIST_BUTTON_LABEL = "Test Scrollable List";
+    public static final String TEST_DISPLAY_PLAYERS_BUTTON_LABEL = "Test Display Players (Clean Arch Demo)";
 
     public HomeViewModel() {
         super("home");

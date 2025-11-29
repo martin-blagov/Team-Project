@@ -3,7 +3,7 @@ package use_case.transfer_suggestions;
 import entity.Player;
 import entity.Team;
 import use_case.PlayerDataAccessInterface;
-import use_case.TeamDataAccessInterface;
+import use_case.team_entry.TeamDataAccessInterface;
 
 import java.util.*;
 
