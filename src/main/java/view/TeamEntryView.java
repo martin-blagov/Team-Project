@@ -121,7 +121,7 @@ public class TeamEntryView extends JPanel implements PropertyChangeListener {
             }
         });
 
-        playerSelectionPanel.setOnPlayerSelected(player -> {
+        playerSelectionPanel.setPlayerSelectionListener(player -> {
             if (currentlyEditingFieldIndex != -1) {
                 notDocListener = true;
                 playerInputFields[currentlyEditingFieldIndex]
