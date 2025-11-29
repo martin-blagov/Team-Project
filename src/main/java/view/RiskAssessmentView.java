@@ -36,7 +36,12 @@ public class RiskAssessmentView extends JPanel implements PropertyChangeListener
 
         //Back Button
         backButton = new JButton("Back");
-        add(backButton, BorderLayout.SOUTH);
+
+        JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        southPanel.add(backButton);
+
+        add(southPanel, BorderLayout.SOUTH);
+
     }
 
     public void setViewManagerModel(ViewManagerModel viewManagerModel) {

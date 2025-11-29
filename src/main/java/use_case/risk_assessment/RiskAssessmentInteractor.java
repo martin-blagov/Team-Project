@@ -2,18 +2,18 @@ package use_case.risk_assessment;
 
 import entity.Team;
 import entity.Player;
-import use_case.TeamDataAccessInterface;
 import use_case.risk_assessment.risk.*;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class RiskAssessmentInteractor implements RiskAssessmentInputBoundary {
 
-    private final TeamDataAccessInterface teamDataAccess;
+    private final RiskAssessmentTeamAccessInterface teamDataAccess;
     private final RiskAssessmentOutputBoundary presenter;
 
-    public RiskAssessmentInteractor(TeamDataAccessInterface teamDataAccess,
+    public RiskAssessmentInteractor(RiskAssessmentTeamAccessInterface teamDataAccess,
                                     RiskAssessmentOutputBoundary presenter) {
         this.teamDataAccess = teamDataAccess;
         this.presenter = presenter;
@@ -39,10 +39,19 @@ public class RiskAssessmentInteractor implements RiskAssessmentInputBoundary {
         List<PlayerRisk> profiles = new ArrayList<>();
 
         for (Player player : team.getPlayers()) {
-            profiles.add(new PlayerRisk(player, rules));
+            PlayerRisk playerRisk = new PlayerRisk(player, rules);
+            if (playerRisk.getRiskCount() > 0) {
+                profiles.add(playerRisk);
+            }
         }
 
-        profiles.sort((a, b) -> b.getRiskCount() - a.getRiskCount());
+        //sort player ricks in descending order
+        profiles.sort(new Comparator<PlayerRisk>() {
+            @Override
+            public int compare(PlayerRisk pr1, PlayerRisk pr2) {
+                return pr1.getRiskCount() - pr2.getRiskCount();
+            }
+        });
 
         presenter.presentRiskResults(new RiskAssessmentOutputData(profiles));
     }

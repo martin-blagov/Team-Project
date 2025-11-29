@@ -43,7 +43,7 @@ public class PlayerRisk {
      */
     public String getTriggeredRiskNames() {
         if (triggeredRules.isEmpty()) {
-            return "";
+            return "None";
         }
 
         StringBuilder builder = new StringBuilder();

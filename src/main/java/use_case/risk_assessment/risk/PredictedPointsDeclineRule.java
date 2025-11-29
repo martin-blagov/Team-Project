@@ -4,6 +4,7 @@ import entity.Player;
 
 public class PredictedPointsDeclineRule implements RiskRule {
 
+    public static final double THRESHOLD_RATIO = 0.6;
     @Override
     public boolean isTriggered(Player player) {
 
@@ -18,7 +19,7 @@ public class PredictedPointsDeclineRule implements RiskRule {
         }
 
         // predicted points drop significantly from last form
-        return predicted < last5 * 0.6; // 40% decline
+        return predicted < last5 * THRESHOLD_RATIO; // 40% decline
     }
 
     @Override

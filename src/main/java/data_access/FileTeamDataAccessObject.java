@@ -2,6 +2,7 @@ package data_access;
 
 import entity.Player;
 import entity.Team;
+import use_case.risk_assessment.RiskAssessmentTeamAccessInterface;
 import use_case.team_entry.TeamDataAccessInterface;
 
 import org.json.JSONArray;
@@ -17,7 +18,7 @@ import java.util.Map;
 /**
  * DAO for saving/loading the user's confirmed FPL team to a local JSON file.
  */
-public class FileTeamDataAccessObject implements TeamDataAccessInterface {
+public class FileTeamDataAccessObject implements TeamDataAccessInterface, RiskAssessmentTeamAccessInterface {
 
     private final String filepath;
     private Team savedTeam;

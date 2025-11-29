@@ -1,9 +1,6 @@
 package use_case.risk_assessment;
 
-/**
- * Empty input data — the interactor will fetch the team
- * through TeamDataAccessInterface.
- */
+//Empty class, RiskAssessmentInteractor retrieves team from database directly
 public class RiskAssessmentInputData {
 
 }

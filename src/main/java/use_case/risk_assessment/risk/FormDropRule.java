@@ -4,7 +4,7 @@ import entity.Player;
 
 public class FormDropRule implements RiskRule {
 
-    private static final double THRESHOLD_RATIO = 0.5;
+    private static final double THRESHOLD_RATIO = 0.6;
     // last3 < 60% of seasonAvg = poor form
 
     @Override

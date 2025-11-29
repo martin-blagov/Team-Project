@@ -19,6 +19,6 @@ public class ValueRiskRule implements RiskRule {
 
         if (predicted == null) return false;
 
-        return cost/predicted <= MIN_POINTS_PER_COST;
+        return predicted/cost <= MIN_POINTS_PER_COST;
     }
 }
