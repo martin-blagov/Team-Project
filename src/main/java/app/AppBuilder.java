@@ -264,7 +264,7 @@ public class AppBuilder {
 
     public AppBuilder addDisplayIndividualStatsView() {
         displayIndividualStatViewModel = new DisplayIndividualStatViewModel();
-        displayIndividualStatsView = new IndividualStatsPageView(displayIndividualStatViewModel);
+        displayIndividualStatsView = new IndividualStatsPageView(displayIndividualStatViewModel, testDisplayPlayersViewModel, playerDataAccess, viewManagerModel);
         cardPanel.add(displayIndividualStatsView, displayIndividualStatsView.getViewName());
         return this;
     }
@@ -328,12 +328,12 @@ public class AppBuilder {
                 viewManagerModel,displayIndividualStatViewModel);
 
         final DisplayIndividualStatInputBoundary interactor = new DisplayIndividualStatInteractor(
-                outputBoundary);
+                outputBoundary, playerDataAccess);
 
         displayIndividualStatController = new DisplayIndividualStatController(
                 interactor);
         displayIndividualStatsView.setDisplayIndividualStatController(displayIndividualStatController);
-
+        displayIndividualStatsView.setPlayerListController(testDisplayPlayersController);
         return this;
     }
 

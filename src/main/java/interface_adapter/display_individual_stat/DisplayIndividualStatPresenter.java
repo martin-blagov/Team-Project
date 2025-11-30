@@ -21,7 +21,18 @@ public class DisplayIndividualStatPresenter implements DisplayIndividualStatOutp
 
     @Override
     public void presentView(DisplayIndividualStatOutputData outputData) {
-        viewManagerModel.setState(viewModel.getViewName());
-        viewManagerModel.firePropertyChange();
+        final DisplayIndividualStatState playerDisplayState = viewModel.getState();
+        playerDisplayState.setPlayerName(outputData.getPlayerName());
+        playerDisplayState.setPlayerPosition(outputData.getPlayerPosition());
+        playerDisplayState.setPlayerTeam(outputData.getPlayerTeam());
+        playerDisplayState.setPlayerCost(outputData.getPlayerCost());
+        playerDisplayState.setPlayerGoals(outputData.getPlayerGoals());
+        playerDisplayState.setPlayerAssists(outputData.getPlayerAssists());
+        playerDisplayState.setPlayerPoints(outputData.getPlayerPoints());
+
+        // viewManagerModel.setState(viewModel.getViewName());
+        // viewManagerModel.firePropertyChange();
+
+        viewModel.firePropertyChange();
     }
 }

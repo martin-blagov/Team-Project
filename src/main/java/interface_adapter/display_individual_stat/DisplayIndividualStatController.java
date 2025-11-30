@@ -1,6 +1,7 @@
 package interface_adapter.display_individual_stat;
 
 import use_case.display_individual_stat.DisplayIndividualStatInputBoundary;
+import use_case.display_individual_stat.DisplayIndividualStatInputData;
 
 public class DisplayIndividualStatController {
 
@@ -13,6 +14,7 @@ public class DisplayIndividualStatController {
     /**
      * Executes the Individual Stats Use Case.
      */
-    public void execute() { displayIndividualStatInteractor.execute();}
-
+    public void execute(DisplayIndividualStatInputData displayIndividualStatInputData) {
+        displayIndividualStatInteractor.execute(displayIndividualStatInputData);
+    }
 }
