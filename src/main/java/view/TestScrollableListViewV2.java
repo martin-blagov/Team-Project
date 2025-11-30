@@ -42,6 +42,8 @@ public class TestScrollableListViewV2 extends JPanel implements PropertyChangeLi
     private final ScrollableListViewV2 scrollableListView;
     private final JLabel statusLabel;
     private final ViewManagerModel viewManagerModel;
+    private java.util.function.Consumer<entity.Player> onPlayerSelected;
+
 
     /**
      * Constructor - Takes ViewModel (NOT data access!).
@@ -201,4 +203,9 @@ public class TestScrollableListViewV2 extends JPanel implements PropertyChangeLi
     public String getViewName() {
         return viewName;
     }
+
+    public void setOnPlayerSelected(java.util.function.Consumer<entity.Player> listener) {
+        this.onPlayerSelected = listener;
+    }
+
 }

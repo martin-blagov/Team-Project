@@ -3,24 +3,35 @@ package app;
 import javax.swing.*;
 
 public class Main {
+    private static final int APP_WIDTH = 1100;
+    private static final int APP_HEIGHT = 800;
+
+    /**
+     * Builds the Fantasy Premier League App.
+     * @param args configures app at start up.
+     */
     public static void main(String[] args) {
-        AppBuilder appBuilder = new AppBuilder();
-        JFrame application = appBuilder
+        final AppBuilder appBuilder = new AppBuilder();
+
+        final JFrame application = appBuilder
                 .addInitialisePredictions()
-                .addHomePageView()
                 .addTestDisplayPlayersUseCase()
-                .addTeamEntryView()
+                .addHomePageView()
                 .addDisplayIndividualStatsView()
                 .addStartingLineupView()
                 .addBestTeamView()
-                .addTeamEntryViewUseCase()
+                .addTeamEntryView()
                 .addDisplayIndividualStatUseCase()
+                .addTeamEntryViewUseCase()
+                .addTestDisplayPlayersUseCase() //  todo remove
+                .addTestTeamVisualizationUseCase() // todo remove
                 .addStartingLineupUseCase()
-                .addHomeUseCase()
                 .addBestTeamUseCase()
+                .addHomeUseCase()
                 .build();
-        application.setSize(1100, 800);  // width=1000px, height=700px
-        application.setLocationRelativeTo(null); // center on screen
+
+        application.setSize(APP_WIDTH, APP_HEIGHT);
+        application.setLocationRelativeTo(null);
         application.setVisible(true);
     }
 }

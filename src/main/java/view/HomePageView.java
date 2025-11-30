@@ -32,6 +32,7 @@ public class HomePageView extends JPanel implements PropertyChangeListener {
 
     //TODO REMOVE
     private final JButton testDisplayPlayersButton;
+    private final JButton testTeamVisualizationButton;
 
 
     public HomePageView(HomeViewModel homeViewModel) {
@@ -59,6 +60,7 @@ public class HomePageView extends JPanel implements PropertyChangeListener {
 
         //TODO REMOVE
         testDisplayPlayersButton = new JButton(HomeViewModel.TEST_DISPLAY_PLAYERS_BUTTON_LABEL);
+        testTeamVisualizationButton = new JButton(HomeViewModel.TEST_TEAM_BUTTON_LABEL);
 
 
 
@@ -67,7 +69,7 @@ public class HomePageView extends JPanel implements PropertyChangeListener {
         JButton[] buttons = {
                 bestTeamButton, teamInputButton, replacementButton,
                 bestPlayersButton, transferButton, statsButton, lineupButton,
-                testDisplayPlayersButton //TODO REMOVE
+                testDisplayPlayersButton, testTeamVisualizationButton //TODO REMOVE
         };
 
         for (JButton button : buttons) {
@@ -140,6 +142,10 @@ public class HomePageView extends JPanel implements PropertyChangeListener {
             public void actionPerformed(ActionEvent evt) {
                 homeController.openTestDisplayPlayersPage();
             }
+        });
+
+        testTeamVisualizationButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {homeController.openTestTeamVisualizationPage(); }
         });
     }
 
