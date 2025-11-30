@@ -42,6 +42,8 @@ public class TestScrollableListViewV2 extends JPanel implements PropertyChangeLi
     private final ScrollableListViewV2 scrollableListView;
     private final JLabel statusLabel;
     private final ViewManagerModel viewManagerModel;
+    private java.util.function.Consumer<entity.Player> onPlayerSelected;
+
 
     /**
      * Constructor - Takes ViewModel (NOT data access!).
@@ -92,6 +94,34 @@ public class TestScrollableListViewV2 extends JPanel implements PropertyChangeLi
                 );
                 statusLabel.setText("Filtering...");
             }
+        });
+
+        // NEW: Add player selection listener for testing
+        scrollableListView.setPlayerSelectionListener(selectedPlayer -> {
+            // Show a simple message with player info
+            String message = String.format(
+                    "Selected: %s\n" +
+                            "Team: %s\n" +
+                            "Position: %s\n" +
+                            "Price: £%.1fm\n" +
+                            "Predicted Points: %.2f",
+                    selectedPlayer.getWebName(),
+                    selectedPlayer.getTeamName(),
+                    selectedPlayer.getPosition(),
+                    selectedPlayer.getNowCost(),
+                    selectedPlayer.getPredictedPoints() != null ? selectedPlayer.getPredictedPoints() : 0.0
+            );
+
+            // Update status label
+            statusLabel.setText("Selected: " + selectedPlayer.getWebName());
+
+            // Show popup dialog
+            JOptionPane.showMessageDialog(
+                    this,
+                    message,
+                    "Player Selected",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
         });
 
         // Setting up how the list is displayed
@@ -173,4 +203,9 @@ public class TestScrollableListViewV2 extends JPanel implements PropertyChangeLi
     public String getViewName() {
         return viewName;
     }
+
+    public void setOnPlayerSelected(java.util.function.Consumer<entity.Player> listener) {
+        this.onPlayerSelected = listener;
+    }
+
 }
