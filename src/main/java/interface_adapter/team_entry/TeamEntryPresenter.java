@@ -1,4 +1,5 @@
 package interface_adapter.team_entry;
+
 import interface_adapter.ViewManagerModel;
 import interface_adapter.home.HomeViewModel;
 import use_case.team_entry.TeamEntryOutputBoundary;
@@ -21,7 +22,7 @@ public class TeamEntryPresenter implements TeamEntryOutputBoundary {
 
     @Override
     public void prepareOpenPageView() {
-        TeamEntryState state = teamEntryViewModel.getState();
+        final TeamEntryState state = teamEntryViewModel.getState();
         state.setErrorMessage(null);
         state.setSuccessMessage(null);
 
@@ -31,7 +32,7 @@ public class TeamEntryPresenter implements TeamEntryOutputBoundary {
 
     @Override
     public void prepareSavedTeamView(String[] names, int[] ids) {
-        TeamEntryState state = teamEntryViewModel.getState();
+        final TeamEntryState state = teamEntryViewModel.getState();
 
         state.setPlayers(names);
         state.setPlayerIds(ids);
@@ -44,10 +45,9 @@ public class TeamEntryPresenter implements TeamEntryOutputBoundary {
         viewManagerModel.firePropertyChange();
     }
 
-
     @Override
     public void prepareSuccessView(TeamEntryOutputData outputData) {
-        TeamEntryState state = teamEntryViewModel.getState();
+        final TeamEntryState state = teamEntryViewModel.getState();
         state.setSuccessMessage("Your team was successfully submitted! You may now return to the menu.");
         state.setErrorMessage(null);
         teamEntryViewModel.setState(state);
@@ -56,7 +56,7 @@ public class TeamEntryPresenter implements TeamEntryOutputBoundary {
 
     @Override
     public void prepareFailView(String errorMessage) {
-        TeamEntryState state = teamEntryViewModel.getState();
+        final TeamEntryState state = teamEntryViewModel.getState();
         state.setErrorMessage(errorMessage);
         state.setSuccessMessage(null);
         teamEntryViewModel.setState(state);

@@ -15,14 +15,16 @@ public class TeamEntryController {
     }
 
     /**
-     * Executes the Confirm Team Entry Use Case.
+     * Executes the Confirm Team Entry use case by packaging the provided team data
+     * into an input object and passing it to the interactor.
+     *
+     * @param names     an array of player names selected by the user
+     * @param ids       an array of player IDs corresponding to the selected players
+     * @param positions an array of position strings for each selected player
+     * @param budget    the remaining budget available to the user as a string
      */
-    public void execute(String[] names,
-                        int[] ids,
-                        String[] positions,
-                        String budget) {
-
-        TeamEntryInputData inputData =
+    public void execute(String[] names, int[] ids, String[] positions, String budget) {
+        final TeamEntryInputData inputData =
                 new TeamEntryInputData(
                         names,
                         ids,
@@ -34,14 +36,14 @@ public class TeamEntryController {
     }
 
     /**
-     * Opens the Team Entry Page (restore team if exists)
+     * Opens the Team Entry Page (restore team if exists).
      */
     public void openPage() {
         teamEntryUseCaseInteractor.openPage();
     }
 
     /**
-     * Navigates back to Home Page
+     * Navigates back to Home Page.
      */
     public void switchToHomePage() {
         teamEntryUseCaseInteractor.switchToHomePage();

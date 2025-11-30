@@ -3,10 +3,17 @@ package app;
 import javax.swing.*;
 
 public class Main {
-    public static void main(String[] args) {
-        AppBuilder appBuilder = new AppBuilder();
+    private static final int APP_WIDTH = 1100;
+    private static final int APP_HEIGHT = 800;
 
-        JFrame application = appBuilder
+    /**
+     * Builds the Fantasy Premier League App.
+     * @param args configures app at start up.
+     */
+    public static void main(String[] args) {
+        final AppBuilder appBuilder = new AppBuilder();
+
+        final JFrame application = appBuilder
                 .addInitialisePredictions()
                 .addTestDisplayPlayersUseCase()
                 .addHomePageView()
@@ -23,7 +30,7 @@ public class Main {
                 .addHomeUseCase()
                 .build();
 
-        application.setSize(1100, 800);
+        application.setSize(APP_WIDTH, APP_HEIGHT);
         application.setLocationRelativeTo(null);
         application.setVisible(true);
     }

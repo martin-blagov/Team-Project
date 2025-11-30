@@ -1,13 +1,5 @@
 package view;
 
-import entity.Player;
-import interface_adapter.team_entry.TeamEntryController;
-import interface_adapter.team_entry.TeamEntryState;
-import interface_adapter.team_entry.TeamEntryViewModel;
-import interface_adapter.test_display_players.TestDisplayPlayersController;
-import interface_adapter.test_display_players.TestDisplayPlayersViewModel;
-import view.components.ScrollableListViewV2;
-
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -17,9 +9,27 @@ import java.awt.event.FocusEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import interface_adapter.team_entry.TeamEntryController;
+import interface_adapter.team_entry.TeamEntryState;
+import interface_adapter.team_entry.TeamEntryViewModel;
+import interface_adapter.test_display_players.TestDisplayPlayersController;
+import interface_adapter.test_display_players.TestDisplayPlayersViewModel;
+import view.components.ScrollableListViewV2;
+
 public class TeamEntryView extends JPanel implements PropertyChangeListener {
 
-    private final String viewName = "team entry";
+    private static final int FORWARD_START = 0;
+    private static final int FORWARD_END = 2;
+    private static final int MIDFIELDER_START = 3;
+    private static final int MIDFIELDER_END = 7;
+    private static final int DEFENDER_START = 8;
+    private static final int DEFENDER_END = 12;
+    private static final int GOALKEEPER_START = 13;
+    private static final int GOALKEEPER_END = 14;
+    private static final int TEXT_FIELD_WIDTH = 15;
+    private static final int HEADER_FONT_SIZE = 18;
+    private static final int VERTICAL_STRUT_SIZE = 15;
+    private static final int PANEL_DIMENSION = 600;
 
     private final TeamEntryViewModel teamEntryViewModel;
     private final TestDisplayPlayersViewModel playerListViewModel;
@@ -50,30 +60,30 @@ public class TeamEntryView extends JPanel implements PropertyChangeListener {
 
         setLayout(new BorderLayout());
 
-        JPanel topMenuPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        final JPanel topMenuPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         menuButton = new JButton(TeamEntryViewModel.MENU_BUTTON_LABEL);
         topMenuPanel.add(menuButton);
         add(topMenuPanel, BorderLayout.NORTH);
 
-        JPanel teamEntryPanel = new JPanel();
+        final JPanel teamEntryPanel = new JPanel();
         teamEntryPanel.setLayout(new BoxLayout(teamEntryPanel, BoxLayout.Y_AXIS));
         teamEntryPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel header = new JLabel(teamEntryViewModel.getTitleLabel());
-        header.setFont(new Font("Arial", Font.BOLD, 18));
+        final JLabel header = new JLabel(teamEntryViewModel.getTitleLabel());
+        header.setFont(new Font("Arial", Font.BOLD, HEADER_FONT_SIZE));
         header.setAlignmentX(Component.CENTER_ALIGNMENT);
         teamEntryPanel.add(header);
-        teamEntryPanel.add(Box.createVerticalStrut(15));
+        teamEntryPanel.add(Box.createVerticalStrut(VERTICAL_STRUT_SIZE));
 
-        String[] playerLabels = teamEntryViewModel.getPlayerLabels();
+        final String[] playerLabels = teamEntryViewModel.getPlayerLabels();
         playerInputFields = new JTextField[playerLabels.length];
 
         for (int i = 0; i < playerLabels.length; i++) {
-            JPanel row = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            final JPanel row = new JPanel(new FlowLayout(FlowLayout.RIGHT));
             row.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-            JLabel label = new JLabel(playerLabels[i] + ":");
-            JTextField inputField = new JTextField(15);
+            final JLabel label = new JLabel(playerLabels[i] + ":");
+            final JTextField inputField = new JTextField(TEXT_FIELD_WIDTH);
 
             row.add(label);
             row.add(inputField);
@@ -82,32 +92,32 @@ public class TeamEntryView extends JPanel implements PropertyChangeListener {
             teamEntryPanel.add(row);
         }
 
-        JPanel budgetRow = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        final JPanel budgetRow = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         budgetRow.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel budgetLabel = new JLabel(teamEntryViewModel.getBudgetLabel());
-        budgetField = new JTextField(15);
+        final JLabel budgetLabel = new JLabel(teamEntryViewModel.getBudgetLabel());
+        budgetField = new JTextField(TEXT_FIELD_WIDTH);
 
         budgetRow.add(budgetLabel);
         budgetRow.add(budgetField);
         teamEntryPanel.add(budgetRow);
 
-        teamEntryPanel.add(Box.createVerticalStrut(15));
+        teamEntryPanel.add(Box.createVerticalStrut(VERTICAL_STRUT_SIZE));
 
         resetButton = new JButton("Reset All");
         resetButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         teamEntryPanel.add(resetButton);
         resetButton.addActionListener(e -> resetFields());
 
-        JPanel centeringWrapper = new JPanel(new GridBagLayout());
+        final JPanel centeringWrapper = new JPanel(new GridBagLayout());
         centeringWrapper.add(teamEntryPanel);
 
-        JScrollPane scrollPane = new JScrollPane(centeringWrapper);
+        final JScrollPane scrollPane = new JScrollPane(centeringWrapper);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         add(scrollPane, BorderLayout.CENTER);
 
         playerSelectionPanel = new ScrollableListViewV2();
-        playerSelectionPanel.setDimensions(600, 600);
+        playerSelectionPanel.setDimensions(PANEL_DIMENSION, PANEL_DIMENSION);
         add(playerSelectionPanel, BorderLayout.EAST);
 
         playerSelectionPanel.setOnFilterChange(criteria -> {
@@ -136,18 +146,18 @@ public class TeamEntryView extends JPanel implements PropertyChangeListener {
             }
         });
 
-        JPanel buttonPanel = new JPanel();
+        final JPanel buttonPanel = new JPanel();
         confirmButton = new JButton(teamEntryViewModel.getConfirmButtonLabel());
         buttonPanel.add(confirmButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        menuButton.addActionListener(e -> {
+        menuButton.addActionListener(event -> {
             if (teamEntryController != null) {
                 teamEntryController.switchToHomePage();
             }
         });
 
-        confirmButton.addActionListener(e -> {
+        confirmButton.addActionListener(event -> {
             if (teamEntryController != null) {
                 teamEntryController.execute(
                         getFieldTexts(),
@@ -161,14 +171,22 @@ public class TeamEntryView extends JPanel implements PropertyChangeListener {
 
         budgetField.getDocument().addDocumentListener(new DocumentListener() {
             private void update() {
-                TeamEntryState state = teamEntryViewModel.getState();
+                final TeamEntryState state = teamEntryViewModel.getState();
                 state.setBudget(budgetField.getText());
                 teamEntryViewModel.setState(state);
             }
 
-            @Override public void insertUpdate(DocumentEvent e) { update(); }
-            @Override public void removeUpdate(DocumentEvent e) { update(); }
-            @Override public void changedUpdate(DocumentEvent e) { update(); }
+            @Override public void insertUpdate(DocumentEvent e) {
+                update();
+            }
+
+            @Override public void removeUpdate(DocumentEvent e) {
+                update();
+            }
+
+            @Override public void changedUpdate(DocumentEvent e) {
+                update();
+            }
         });
 
         addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -189,13 +207,23 @@ public class TeamEntryView extends JPanel implements PropertyChangeListener {
 
             playerInputFields[i].getDocument().addDocumentListener(new DocumentListener() {
                 private void update() {
-                    if (notDocListener) return;
+                    if (notDocListener) {
+                        return;
+                    }
                     updateViewModelField(index, playerInputFields[index].getText(), -1);
                 }
 
-                @Override public void insertUpdate(DocumentEvent e) { update(); }
-                @Override public void removeUpdate(DocumentEvent e) { update(); }
-                @Override public void changedUpdate(DocumentEvent e) { update(); }
+                @Override public void insertUpdate(DocumentEvent e) {
+                    update();
+                }
+
+                @Override public void removeUpdate(DocumentEvent e) {
+                    update();
+                }
+
+                @Override public void changedUpdate(DocumentEvent e) {
+                    update();
+                }
             });
 
             playerInputFields[i].addFocusListener(new FocusAdapter() {
@@ -208,14 +236,14 @@ public class TeamEntryView extends JPanel implements PropertyChangeListener {
     }
 
     private void updateViewModelField(int index, String name, int id) {
-        TeamEntryState state = teamEntryViewModel.getState();
+        final TeamEntryState state = teamEntryViewModel.getState();
         state.getPlayers()[index] = name;
         state.getPlayerIds()[index] = id;
         teamEntryViewModel.setState(state);
     }
 
     private void updateFieldsFromState(TeamEntryState state) {
-        String[] players = state.getPlayers();
+        final String[] players = state.getPlayers();
         if (players != null && players.length == playerInputFields.length) {
             notDocListener = true;
             for (int i = 0; i < players.length; i++) {
@@ -226,7 +254,7 @@ public class TeamEntryView extends JPanel implements PropertyChangeListener {
     }
 
     private String[] getFieldTexts() {
-        String[] texts = new String[playerInputFields.length];
+        final String[] texts = new String[playerInputFields.length];
         for (int i = 0; i < playerInputFields.length; i++) {
             texts[i] = playerInputFields[i].getText();
         }
@@ -240,7 +268,7 @@ public class TeamEntryView extends JPanel implements PropertyChangeListener {
         }
         notDocListener = false;
 
-        TeamEntryState state = teamEntryViewModel.getState();
+        final TeamEntryState state = teamEntryViewModel.getState();
         state.setPlayers(new String[playerInputFields.length]);
         state.setPlayerIds(new int[playerInputFields.length]);
         teamEntryViewModel.setState(state);
@@ -251,7 +279,7 @@ public class TeamEntryView extends JPanel implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
 
         if (evt.getSource() == teamEntryViewModel) {
-            TeamEntryState state = teamEntryViewModel.getState();
+            final TeamEntryState state = teamEntryViewModel.getState();
 
             if (state.getErrorMessage() != null) {
                 JOptionPane.showMessageDialog(this, state.getErrorMessage());
@@ -268,7 +296,7 @@ public class TeamEntryView extends JPanel implements PropertyChangeListener {
         }
 
         if (evt.getSource() == playerListViewModel) {
-            var state = playerListViewModel.getState();
+            final var state = playerListViewModel.getState();
             if (state.getErrorMessage() != null) {
                 JOptionPane.showMessageDialog(this, state.getErrorMessage());
                 return;
@@ -290,30 +318,31 @@ public class TeamEntryView extends JPanel implements PropertyChangeListener {
     }
 
     public String getViewName() {
+        final String viewName = "team entry";
         return viewName;
     }
 
     private String[] getSlotPositions() {
-        String[] positions = new String[playerInputFields.length];
+        final String[] positions = new String[playerInputFields.length];
 
         // 0–2: Forwards
-        positions[0] = "forward";
-        positions[1] = "forward";
-        positions[2] = "forward";
+        for (int i = FORWARD_START; i <= FORWARD_END; i++) {
+            positions[i] = "forward";
+        }
 
         // 3–7: Midfielders
-        for (int i = 3; i <= 7; i++) {
+        for (int i = MIDFIELDER_START; i <= MIDFIELDER_END; i++) {
             positions[i] = "midfielder";
         }
 
         // 8–12: Defenders
-        for (int i = 8; i <= 12; i++) {
+        for (int i = DEFENDER_START; i <= DEFENDER_END; i++) {
             positions[i] = "defender";
         }
 
         // 13–14: Goalkeepers
-        positions[13] = "goalkeeper";
-        positions[14] = "goalkeeper";
+        positions[GOALKEEPER_START] = "goalkeeper";
+        positions[GOALKEEPER_END] = "goalkeeper";
 
         return positions;
     }

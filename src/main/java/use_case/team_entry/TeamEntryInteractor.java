@@ -21,16 +21,16 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
     @Override
     public void execute(TeamEntryInputData inputData) {
 
-        String[] players = inputData.getPlayerNames();
-        int[] ids = inputData.getPlayerIds();
-        String[] positions = inputData.getPlayerPositions();
-        String budget = inputData.getRemainingBudget();
+        final String[] players = inputData.getPlayerNames();
+        final int[] ids = inputData.getPlayerIds();
+        final String[] positions = inputData.getPlayerPositions();
+        final String budget = inputData.getRemainingBudget();
 
-        boolean noEmptyFields = validateNoEmptyFields(players);
-        boolean isDuplicate = validateNonDuplicate(ids);
-        boolean validBudget = validateBudget(budget);
+        final boolean noEmptyFields = validateNoEmptyFields(players);
+        final boolean isDuplicate = validateNonDuplicate(ids);
+        final boolean validBudget = validateBudget(budget);
 
-        List<Player> enteredPlayerObjects = new ArrayList<>();
+        final List<Player> enteredPlayerObjects = new ArrayList<>();
         for (int i = 0; i < ids.length; i++) {
             enteredPlayerObjects.add(
                     new Player(
@@ -49,7 +49,7 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
             );
         }
 
-        boolean correctPositions =
+        final boolean correctPositions =
                 validatePositions(enteredPlayerObjects);
 
         if (!noEmptyFields) {
@@ -73,13 +73,14 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
             return;
         }
 
-        if (!validBudget) { presenter.prepareFailView(
+        if (!validBudget) {
+            presenter.prepareFailView(
                     "The remaining budget is not a valid number. Please try again."
             );
             return;
         }
 
-        Team confirmedTeam = new Team(
+        final Team confirmedTeam = new Team(
                 enteredPlayerObjects,
                 Float.parseFloat(budget),
                 true
@@ -92,21 +93,22 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
 
     @Override
     public void openPage() {
-        Team saved = teamDataAccess.getTeam();
+        final Team saved = teamDataAccess.getTeam();
 
         if (saved != null && saved.getPlayers() != null && !saved.getPlayers().isEmpty()) {
 
-            String[] names = new String[saved.getPlayers().size()];
-            int[] ids = new int[saved.getPlayers().size()];
+            final String[] names = new String[saved.getPlayers().size()];
+            final int[] ids = new int[saved.getPlayers().size()];
 
             for (int i = 0; i < saved.getPlayers().size(); i++) {
-                Player p = saved.getPlayers().get(i);
+                final Player p = saved.getPlayers().get(i);
                 names[i] = p.getWebName();
                 ids[i] = p.getId();
             }
 
             presenter.prepareSavedTeamView(names, ids);
-        } else {
+        }
+        else {
             presenter.prepareOpenPageView();
         }
     }
@@ -126,7 +128,7 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
     }
 
     private boolean validateNonDuplicate(int[] ids) {
-        Set<Integer> seen = new HashSet<>();
+        final Set<Integer> seen = new HashSet<>();
         for (int id : ids) {
             if (seen.contains(id)) {
                 return true;
@@ -139,7 +141,7 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
     private boolean validatePositions(List<Player> enteredPlayerObjects) {
 
         // Expected position slots
-        String[] requiredPositions = new String[]{
+        final String[] requiredPositions = new String[]{
                 "forward", "forward", "forward",
                 "midfielder", "midfielder", "midfielder", "midfielder", "midfielder",
                 "defender", "defender", "defender", "defender", "defender",
@@ -152,14 +154,14 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
         }
 
         for (int i = 0; i < enteredPlayerObjects.size(); i++) {
-            Player p = enteredPlayerObjects.get(i);
-            String required = requiredPositions[i];
+            final Player p = enteredPlayerObjects.get(i);
+            final String required = requiredPositions[i];
 
             if (p == null || p.getPosition() == null) {
                 return false;
             }
 
-            String actual = p.getPosition();
+            final String actual = p.getPosition();
 
             if (!actual.equalsIgnoreCase(required)) {
                 return false;
@@ -173,7 +175,8 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
         try {
             Float.parseFloat(remainingBudget);
             return true;
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return false;
         }
     }
@@ -183,20 +186,22 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
             return -1;
         }
 
-        String p = position.toLowerCase();
+        final String p = position.toLowerCase();
 
         if (p.equals("goalkeeper")) {
             return 1;
-        } else if (p.equals("defender")) {
+        }
+        else if (p.equals("defender")) {
             return 2;
-        } else if (p.equals("midfielder")) {
+        }
+        else if (p.equals("midfielder")) {
             return 3;
-        } else if (p.equals("forward")) {
+        }
+        else if (p.equals("forward")) {
             return 4;
-        } else {
+        }
+        else {
             return -1;
         }
     }
-
-
 }
