@@ -61,7 +61,7 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
 
         // Total stats is displayed by default
         filterComboBox.setSelectedItem(filterOptions[0]);
-        filterComboBox.setMaximumSize(new Dimension(100, 20));
+        filterComboBox.setMaximumSize(new Dimension(100, 50));
 
         // Update stats field based on filter selected
         filterComboBox.addActionListener(e -> {
@@ -72,6 +72,22 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
                 displayIndividualStatController.execute(inputData);
             }
         });
+
+        // Stats Panel Display
+        JPanel outerStats = new JPanel();
+        outerStats.setLayout(new BoxLayout(outerStats, BoxLayout.Y_AXIS));
+        outerStats.add(Box.createHorizontalStrut(100));
+        outerStats.add(Box.createVerticalStrut(50));
+        outerStats.add(statsPanel);
+
+        JPanel wrapperStatsPanel = new JPanel(new BorderLayout());
+        wrapperStatsPanel.add(outerStats, BorderLayout.NORTH);
+        wrapperStatsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Player Stats"));
+
+        wrapperStatsPanel.setPreferredSize(new Dimension(500, 500));
+        wrapperStatsPanel.setMaximumSize(new Dimension(500, 500));
+        wrapperStatsPanel.setMinimumSize(new Dimension(500, 500));
+
 
         // Scrollable Player List
         scrollableListView = new ScrollableListViewV2();
@@ -107,16 +123,12 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
             }
         });
 
-
         // Scrollable View Display Settings
-        scrollableListView.setDimensions(550, 550);
-        JPanel playerListPanel = new JPanel();
-        playerListPanel.add(scrollableListView);
-        // playerListPanel.add(statsPanel);
-        // add(playerListPanel, BorderLayout.CENTER);
+        scrollableListView.setDimensions(600, 600);
+        JPanel wrapperPlayerListPanel = new JPanel();
+        wrapperPlayerListPanel.add(scrollableListView);
 
         // Home Button
-        // JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JPanel buttonPanel = new JPanel();
         JButton homeButton = new JButton("Home");
 
@@ -134,21 +146,16 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         });
 
         buttonPanel.add(homeButton);
-        // add(buttonPanel, BorderLayout.PAGE_END);
 
-        JPanel playerStatsPanel = new JPanel();
-        playerStatsPanel.add(statsPanel);
-        playerStatsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Player Stats"));
 
         // Final Screen Display
         JPanel screen = new JPanel(new BorderLayout());
-        // screen.setLayout(new BoxLayout(screen, BoxLayout.Y_AXIS));
-        screen.add(playerListPanel,  BorderLayout.WEST);
-        screen.add(playerStatsPanel, BorderLayout.CENTER);
+        screen.add(wrapperPlayerListPanel, BorderLayout.WEST);
+        screen.add(wrapperStatsPanel, BorderLayout.CENTER);
         screen.add(buttonPanel, BorderLayout.PAGE_END);
 
-        this.setLayout(new BorderLayout());
-        this.add(screen);
+        setLayout(new BorderLayout());
+        add(screen);
     }
 
 
@@ -180,6 +187,8 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
     }
 
     private void setStatsPanelLayout(JPanel statsPanel) {
+        setLabelSize();
+
         filterComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
         nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         positionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -190,7 +199,6 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         pointsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
-        statsPanel.add(Box.createVerticalStrut(100));
         statsPanel.add(filterComboBox);
         statsPanel.add(nameLabel);
         statsPanel.add(positionLabel);
@@ -199,6 +207,20 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         statsPanel.add(goalsScoredLabel);
         statsPanel.add(assistsLabel);
         statsPanel.add(pointsLabel);
+    }
+
+
+    private void setLabelSize() {
+        final JLabel[] labels = {nameLabel, positionLabel, teamLabel, costLabel, goalsScoredLabel, assistsLabel, pointsLabel};
+        final int WIDTH = 500;
+        final int SIZE = 50;
+
+        for (JLabel label : labels) {
+            label.setFont(new Font("Arial", Font.BOLD, 20));
+            label.setPreferredSize(new Dimension(WIDTH, SIZE));
+            label.setMaximumSize(new Dimension(WIDTH, SIZE));
+            label.setMinimumSize(new Dimension(WIDTH, SIZE));
+        }
     }
 
 

@@ -34,28 +34,36 @@ public class DisplayIndividualStatInteractor implements DisplayIndividualStatInp
         String points;
 
         // Set output data
+        double goalsDouble;
+        double assistsDouble;
+        double pointsDouble;
+
         switch (filter) {
             case "Average":
-                goals = String.valueOf(p.getSeasonAvgStat(GOALS_STAT_NAME));
-                assists = String.valueOf(p.getSeasonAvgStat(ASSISTANT_STAT_NAME));
-                points = String.valueOf(p.getSeasonAvgStat(POINTS_STAT_NAME));
+                goalsDouble = p.getSeasonAvgStat(GOALS_STAT_NAME);
+                assistsDouble = p.getSeasonAvgStat(ASSISTANT_STAT_NAME);
+                pointsDouble = p.getSeasonAvgStat(POINTS_STAT_NAME);
                 break;
             case "Last 3":
-                goals = String.valueOf(p.getLast3Stat(GOALS_STAT_NAME));
-                assists = String.valueOf(p.getLast3Stat(ASSISTANT_STAT_NAME));
-                points = String.valueOf(p.getLast3Stat(POINTS_STAT_NAME));
+                goalsDouble = p.getLast3Stat(GOALS_STAT_NAME);
+                assistsDouble = p.getLast3Stat(ASSISTANT_STAT_NAME);
+                pointsDouble = p.getLast3Stat(POINTS_STAT_NAME);
                 break;
             case "Last 5":
-                goals = String.valueOf(p.getLast5Stat(GOALS_STAT_NAME));
-                assists = String.valueOf(p.getLast5Stat(ASSISTANT_STAT_NAME));
-                points = String.valueOf(p.getLast5Stat(POINTS_STAT_NAME));
+                goalsDouble = p.getLast5Stat(GOALS_STAT_NAME);
+                assistsDouble = p.getLast5Stat(ASSISTANT_STAT_NAME);
+                pointsDouble = p.getLast5Stat(POINTS_STAT_NAME);
                 break;
             default:
-                goals = String.valueOf(p.getSeasonTotalStat(GOALS_STAT_NAME));
-                assists = String.valueOf(p.getSeasonTotalStat(ASSISTANT_STAT_NAME));
-                points = String.valueOf(p.getSeasonTotalStat(POINTS_STAT_NAME));
+                goalsDouble = p.getSeasonTotalStat(GOALS_STAT_NAME);
+                assistsDouble = p.getSeasonTotalStat(ASSISTANT_STAT_NAME);
+                pointsDouble = p.getSeasonTotalStat(POINTS_STAT_NAME);
                 break;
         }
+
+        goals = String.format("%.2f", goalsDouble);
+        assists = String.format("%.2f", assistsDouble);
+        points = String.format("%.2f", pointsDouble);
 
 
         DisplayIndividualStatOutputData outputData = new DisplayIndividualStatOutputData(
