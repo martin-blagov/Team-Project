@@ -245,22 +245,6 @@ public class AppBuilder {
     }
   
     public AppBuilder addTeamEntryViewUseCase() {
-//
-//        // 3. Presenter
-//        TestDisplayPlayersPresenter presenter1 =
-//                new TestDisplayPlayersPresenter(testDisplayPlayersViewModel);
-//
-//        // 4. Interactor
-//        TestDisplayPlayersInteractor interactor1 =
-//                new TestDisplayPlayersInteractor(
-//                        playerDataAccess,  // Already exists
-//                        presenter1
-//                );
-//
-//        // 5. Controller
-//        testDisplayPlayersController =
-//                new TestDisplayPlayersController(interactor1);
-
         final TeamEntryPresenter presenter =
                 new TeamEntryPresenter(viewManagerModel, teamEntryViewModel, homeViewModel);
 
