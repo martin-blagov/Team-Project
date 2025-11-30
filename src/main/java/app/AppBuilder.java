@@ -217,7 +217,11 @@ public class AppBuilder {
         return this;
     }
 
-
+    /**
+     * Creates and registers the Home page view with the application.
+     *
+     * @return this builder instance
+     */
     public AppBuilder addHomePageView() {
         homeViewModel = new HomeViewModel();
         homePageView = new HomePageView(homeViewModel);
@@ -225,6 +229,11 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Sets up the Home use case and connects its controller to the Home view.
+     *
+     * @return this builder instance
+     */
     public AppBuilder addHomeUseCase() {
         final HomeController homeController = new HomeController(
                 homeViewModel,
@@ -238,9 +247,14 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Creates and registers the Team Entry view with the application.
+     *
+     * @return this builder instance
+     */
     public AppBuilder addTeamEntryView() {
         teamEntryViewModel = new TeamEntryViewModel();
-        teamEntryView = new TeamEntryView(teamEntryViewModel, playerDataAccess);
+        teamEntryView = new TeamEntryView(teamEntryViewModel, testDisplayPlayersViewModel);
         cardPanel.add(teamEntryView, teamEntryView.getViewName());
         return this;
     }
@@ -285,17 +299,24 @@ public class AppBuilder {
         });
         return this;
     }
-  
+
+    /**
+     * Sets up the Team Entry use case and connects its controller to the view.
+     *
+     * @return this builder instance
+     */
     public AppBuilder addTeamEntryViewUseCase() {
         final TeamEntryPresenter presenter =
                 new TeamEntryPresenter(viewManagerModel, teamEntryViewModel, homeViewModel);
 
         final TeamEntryInteractor interactor =
-                new TeamEntryInteractor(presenter, playerDataAccess, teamDataAccess);
+                new TeamEntryInteractor(presenter, teamDataAccess);
 
         teamEntryController = new TeamEntryController(interactor, teamEntryViewModel);
 
         teamEntryView.setTeamEntryController(teamEntryController);
+        teamEntryView.setPlayerListController(testDisplayPlayersController);
+
         return this;
     }
 

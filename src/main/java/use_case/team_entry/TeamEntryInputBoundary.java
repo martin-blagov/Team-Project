@@ -7,11 +7,12 @@ public interface TeamEntryInputBoundary {
 
     /**
      * Executes the open team entry page use case.
+     * @param inputData the input data of players
      */
     void execute(TeamEntryInputData inputData);
 
     /**
-     * Open team entry page
+     * Open team entry page.
      */
     void openPage();
 
