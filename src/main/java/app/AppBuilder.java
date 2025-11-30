@@ -204,7 +204,6 @@ public class AppBuilder {
     }
 
     public AppBuilder addDisplayIndividualStatsView() {
-        System.out.println("AppBuilder: testDisplayPlayersViewModel: " + testDisplayPlayersViewModel);
         displayIndividualStatViewModel = new DisplayIndividualStatViewModel();
         displayIndividualStatsView = new IndividualStatsPageView(displayIndividualStatViewModel, testDisplayPlayersViewModel, playerDataAccess, viewManagerModel);
         cardPanel.add(displayIndividualStatsView, displayIndividualStatsView.getViewName());
