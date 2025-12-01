@@ -61,7 +61,7 @@ public class TestTeamVisualizationView extends JPanel implements PropertyChangeL
 
         // ===== CENTER: Team Visualization Panel =====
         teamVisualizationPanel = new TeamVisualizationPanel();
-
+        teamVisualizationPanel.setShowBudgetBox(false);
         // Wire up player click callback
         teamVisualizationPanel.setPlayerClickListener(player -> {
             // When user clicks on a player, show their details

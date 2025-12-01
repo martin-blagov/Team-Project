@@ -37,6 +37,8 @@ public class TeamVisualizationPanel extends JPanel {
     private static final String PITCH_IMAGE_PATH = "src/main/resources/images/pitch/Football_Pitch.jpg";
     private static final String BASE_KIT_PATH = "src/main/resources/images/kits/";
 
+    private boolean showBudgetBox = true;
+
     /**
      * Create a new team visualization panel.
      * Data is provided later via setTeam() method.
@@ -121,10 +123,15 @@ public class TeamVisualizationPanel extends JPanel {
             g.drawString(helpMsg, x, y + 30);
         }
 
-        if (currentTeam != null) {
+        if (currentTeam != null && showBudgetBox) {
             drawBudgetBox(g);
         }
     }
+
+    public void setShowBudgetBox(boolean show) {
+        this.showBudgetBox = show;
+    }
+
 
     /**
      * Draw budget information box at top right.
