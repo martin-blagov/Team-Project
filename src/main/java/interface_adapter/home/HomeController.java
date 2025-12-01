@@ -4,6 +4,7 @@ import interface_adapter.display_individual_stat.DisplayIndividualStatController
 import interface_adapter.risk_assessment.RiskAssessmentController;
 import interface_adapter.team_entry.TeamEntryController;
 import interface_adapter.starting_lineup.StartingLineupController;
+import use_case.display_individual_stat.DisplayIndividualStatInputData;
 import use_case.team_entry.TeamEntryInputBoundary;
 
 
@@ -63,7 +64,10 @@ public class HomeController {
         System.out.println("Navigating to Transfer Page...");
     }
 
-    public void openStatsPage() {displayIndividualStatController.execute();}
+    public void openStatsPage() {
+        viewManagerModel.setState("display individual stats");
+        viewManagerModel.firePropertyChange();
+    }
 
     public void openLineupPage() {
             startingLineupController.execute();

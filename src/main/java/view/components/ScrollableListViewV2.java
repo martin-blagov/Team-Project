@@ -378,6 +378,16 @@ public class ScrollableListViewV2 extends JPanel {
         }
     }
 
+    /**
+     * Reset selected fields to default state.
+     */
+    public void resetScrollableViewList() {
+        searchField.setText("");
+        positionFilter.setSelectedIndex(0);
+        teamFilter.setSelectedIndex(0);
+        priceFilter.setSelectedIndex(0);
+    }
+
     // NEW: Setter for the selection listener
     /**
      * Set a listener to be called when a player is selected from the list.

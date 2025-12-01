@@ -1,8 +1,16 @@
 package view;
 
+import entity.Player;
+import interface_adapter.ViewManagerModel;
 import interface_adapter.display_individual_stat.DisplayIndividualStatController;
 import interface_adapter.display_individual_stat.DisplayIndividualStatState;
 import interface_adapter.display_individual_stat.DisplayIndividualStatViewModel;
+import interface_adapter.test_display_players.TestDisplayPlayersController;
+import interface_adapter.test_display_players.TestDisplayPlayersState;
+import interface_adapter.test_display_players.TestDisplayPlayersViewModel;
+import use_case.PlayerDataAccessInterface;
+import use_case.display_individual_stat.DisplayIndividualStatInputData;
+import view.components.ScrollableListViewV2;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,45 +19,233 @@ import java.beans.PropertyChangeListener;
 
 public class IndividualStatsPageView extends JPanel implements PropertyChangeListener {
     private final String viewName = "display individual stats";
-    private final DisplayIndividualStatViewModel viewModel;
+
+    private final ViewManagerModel viewManagerModel;
+    private final ScrollableListViewV2 scrollableListView;
+
+    private final DisplayIndividualStatViewModel displayIndividualStatViewModel;
     private DisplayIndividualStatController displayIndividualStatController;
 
-    private final JLabel playerNameLabel = new JLabel("Name: ");
-    private JLabel playerNameField;
+    private final TestDisplayPlayersViewModel playerListViewModel;
+    private TestDisplayPlayersController playerListController;
 
-    private final JLabel playerTeamLabel = new JLabel("Team: ");
-    private JLabel playerTeamField;
+    // Labels
+    final JLabel nameLabel = new JLabel();
+    final JLabel positionLabel = new JLabel();
+    final JLabel teamLabel = new JLabel();
+    final JLabel costLabel = new JLabel();
+    final JLabel goalsScoredLabel = new JLabel();
+    final JLabel assistsLabel = new JLabel();
+    final JLabel pointsLabel = new JLabel();
+    final JPanel statsPanel = new JPanel();
 
-    private final JLabel playerPositionLabel = new JLabel("Position: ");
-    private JLabel playerPositionField;;
+    // Stats Filtering Options
+    final String[] filterOptions = {"Total", "Average", "Last 3", "Last 5"};
+    final JComboBox<String> filterComboBox = new JComboBox<>(filterOptions);
 
-    private final JLabel playerCurrentCostLabel = new JLabel("Current Cost: ");
-    private JLabel playerCurrentCostField;
+    private Player selectedPlayer = null;
 
-    private final JLabel currentSeasonStatsLabel = new JLabel("Current Season Stats: ");
+    public IndividualStatsPageView(DisplayIndividualStatViewModel displayIndividualStatViewModel, TestDisplayPlayersViewModel playerListViewModel,
+                                   PlayerDataAccessInterface playerDataAccess, ViewManagerModel viewManagerModel) {
 
-    private final JLabel goalsScoredLabel1 = new JLabel("Goals Scored: ");
-    private JLabel goalsScoredField1;
+        this.displayIndividualStatViewModel = displayIndividualStatViewModel;
+        this.playerListViewModel = playerListViewModel;
+        this.viewManagerModel = viewManagerModel;
 
-    private final JLabel goalsAssistedLabel = new JLabel("Goals Assisted: ");
-    private JLabel goalsAssistedField1;
+        displayIndividualStatViewModel.addPropertyChangeListener(this);
+        playerListViewModel.addPropertyChangeListener(this);
+
+        // Stats Display Layout Components
+        setStatsPanelLayout(statsPanel);
+        statsPanel.setVisible(false);
+
+        // Total stats is displayed by default
+        filterComboBox.setSelectedItem(filterOptions[0]);
+        filterComboBox.setMaximumSize(new Dimension(100, 50));
+
+        // Update stats field based on filter selected
+        filterComboBox.addActionListener(e -> {
+            //if selected player == null, change filterOption
+            String filterOption = filterComboBox.getSelectedItem().toString();
+            if (selectedPlayer != null) {
+                DisplayIndividualStatInputData inputData = new DisplayIndividualStatInputData(selectedPlayer.getId(), filterOption);
+                displayIndividualStatController.execute(inputData);
+            }
+        });
+
+        // Stats Panel Display
+        JPanel outerStats = new JPanel();
+        outerStats.setLayout(new BoxLayout(outerStats, BoxLayout.Y_AXIS));
+        outerStats.add(Box.createHorizontalStrut(100));
+        outerStats.add(Box.createVerticalStrut(50));
+        outerStats.add(statsPanel);
+
+        JPanel wrapperStatsPanel = new JPanel(new BorderLayout());
+        wrapperStatsPanel.add(outerStats, BorderLayout.NORTH);
+        wrapperStatsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Player Stats"));
+
+        wrapperStatsPanel.setPreferredSize(new Dimension(500, 500));
+        wrapperStatsPanel.setMaximumSize(new Dimension(500, 500));
+        wrapperStatsPanel.setMinimumSize(new Dimension(500, 500));
 
 
-    public IndividualStatsPageView(DisplayIndividualStatViewModel viewModel) {
-        this.viewModel = viewModel;
-        viewModel.addPropertyChangeListener(this);
+        // Scrollable Player List
+        scrollableListView = new ScrollableListViewV2();
 
-        this.setLayout(new BorderLayout());
-        this.add(playerNameLabel);
+        scrollableListView.setOnFilterChange(criteria -> {
+            if (playerListController != null) {
+                playerListController.filterPlayers(
+                        criteria.searchText,
+                        criteria.positionFilter,
+                        criteria.teamFilter,
+                        criteria.maxPrice
+                );
+            }
+        });
+
+        // Retrieve player stats data
+        scrollableListView.setPlayerSelectionListener(selectedPlayer -> {
+            this.selectedPlayer = selectedPlayer;
+            statsPanel.setVisible(true);
+
+            String filterOption = filterComboBox.getSelectedItem().toString();
+            DisplayIndividualStatInputData inputData = new DisplayIndividualStatInputData(selectedPlayer.getId(), filterOption);
+            displayIndividualStatController.execute(inputData);
+        });
+
+
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentShown(java.awt.event.ComponentEvent e) {
+                if (playerListController != null) {
+                    playerListController.loadAllPlayers();
+                }
+            }
+        });
+
+        // Scrollable View Display Settings
+        scrollableListView.setDimensions(600, 600);
+        JPanel wrapperPlayerListPanel = new JPanel();
+        wrapperPlayerListPanel.add(scrollableListView);
+
+        // Home Button
+        JPanel buttonPanel = new JPanel();
+        JButton homeButton = new JButton("Home");
+
+        homeButton.addActionListener(e -> {
+            viewManagerModel.setState("home");
+            viewManagerModel.firePropertyChange();
+
+            // Fields reset when clicking home
+            statsPanel.setVisible(false);
+            filterComboBox.setSelectedItem(filterOptions[0]);
+
+            scrollableListView.resetScrollableViewList();
+
+            selectedPlayer = null;
+        });
+
+        buttonPanel.add(homeButton);
+
+
+        // Final Screen Display
+        JPanel screen = new JPanel(new BorderLayout());
+        screen.add(wrapperPlayerListPanel, BorderLayout.WEST);
+        screen.add(wrapperStatsPanel, BorderLayout.CENTER);
+        screen.add(buttonPanel, BorderLayout.PAGE_END);
+
+        setLayout(new BorderLayout());
+        add(screen);
     }
 
-    public String getViewName() { return viewName;}
 
+    // View Property Change
     public void propertyChange(PropertyChangeEvent evt) {
-        final DisplayIndividualStatState state = (DisplayIndividualStatState) evt.getNewValue();
+        if (evt.getSource() == playerListViewModel) {
+            TestDisplayPlayersState playerListState = playerListViewModel.getState();
+
+            if (playerListState.getErrorMessage() != null) {
+                JOptionPane.showMessageDialog(this,
+                        playerListState.getErrorMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Fetch Data
+            scrollableListView.setPlayers(
+                    playerListState.getPlayers(),
+                    playerListState.getAvailableTeams()
+            );
+        }
+        else if (evt.getSource() == displayIndividualStatViewModel) {
+            DisplayIndividualStatState state = displayIndividualStatViewModel.getState();
+
+            // Update Stats
+            updateStatsField(state);
+        }
     }
 
-    public void setDisplayIndividualStatController(DisplayIndividualStatController controller) {
+    private void setStatsPanelLayout(JPanel statsPanel) {
+        setLabelSize();
+
+        filterComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        positionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        teamLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        costLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        goalsScoredLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        assistsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        pointsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
+        statsPanel.add(filterComboBox);
+        statsPanel.add(nameLabel);
+        statsPanel.add(positionLabel);
+        statsPanel.add(teamLabel);
+        statsPanel.add(costLabel);
+        statsPanel.add(goalsScoredLabel);
+        statsPanel.add(assistsLabel);
+        statsPanel.add(pointsLabel);
+    }
+
+
+    private void setLabelSize() {
+        final JLabel[] labels = {nameLabel, positionLabel, teamLabel, costLabel, goalsScoredLabel, assistsLabel, pointsLabel};
+        final int WIDTH = 500;
+        final int SIZE = 50;
+
+        for (JLabel label : labels) {
+            label.setFont(new Font("Arial", Font.BOLD, 20));
+            label.setPreferredSize(new Dimension(WIDTH, SIZE));
+            label.setMaximumSize(new Dimension(WIDTH, SIZE));
+            label.setMinimumSize(new Dimension(WIDTH, SIZE));
+        }
+    }
+
+
+    private void updateStatsField(DisplayIndividualStatState state) {
+        nameLabel.setText("Name: " + state.getPlayerName());
+        positionLabel.setText("Position: " + state.getPlayerPosition());
+        teamLabel.setText("Team: " + state.getPlayerTeam());
+        costLabel.setText("Cost: €" + state.getPlayerCost());
+        goalsScoredLabel.setText("Goals: " + state.getPlayerGoals());
+        assistsLabel.setText("Assists: " + state.getPlayerAssists());
+        pointsLabel.setText("Points: " + state.getPlayerPoints());
+    }
+
+
+    public void setPlayerListController(TestDisplayPlayersController controller) {
+        this.playerListController = controller;
+    }
+
+
+    public void setDisplayIndividualStatController (DisplayIndividualStatController controller){
         this.displayIndividualStatController = controller;
+    }
+
+
+    public String getViewName () {
+        return viewName;
     }
 }
