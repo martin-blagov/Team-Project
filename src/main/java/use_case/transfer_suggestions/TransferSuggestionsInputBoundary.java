@@ -18,4 +18,10 @@ public interface TransferSuggestionsInputBoundary {
      * Switch to the home page view.
      */
     void switchToHomePage();
+
+    /**
+     * Open the transfer suggestions page.
+     * Loads the current team before displaying the view.
+     */
+    void openPage();
 }

@@ -40,6 +40,14 @@ public class TransferSuggestionsController {
     }
 
     /**
+     * Open the transfer suggestions page.
+     * Loads the current team before displaying.
+     */
+    public void openPage() {
+        interactor.openPage();
+    }
+
+    /**
      * Switch to the home page view.
      * Called when the user clicks "Back to Home" button.
      */

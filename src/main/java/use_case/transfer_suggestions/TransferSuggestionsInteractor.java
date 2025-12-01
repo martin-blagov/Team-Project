@@ -3,7 +3,7 @@ package use_case.transfer_suggestions;
 import entity.Player;
 import entity.Team;
 import use_case.PlayerDataAccessInterface;
-import use_case.team_entry.TeamDataAccessInterface;
+import use_case.transfer_suggestions.TransferSuggestionsTeamDataAccessInterface;
 
 import java.util.*;
 
@@ -13,18 +13,19 @@ import java.util.*;
  */
 public class TransferSuggestionsInteractor implements TransferSuggestionsInputBoundary {
 
-    private final TeamDataAccessInterface teamDataAccess;
+    private final TransferSuggestionsTeamDataAccessInterface teamDataAccess;
     private final PlayerDataAccessInterface playerDataAccess;
     private final TransferSuggestionsOutputBoundary presenter;
 
     private static final int MAX_K = 10;
+    private static final int MAX_OFFSET = 5;
     private static final int MAX_PLAYERS_PER_CLUB = 3;
     private static final double PRICE_PENALTY_WEIGHT = 0.3;
 
-    public TransferSuggestionsInteractor(TeamDataAccessInterface teamDataAccess,
+    public TransferSuggestionsInteractor(TransferSuggestionsTeamDataAccessInterface teamDataAccess,
                                          PlayerDataAccessInterface playerDataAccess,
                                          TransferSuggestionsOutputBoundary presenter) {
-        this.teamDataAccess = teamDataAccess;
+        this. teamDataAccess = teamDataAccess;
         this.playerDataAccess = playerDataAccess;
         this.presenter = presenter;
     }
@@ -40,9 +41,8 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
                 return;
             }
 
-            int numberOfTransfers = inputData.getNumberOfTransfers();
+            int numberOfTransfers = inputData. getNumberOfTransfers();
 
-            // Validate input
             // Validate input
             if (numberOfTransfers < 0 || numberOfTransfers > 15) {
                 presenter.presentFailure("Number of transfers must be between 0 and 15.");
@@ -66,7 +66,7 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
                 return;
             }
 
-            // 1. Calculate percentiles for all players
+            // 1.  Calculate percentiles for all players
             Map<Integer, Double> performancePercentiles = calculatePerformancePercentiles();
             Map<Integer, Double> pricePercentiles = calculatePricePercentiles();
 
@@ -79,7 +79,7 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
             );
 
             // 3. Find best replacement combinations
-            List<TransferSuggestionsOutputData.PlayerSwap> bestSwaps = findBestReplacements(playersToReplace, currentTeam);
+            List<TransferSuggestionsOutputData. PlayerSwap> bestSwaps = findBestReplacements(playersToReplace, currentTeam);
 
             // Check if we found any valid swaps
             if (bestSwaps.isEmpty()) {
@@ -87,7 +87,7 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
                 return;
             }
 
-            // 4. Create new team with transfers applied
+            // 4.  Create new team with transfers applied
             Team suggestedTeam = applySwapsToTeam(currentTeam, bestSwaps);
 
             // 5. Calculate total points improvement
@@ -104,7 +104,7 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
                     totalPointsImprovement
             );
 
-            presenter.presentSuccess(outputData);
+            presenter. presentSuccess(outputData);
 
         } catch (Exception e) {
             presenter.presentFailure("Error generating transfer suggestions: " + e.getMessage());
@@ -122,7 +122,7 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
         // Apply each swap
         for (TransferSuggestionsOutputData.PlayerSwap swap : swaps) {
             // Remove player out
-            newPlayers.remove(swap.getPlayerOut());
+            newPlayers. remove(swap.getPlayerOut());
             // Add player in
             newPlayers.add(swap.getPlayerIn());
         }
@@ -138,7 +138,7 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
         return new Team(newPlayers, newBudget, true);
     }
 
-    // ========== Helper Methods (to be implemented) ==========
+    // ========== Helper Methods ==========
 
     /**
      * Calculate performance percentile for each player in their position.
@@ -184,7 +184,7 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
 
             // Sort by predicted points (ascending: worst to best)
             eligiblePlayers.sort((a, b) ->
-                    Double.compare(a.getPredictedPoints(), b.getPredictedPoints()));
+                    Double. compare(a.getPredictedPoints(), b.getPredictedPoints()));
 
             // Assign percentiles ONLY for players in the current team
             for (int i = 0; i < eligiblePlayers.size(); i++) {
@@ -196,7 +196,7 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
                     if (eligiblePlayers.size() == 1) {
                         percentile = 50.0; // Single player gets middle percentile
                     } else {
-                        percentile = (i / (double)(eligiblePlayers.size() - 1)) * 100.0;
+                        percentile = (i / (double)(eligiblePlayers. size() - 1)) * 100.0;
                     }
                     percentiles.put(player.getId(), percentile);
                 }
@@ -220,8 +220,8 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
         // Get set of player IDs in current team
         Set<Integer> teamPlayerIds = new HashSet<>();
         if (currentTeam != null) {
-            for (Player player : currentTeam.getPlayers()) {
-                teamPlayerIds.add(player.getId());
+            for (Player player : currentTeam. getPlayers()) {
+                teamPlayerIds.add(player. getId());
             }
         }
 
@@ -239,7 +239,7 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
             }
 
             // Skip if no valid players in this position
-            if (validPlayers.isEmpty()) {
+            if (validPlayers. isEmpty()) {
                 continue;
             }
 
@@ -248,11 +248,11 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
                     Double.compare(a.getNowCost(), b.getNowCost()));
 
             // Assign percentiles ONLY for players in the current team
-            for (int i = 0; i < validPlayers.size(); i++) {
+            for (int i = 0; i < validPlayers. size(); i++) {
                 Player player = validPlayers.get(i);
 
                 // Only store percentile if this player is in our team
-                if (teamPlayerIds.contains(player.getId())) {
+                if (teamPlayerIds. contains(player.getId())) {
                     double percentile;
                     if (validPlayers.size() == 1) {
                         percentile = 50.0; // Single player gets middle percentile
@@ -277,21 +277,21 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
      *
      * Examples:
      * - Expensive underperformer: perf=50, price=80 → priority = 50 - (80-50)*0.3 = 41
-     * - Cheap underperformer: perf=49, price=50 → priority = 49 - (50-49)*0.3 = 48.7
-     * - Haaland (expensive star): perf=90, price=95 → priority = 90 - (95-90)*0.3 = 88.5
+     * - Cheap underperformer: perf=49, price=50 → priority = 49 - (50-49)*0. 3 = 48. 7
+     * - Haaland (expensive star): perf=90, price=95 → priority = 90 - (95-90)*0. 3 = 88.5
      */
     private List<Player> findWorstPlayers(Team team,
                                           int numberOfTransfers,
                                           Map<Integer, Double> performancePercentiles,
                                           Map<Integer, Double> pricePercentiles) {
 
-        List<Player> teamPlayers = team.getPlayers();
+        List<Player> teamPlayers = team. getPlayers();
 
         // Calculate replacement priority for each player
         List<PlayerWithPriority> playersWithPriorities = new ArrayList<>();
 
         for (Player player : teamPlayers) {
-            double performancePercentile = performancePercentiles.get(player.getId());
+            double performancePercentile = performancePercentiles.get(player. getId());
             double pricePercentile = pricePercentiles.get(player.getId());
 
             // Calculate replacement priority (lower = worse player)
@@ -302,12 +302,12 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
         }
 
         // Sort by priority (ascending: worst first)
-        playersWithPriorities.sort((a, b) -> Double.compare(a.priority, b.priority));
+        playersWithPriorities. sort((a, b) -> Double.compare(a.priority, b.priority));
 
         // Return the N worst players
         List<Player> worstPlayers = new ArrayList<>();
         for (int i = 0; i < numberOfTransfers && i < playersWithPriorities.size(); i++) {
-            worstPlayers.add(playersWithPriorities.get(i).player);
+            worstPlayers.add(playersWithPriorities. get(i).player);
         }
 
         return worstPlayers;
@@ -327,61 +327,97 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
     }
 
     /**
-     * Find the best replacement combinations using iterative k-search.
+     * Group players by their position.
+     *
+     * Example input: [Gyökeres(FWD), Dorgu(DEF), Milenković(DEF), Füllkrug(FWD), Palmer(MID)]
+     * Example output: {
+     *   4: [Gyökeres, Füllkrug],
+     *   2: [Dorgu, Milenković],
+     *   3: [Palmer]
+     * }
+     *
+     * @param players List of players to group
+     * @return Map of position -> list of players in that position
+     */
+    private Map<Integer, List<Player>> groupPlayersByPosition(List<Player> players) {
+        Map<Integer, List<Player>> grouped = new HashMap<>();
+
+        for (Player player : players) {
+            int position = player.getElementType();
+            if (! grouped.containsKey(position)) {
+                grouped.put(position, new ArrayList<>());
+            }
+            grouped.get(position).add(player);
+        }
+
+        return grouped;
+    }
+
+    /**
+     * Find the best replacement combinations using per-position k values with global offset.
      *
      * Algorithm:
-     * 1. Start with k = max(3, numberOfTransfers)
-     * 2. For each position that needs a replacement, get top k players
-     * 3. Generate all combinations of replacements
-     * 4. Check each combination for budget and club constraints
-     * 5. Keep the best valid combination
-     * 6. Increment k and repeat until MAX_K or until we find a solution
+     * 1. Group players to replace by position
+     * 2. Calculate base k for each position (replacingCount + 2, minimum 3)
+     * 3.  Iterate with increasing global offset (0, 1, 2, ...  up to MAX_OFFSET)
+     * 4.  For each offset, get candidates per position and generate combinations
+     * 5. Find the best valid combination at this offset level
+     * 6. If a valid combination is found, return it immediately (early exit)
+     * 7. If no valid combination, continue to next offset
      */
     private List<TransferSuggestionsOutputData.PlayerSwap> findBestReplacements(
             List<Player> playersToReplace,
             Team currentTeam) {
 
-        int numberOfTransfers = playersToReplace.size();
-        int startK = Math.max(3, numberOfTransfers);
+        // Step 1: Group players by position
+        Map<Integer, List<Player>> playersByPosition = groupPlayersByPosition(playersToReplace);
 
-        List<TransferSuggestionsOutputData.PlayerSwap> bestSwaps = null;
-        double bestTotalPointsImprovement = Double.NEGATIVE_INFINITY;
+        // Step 2: Calculate base k for each position
+        Map<Integer, Integer> baseKByPosition = new HashMap<>();
+        for (Map.Entry<Integer, List<Player>> entry : playersByPosition. entrySet()) {
+            int position = entry.getKey();
+            int replacingCount = entry.getValue().size();
+            int baseK = Math.max(3, replacingCount + 2);
+            baseKByPosition.put(position, baseK);
+        }
 
-        // Iterate k from startK to MAX_K
-        for (int k = startK; k <= MAX_K; k++) {
-            // For each player to replace, get top k candidates in their position
-            List<List<Player>> candidatesPerPlayer = new ArrayList<>();
+        // Step 3: Iterate with increasing global offset
+        for (int offset = 0; offset <= MAX_OFFSET; offset++) {
 
-            for (Player playerOut : playersToReplace) {
+            // Step 4: Get candidates for each position with position-specific k + offset
+            Map<Integer, List<Player>> candidatesByPosition = new HashMap<>();
+            for (Integer position : playersByPosition.keySet()) {
+                int k = Math.min(baseKByPosition.get(position) + offset, MAX_K);
                 List<Player> candidates = getTopKCandidatesForPosition(
-                        playerOut.getElementType(),
-                        k,
-                        currentTeam,
-                        playersToReplace  // Pass players being replaced
+                        position, k, currentTeam, playersToReplace
                 );
-                candidatesPerPlayer.add(candidates);
+                candidatesByPosition.put(position, candidates);
             }
 
-            // Generate all combinations (cartesian product)
-            List<List<Player>> allCombinations = generateCombinations(candidatesPerPlayer);
+            // Step 5: Generate all valid combinations for this offset level
+            List<List<Player>> allCombinations = generateCombinationsByPosition(
+                    playersByPosition,
+                    candidatesByPosition
+            );
 
-            // Check each combination
-            for (List<Player> playersIn : allCombinations) {
-                // Create swaps by pairing playersToReplace with playersIn
-                List<TransferSuggestionsOutputData.PlayerSwap> swaps = new ArrayList<>();
-                for (int i = 0; i < playersToReplace.size(); i++) {
-                    swaps.add(new TransferSuggestionsOutputData.PlayerSwap(
-                            playersToReplace.get(i),
-                            playersIn.get(i)
-                    ));
-                }
+            // Step 6: Find the best valid combination at THIS offset level
+            List<TransferSuggestionsOutputData. PlayerSwap> bestSwapsAtThisOffset = null;
+            double bestPointsAtThisOffset = Double.NEGATIVE_INFINITY;
+
+            for (List<Player> combination : allCombinations) {
+
+                // Map this combination to actual swaps
+                List<TransferSuggestionsOutputData.PlayerSwap> swaps = mapCombinationToSwaps(
+                        combination,
+                        playersToReplace
+                );
 
                 // Check budget constraint
-                if (!fitsWithinBudget(swaps, currentTeam.getBudget())) {
+                if (! fitsWithinBudget(swaps, currentTeam. getBudget())) {
                     continue;
                 }
 
-                // Check club constraint
+                // Check club constraint (max 3 per club)
                 if (hasClubViolation(swaps, currentTeam)) {
                     continue;
                 }
@@ -392,16 +428,24 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
                     totalPointsImprovement += swap.getPointsImprovement();
                 }
 
-                // Keep track of best combination
-                if (totalPointsImprovement > bestTotalPointsImprovement) {
-                    bestTotalPointsImprovement = totalPointsImprovement;
-                    bestSwaps = swaps;
+                // Is this the best valid solution at this offset level?
+                if (totalPointsImprovement > bestPointsAtThisOffset) {
+                    bestPointsAtThisOffset = totalPointsImprovement;
+                    bestSwapsAtThisOffset = swaps;
                 }
             }
+
+            // Step 7: If we found ANY valid solution at this offset, return it immediately
+            // This is the early exit - we don't need to search deeper offsets
+            if (bestSwapsAtThisOffset != null) {
+                return bestSwapsAtThisOffset;
+            }
+
+            // No valid solution at this offset - continue to next offset to expand candidate pool
         }
 
-        // Return best swaps found (or empty list if none found)
-        return bestSwaps != null ? bestSwaps : new ArrayList<>();
+        // No valid solution found at any offset level
+        return new ArrayList<>();
     }
 
     /**
@@ -423,7 +467,7 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
         // Get set of player IDs being replaced (these CAN be brought back in)
         Set<Integer> replacementPlayerIds = new HashSet<>();
         for (Player player : playersToReplace) {
-            replacementPlayerIds.add(player.getId());
+            replacementPlayerIds.add(player. getId());
         }
 
         // Filter: exclude team players EXCEPT those being replaced
@@ -433,7 +477,7 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
             boolean isBeingReplaced = replacementPlayerIds.contains(player.getId());
 
             // Include if: NOT in team OR is being replaced
-            if (!isInTeam || isBeingReplaced) {
+            if (! isInTeam || isBeingReplaced) {
                 candidates.add(player);
                 if (candidates.size() == k) {
                     break;
@@ -445,37 +489,166 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
     }
 
     /**
-     * Generate all combinations (cartesian product) of players.
+     * Generate combinations by choosing N different players from each position's candidate list.
      *
-     * Example: If replacing 2 players, and we have:
-     * - Position 1: [A, B, C]
-     * - Position 2: [X, Y]
+     * Example:
+     * - Need 2 FWDs from [João Pedro, Watkins, Haaland]
+     * - Need 2 DEFs from [Gabriel, Saliba, Van Dijk]
+     * - Need 1 MID from [Saka, Foden]
      *
-     * Returns: [[A,X], [A,Y], [B,X], [B,Y], [C,X], [C,Y]]
+     * Generates combinations like:
+     * - [João Pedro, Watkins, Gabriel, Saliba, Saka]
+     * - [João Pedro, Haaland, Gabriel, Van Dijk, Saka]
+     * - etc.
+     *
+     * @param playersByPosition How many players needed per position
+     * @param candidatesByPosition Available candidates per position
+     * @return List of valid combinations (each combination is a list of players)
      */
-    private List<List<Player>> generateCombinations(List<List<Player>> candidatesPerPlayer) {
+    private List<List<Player>> generateCombinationsByPosition(
+            Map<Integer, List<Player>> playersByPosition,
+            Map<Integer, List<Player>> candidatesByPosition) {
+
+        // For each position, generate all ways to choose N different players
+        // Then combine across positions (cartesian product of per-position choices)
+
+        List<List<List<Player>>> choicesPerPosition = new ArrayList<>();
+        List<Integer> positionOrder = new ArrayList<>(playersByPosition. keySet());
+
+        for (Integer position : positionOrder) {
+            int needed = playersByPosition. get(position).size();
+            List<Player> candidates = candidatesByPosition.get(position);
+
+            // Generate all ways to choose 'needed' players from candidates
+            List<List<Player>> choices = chooseDifferent(candidates, needed);
+            choicesPerPosition.add(choices);
+        }
+
+        // Now combine across positions (cartesian product)
         List<List<Player>> result = new ArrayList<>();
-        generateCombinationsHelper(candidatesPerPlayer, 0, new ArrayList<>(), result);
+        generateCrossPositionCombinations(choicesPerPosition, 0, new ArrayList<>(), result);
+
         return result;
     }
 
     /**
-     * Recursive helper for generating combinations.
+     * Generate all ways to choose 'count' different items from 'candidates'.
+     *
+     * Example: Choose 2 from [A, B, C]
+     * Returns: [[A,B], [A,C], [B,C]]
+     *
+     * This is a standard "combinations" algorithm: C(n, k)
+     *
+     * @param candidates List of available items
+     * @param count How many to choose
+     * @return List of all possible combinations
      */
-    private void generateCombinationsHelper(List<List<Player>> candidatesPerPlayer,
-                                            int index,
-                                            List<Player> current,
-                                            List<List<Player>> result) {
-        if (index == candidatesPerPlayer.size()) {
+    private List<List<Player>> chooseDifferent(List<Player> candidates, int count) {
+        List<List<Player>> result = new ArrayList<>();
+        chooseDifferentHelper(candidates, count, 0, new ArrayList<>(), result);
+        return result;
+    }
+
+    /**
+     * Recursive helper for choosing N different players.
+     * Uses backtracking to generate C(n, k) combinations.
+     */
+    private void chooseDifferentHelper(List<Player> candidates, int count,
+                                       int start, List<Player> current,
+                                       List<List<Player>> result) {
+        // Base case: we've chosen enough players
+        if (current.size() == count) {
             result.add(new ArrayList<>(current));
             return;
         }
 
-        for (Player player : candidatesPerPlayer.get(index)) {
-            current.add(player);
-            generateCombinationsHelper(candidatesPerPlayer, index + 1, current, result);
-            current.remove(current.size() - 1);
+        // Not enough candidates left to complete the combination
+        if (start >= candidates. size()) {
+            return;
         }
+
+        // Recursive case: try adding each remaining candidate
+        for (int i = start; i < candidates.size(); i++) {
+            current.add(candidates. get(i));
+            chooseDifferentHelper(candidates, count, i + 1, current, result);
+            current.remove(current.size() - 1);  // Backtrack
+        }
+    }
+
+    /**
+     * Generate cartesian product of per-position choices.
+     *
+     * Example:
+     * choicesPerPosition = [
+     *   [[A,B], [A,C], [B,C]],  // FWD choices
+     *   [[X], [Y]]              // DEF choices
+     * ]
+     *
+     * Result: [[A,B,X], [A,B,Y], [A,C,X], [A,C,Y], [B,C,X], [B,C,Y]]
+     */
+    private void generateCrossPositionCombinations(List<List<List<Player>>> choicesPerPosition,
+                                                   int positionIndex,
+                                                   List<Player> current,
+                                                   List<List<Player>> result) {
+        // Base case: we've made a choice for every position
+        if (positionIndex == choicesPerPosition.size()) {
+            result.add(new ArrayList<>(current));
+            return;
+        }
+
+        // Recursive case: try each choice for this position
+        List<List<Player>> choicesForThisPosition = choicesPerPosition. get(positionIndex);
+        for (List<Player> choice : choicesForThisPosition) {
+            // Add all players from this choice
+            current.addAll(choice);
+            generateCrossPositionCombinations(choicesPerPosition, positionIndex + 1, current, result);
+            // Backtrack: remove the players we just added
+            for (int i = 0; i < choice.size(); i++) {
+                current.remove(current.size() - 1);
+            }
+        }
+    }
+
+    /**
+     * Map a combination of incoming players to specific swaps.
+     *
+     * Example:
+     * playersToReplace = [Gyökeres, Dorgu, Milenković, Füllkrug, Palmer]
+     * combination = [João Pedro, Gabriel, Saliba, Watkins, Saka]
+     *
+     * Strategy: Match by position - pair outgoing and incoming players of the same position.
+     *
+     * @param combination List of incoming players
+     * @param playersToReplace List of outgoing players
+     * @return List of PlayerSwap objects
+     */
+    private List<TransferSuggestionsOutputData.PlayerSwap> mapCombinationToSwaps(
+            List<Player> combination,
+            List<Player> playersToReplace) {
+
+        List<TransferSuggestionsOutputData.PlayerSwap> swaps = new ArrayList<>();
+
+        // Group outgoing players by position
+        Map<Integer, List<Player>> outgoingByPosition = groupPlayersByPosition(playersToReplace);
+
+        // Group incoming players by position
+        Map<Integer, List<Player>> incomingByPosition = groupPlayersByPosition(combination);
+
+        // For each position, pair them up in order
+        for (Integer position : outgoingByPosition.keySet()) {
+            List<Player> outgoing = outgoingByPosition.get(position);
+            List<Player> incoming = incomingByPosition. get(position);
+
+            // Pair them 1:1 in order
+            for (int i = 0; i < outgoing.size(); i++) {
+                swaps.add(new TransferSuggestionsOutputData.PlayerSwap(
+                        outgoing.get(i),
+                        incoming. get(i)
+                ));
+            }
+        }
+
+        return swaps;
     }
 
     /**
@@ -502,19 +675,19 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
      * Algorithm:
      * 1. Count current club distribution
      * 2. Remove players being transferred out
-     * 3. Add players being transferred in
-     * 4. Check if any club exceeds 3 players
+     * 3.  Add players being transferred in
+     * 4.  Check if any club exceeds 3 players
      */
     private boolean hasClubViolation(List<TransferSuggestionsOutputData.PlayerSwap> swaps, Team currentTeam) {
         // Count players per club in current team
         Map<String, Integer> clubCounts = new HashMap<>();
         for (Player player : currentTeam.getPlayers()) {
             String club = player.getTeamName();
-            clubCounts.put(club, clubCounts.getOrDefault(club, 0) + 1);
+            clubCounts.put(club, clubCounts. getOrDefault(club, 0) + 1);
         }
 
         // Remove players being transferred out
-        for (TransferSuggestionsOutputData.PlayerSwap swap : swaps) {
+        for (TransferSuggestionsOutputData. PlayerSwap swap : swaps) {
             String club = swap.getPlayerOut().getTeamName();
             clubCounts.put(club, clubCounts.get(club) - 1);
             if (clubCounts.get(club) == 0) {
@@ -529,13 +702,39 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
         }
 
         // Check if any club exceeds limit
-        for (int count : clubCounts.values()) {
+        for (int count : clubCounts. values()) {
             if (count > MAX_PLAYERS_PER_CLUB) {
                 return true; // Violation!
             }
         }
 
         return false; // No violation
+    }
+
+    @Override
+    public void openPage() {
+        try {
+            // Load the current team
+            Team currentTeam = teamDataAccess.getTeam();
+
+            if (currentTeam == null) {
+                presenter.presentFailure("No team found.  Please create a team first.");
+                return;
+            }
+
+            // Create output data with just the current team (no transfers yet)
+            TransferSuggestionsOutputData outputData = new TransferSuggestionsOutputData(
+                    currentTeam,
+                    currentTeam,  // Suggested team starts same as current
+                    new ArrayList<>(),  // No swaps yet
+                    0.0  // No improvement yet
+            );
+
+            presenter.presentOpenPage(outputData);
+
+        } catch (Exception e) {
+            presenter.presentFailure("Failed to load team: " + e.getMessage());
+        }
     }
 
     @Override

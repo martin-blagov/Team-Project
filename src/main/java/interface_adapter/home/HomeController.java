@@ -3,6 +3,7 @@ package interface_adapter.home;
 import interface_adapter.display_individual_stat.DisplayIndividualStatController;
 import interface_adapter.team_entry.TeamEntryController;
 import interface_adapter.starting_lineup.StartingLineupController;
+import interface_adapter.transfer_suggestions.TransferSuggestionsController;
 import use_case.team_entry.TeamEntryInputBoundary;
 
 //TODO Check whether to remove:
@@ -18,20 +19,25 @@ public class HomeController {
     private final TeamEntryInputBoundary teamEntryInputBoundary;
     private final StartingLineupController startingLineupController;
     private final DisplayIndividualStatController displayIndividualStatController;
+    private final TransferSuggestionsController transferSuggestionsController;
+
 
     //TODO Check whether to remove:
     private final ViewManagerModel viewManagerModel;
 
     public HomeController(HomeViewModel homeViewModel, TeamEntryController teamEntryController,
                           TeamEntryInputBoundary teamEntryInputBoundary,
-                          StartingLineupController startingLineupController, DisplayIndividualStatController displayIndividualStatController,
+                          StartingLineupController startingLineupController,
+                          DisplayIndividualStatController displayIndividualStatController,
+                          TransferSuggestionsController transferSuggestionsController,
                           ViewManagerModel viewManagerModel) {
         this.homeViewModel = homeViewModel;
         this.teamEntryInputBoundary = teamEntryInputBoundary;
         this.teamEntryController = teamEntryController;
         this.startingLineupController = startingLineupController;
         this.displayIndividualStatController = displayIndividualStatController;
-        
+        this.transferSuggestionsController = transferSuggestionsController;
+
         //TODO Check whether to remove:
         this.viewManagerModel = viewManagerModel;
     }
@@ -62,6 +68,8 @@ public class HomeController {
     public void openLineupPage() {
             startingLineupController.execute();
     }
+
+    public void openTransferSuggestionsPage() {transferSuggestionsController.openPage();}
 
     // TODO REMOVE
     public void openTestDisplayPlayersPage() {

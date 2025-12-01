@@ -12,13 +12,15 @@ public class Main {
                 .addDisplayIndividualStatsView()
                 .addStartingLineupView()
                 .addBestTeamView()
+                .addTransferSuggestionsView()
                 .addDisplayIndividualStatUseCase()
                 .addTeamEntryViewUseCase()
                 .addTestDisplayPlayersUseCase() //  todo remove
                 .addTestTeamVisualizationUseCase() // todo remove
                 .addStartingLineupUseCase()
-                .addHomeUseCase()
                 .addBestTeamUseCase()
+                .addTransferSuggestionsUseCase()
+                .addHomeUseCase()
                 .build();
         application.setSize(1100, 800);  // width=1000px, height=700px
         application.setLocationRelativeTo(null); // center on screen
