@@ -18,7 +18,6 @@ public class DisplayIndividualStatPresenter implements DisplayIndividualStatOutp
         this.viewManagerModel = viewManagerModel;
     }
 
-
     @Override
     public void presentView(DisplayIndividualStatOutputData outputData) {
         final DisplayIndividualStatState playerDisplayState = viewModel.getState();
@@ -29,9 +28,6 @@ public class DisplayIndividualStatPresenter implements DisplayIndividualStatOutp
         playerDisplayState.setPlayerGoals(outputData.getPlayerGoals());
         playerDisplayState.setPlayerAssists(outputData.getPlayerAssists());
         playerDisplayState.setPlayerPoints(outputData.getPlayerPoints());
-
-        // viewManagerModel.setState(viewModel.getViewName());
-        // viewManagerModel.firePropertyChange();
 
         viewModel.firePropertyChange();
     }

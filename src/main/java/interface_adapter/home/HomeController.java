@@ -4,8 +4,6 @@ import interface_adapter.display_individual_stat.DisplayIndividualStatController
 import interface_adapter.team_entry.TeamEntryController;
 import interface_adapter.starting_lineup.StartingLineupController;
 import interface_adapter.transfer_suggestions.TransferSuggestionsController;
-import use_case.display_individual_stat.DisplayIndividualStatInputData;
-// todo - why are we accessing inputdata in home controller?
 import use_case.team_entry.TeamEntryInputBoundary;
 
 //TODO Check whether to remove:
