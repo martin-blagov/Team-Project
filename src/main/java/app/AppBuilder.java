@@ -103,7 +103,7 @@ public class AppBuilder {
     private final TeamDataAccessInterface teamDataAccess = fileTeamDAO;  // Team Entry (can't change name)
     private final DisplayTeamDataAccessInterface displayTeamDataAccess = fileTeamDAO;  // Display Team
     private final TransferSuggestionsTeamDataAccessInterface transferSuggestionsTeamDataAccess = fileTeamDAO;  // Transfer Suggestions
-    private final StartingLineupTeamDataAccessInterface startingLineupTeamDataAccess = fileTeamDataAccess;
+    private final StartingLineupTeamDataAccessInterface startingLineupTeamDataAccess = fileTeamDAO;
 
     // todo remove
     private final use_case.TeamDataAccessInterface useCaseTeamDataAccess = fileTeamDAO;
