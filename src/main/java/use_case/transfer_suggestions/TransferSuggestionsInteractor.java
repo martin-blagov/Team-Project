@@ -41,6 +41,8 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
                 return;
             }
 
+            currentTeam = enrichTeamWithFullPlayerData(currentTeam);
+
             int numberOfTransfers = inputData. getNumberOfTransfers();
 
             // Validate input
@@ -722,10 +724,13 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
                 return;
             }
 
-            // Create output data with just the current team (no transfers yet)
+            // ADD THIS: Enrich with full player data from API
+            Team enrichedTeam = enrichTeamWithFullPlayerData(currentTeam);
+
+            // Create output data with the enriched team
             TransferSuggestionsOutputData outputData = new TransferSuggestionsOutputData(
-                    currentTeam,
-                    currentTeam,  // Suggested team starts same as current
+                    enrichedTeam,
+                    enrichedTeam,  // Suggested team starts same as current
                     new ArrayList<>(),  // No swaps yet
                     0.0  // No improvement yet
             );
@@ -735,6 +740,32 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
         } catch (Exception e) {
             presenter.presentFailure("Failed to load team: " + e.getMessage());
         }
+    }
+
+    /**
+     * Enrich team players with full data from playerDataAccess.
+     * The saved team has minimal player data, so we need to fetch full stats.
+     */
+    private Team enrichTeamWithFullPlayerData(Team team) {
+        if (team == null) {
+            return null;
+        }
+
+        List<Player> enrichedPlayers = new ArrayList<>();
+
+        for (Player savedPlayer : team.getPlayers()) {
+            // Get full player data from the API cache
+            Player fullPlayer = playerDataAccess.getPlayerById(savedPlayer. getId());
+
+            if (fullPlayer != null) {
+                enrichedPlayers.add(fullPlayer);
+            } else {
+                // Fallback: keep the saved player if not found in API
+                enrichedPlayers. add(savedPlayer);
+            }
+        }
+
+        return new Team(enrichedPlayers, team.getBudget(), team.isConfirmed());
     }
 
     @Override

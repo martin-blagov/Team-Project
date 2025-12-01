@@ -65,6 +65,10 @@ public class TransferSuggestionsPresenter implements TransferSuggestionsOutputBo
         // Notify view
         viewModel.setState(state);
         viewModel.firePropertyChange();
+
+        // ADD THIS: Switch back to home page so user can fix their team
+        viewManagerModel.setState(homeViewModel.getViewName());
+        viewManagerModel.firePropertyChange();
     }
 
     @Override

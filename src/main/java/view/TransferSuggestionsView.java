@@ -164,7 +164,6 @@ public class TransferSuggestionsView extends JPanel implements PropertyChangeLis
                     TransferSuggestionsState state = viewModel.getState();
                     state.setNumberOfTransfers(0);
                     viewModel.setState(state);
-                    controller.execute();
                 }
             }
         });
@@ -404,8 +403,8 @@ public class TransferSuggestionsView extends JPanel implements PropertyChangeLis
 
         // Handle errors
         if (state.getErrorMessage() != null) {
-            statusLabel.setText("Error: " + state.getErrorMessage());
-            JOptionPane.showMessageDialog(
+            statusLabel.setText("Error: " + state. getErrorMessage());
+            JOptionPane. showMessageDialog(
                     this,
                     state.getErrorMessage(),
                     "Error",
@@ -414,27 +413,28 @@ public class TransferSuggestionsView extends JPanel implements PropertyChangeLis
             return;
         }
 
-        // Handle success
+        // ALWAYS update teams if they exist (not just on success message)
+        if (state.getOriginalTeam() != null) {
+            originalTeamPanel.setTeam(state. getOriginalTeam());
+            originalTeamPanel.refresh();
+        }
+
+        if (state. getSuggestedTeam() != null) {
+            suggestedTeamPanel. setTeam(state.getSuggestedTeam());
+            suggestedTeamPanel.refresh();
+        }
+
+        // Update transfers list
+        updateTransfersList(state.getSwaps());
+
+        // Update summary
+        updateSummary(state);
+
+        // Handle success message (show status)
         if (state.getSuccessMessage() != null) {
-            statusLabel.setText(state.getSuccessMessage());
-
-            // Update original team (if changed)
-            if (state.getOriginalTeam() != null) {
-                originalTeamPanel.setTeam(state.getOriginalTeam());
-                originalTeamPanel.refresh();
-            }
-
-            // Update suggested team
-            if (state.getSuggestedTeam() != null) {
-                suggestedTeamPanel.setTeam(state.getSuggestedTeam());
-                suggestedTeamPanel.refresh();
-            }
-
-            // Update transfers list
-            updateTransfersList(state.getSwaps());
-
-            // Update summary
-            updateSummary(state);
+            statusLabel. setText(state.getSuccessMessage());
+        } else {
+            statusLabel.setText("Enter number of transfers and click 'Suggest Transfers'");
         }
     }
 
