@@ -45,7 +45,7 @@ public class HomeController {
         this.riskAssessmentController = riskAssessmentController;
         this.transferSuggestionsController = transferSuggestionsController;
 
-        //TODO Check whether to remove:
+        // TODO Check whether to remove:
         this.viewManagerModel = viewManagerModel;
     }
 
