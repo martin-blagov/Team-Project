@@ -37,6 +37,18 @@ public class StartingLineupViewModel extends ViewModel<StartingLineupState> {
         this.firePropertyChange("startingLineup");
     }
 
+    public StartingLineupState.ViewMode getViewMode() {
+        StartingLineupState state = getState();
+        return state == null ? StartingLineupState.ViewMode.TABLE : state.getViewMode();
+    }
+
+    public void setViewMode(StartingLineupState.ViewMode viewMode) {
+        StartingLineupState newState = new StartingLineupState(getState());
+        newState.setViewMode(viewMode);
+        this.setState(newState);
+        this.firePropertyChange("viewMode");
+    }
+
     public Team getStartingTeam() {
         StartingLineupState state = getState();
         if (state == null) {

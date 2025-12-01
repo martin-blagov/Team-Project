@@ -12,9 +12,28 @@ import java.util.List;
  */
 public class StartingLineupState {
 
+    public enum ViewMode {
+        TABLE,
+        GRAPHIC
+    }
+
     private String statusMessage = "No lineup loaded.";
     private Team startingTeam;
     private List<Player> benchPlayers = new ArrayList<>();
+    private ViewMode viewMode = ViewMode.TABLE;
+
+    public StartingLineupState() {
+    }
+
+    public StartingLineupState(StartingLineupState other) {
+        if (other == null) {
+            return;
+        }
+        this.statusMessage = other.statusMessage;
+        this.startingTeam = other.startingTeam;
+        this.benchPlayers = new ArrayList<>(other.benchPlayers);
+        this.viewMode = other.viewMode;
+    }
 
     public String getStatusMessage() {
         return statusMessage;
@@ -38,5 +57,13 @@ public class StartingLineupState {
 
     public void setBenchPlayers(List<Player> benchPlayers) {
         this.benchPlayers = benchPlayers == null ? new ArrayList<>() : new ArrayList<>(benchPlayers);
+    }
+
+    public ViewMode getViewMode() {
+        return viewMode;
+    }
+
+    public void setViewMode(ViewMode viewMode) {
+        this.viewMode = viewMode == null ? ViewMode.TABLE : viewMode;
     }
 }
