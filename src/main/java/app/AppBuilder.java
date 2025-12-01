@@ -23,6 +23,9 @@ import interface_adapter.best_team.BestTeamPresenter;
 import interface_adapter.best_team.BestTeamViewModel;
 import use_case.risk_assessment.RiskAssessmentTeamAccessInterface;
 import use_case.starting_lineup.StartingLineupTeamDataAccessInterface;
+import interface_adapter.transfer_suggestions.TransferSuggestionsController;
+import interface_adapter.transfer_suggestions.TransferSuggestionsPresenter;
+import interface_adapter.transfer_suggestions.TransferSuggestionsViewModel;
 import use_case.team_entry.TeamDataAccessInterface;
 import use_case.display_individual_stat.DisplayIndividualStatInputBoundary;
 import use_case.display_individual_stat.DisplayIndividualStatInteractor;
@@ -34,6 +37,7 @@ import use_case.starting_lineup.StartingLineupInputBoundary;
 import use_case.starting_lineup.StartingLineupInteractor;
 import use_case.starting_lineup.StartingLineupOutputBoundary;
 import use_case.best_team.BestTeamInteractor;
+import use_case.transfer_suggestions.TransferSuggestionsInteractor;
 import view.*;
 
 import interface_adapter.initialise_predictions.InitialisePredictionsController;
@@ -45,6 +49,9 @@ import use_case.initialise_predictions.InitialisePredictionsInputBoundary;
 import use_case.initialise_predictions.InitialisePredictionsInteractor;
 import use_case.initialise_predictions.ModelCoefficientDataAccessInterface;
 import view.InitialisePredictionsView;
+
+import use_case.display_team.DisplayTeamDataAccessInterface;
+import use_case.transfer_suggestions.TransferSuggestionsTeamDataAccessInterface;
 
 //TODO REMOVE
 import interface_adapter.test_display_players.TestDisplayPlayersController;
@@ -58,8 +65,9 @@ import interface_adapter.display_team. DisplayTeamController;
 import interface_adapter.display_team.DisplayTeamPresenter;
 import interface_adapter.display_team.DisplayTeamViewModel;
 import use_case.display_team.DisplayTeamInputBoundary;
-import use_case. display_team.DisplayTeamInteractor;
+import use_case.display_team.DisplayTeamInteractor;
 import view.TestTeamVisualizationView;
+
 
 
 import javax.swing.*;
@@ -94,14 +102,25 @@ public class AppBuilder {
     private InitialisePredictionsViewModel initViewModel;
     private InitialisePredictionsController initController;
     private InMemoryPlayerDataAccess playerDataAccess = new InMemoryPlayerDataAccess();
-    private final FileTeamDataAccessObject fileTeamDataAccess = new FileTeamDataAccessObject("team.json");
-    private final StartingLineupTeamDataAccessInterface startingLineupTeamDataAccess = fileTeamDataAccess;
-    private final TeamDataAccessInterface teamDataAccess = fileTeamDataAccess;
 
     private RiskAssessmentViewModel riskAssessmentViewModel;
     private RiskAssessmentView riskAssessmentView;
     private RiskAssessmentController riskAssessmentController;
     private RiskAssessmentTeamAccessInterface teamAccess = new FileTeamDataAccessObject("team.json");
+    // With these lines:
+    private final FileTeamDataAccessObject fileTeamDAO = new FileTeamDataAccessObject("team.json");
+    private final TeamDataAccessInterface teamDataAccess = fileTeamDAO;  // Team Entry (can't change name)
+    private final DisplayTeamDataAccessInterface displayTeamDataAccess = fileTeamDAO;  // Display Team
+    private final TransferSuggestionsTeamDataAccessInterface transferSuggestionsTeamDataAccess = fileTeamDAO;  // Transfer Suggestions
+    private final StartingLineupTeamDataAccessInterface startingLineupTeamDataAccess = fileTeamDAO;
+
+    // todo remove
+    private final use_case.TeamDataAccessInterface useCaseTeamDataAccess = fileTeamDAO;
+
+    // Transfer Suggestions components
+    private TransferSuggestionsView transferSuggestionsView;
+    private TransferSuggestionsViewModel transferSuggestionsViewModel;
+    private TransferSuggestionsController transferSuggestionsController;
 
 
     public AppBuilder() {
@@ -173,7 +192,7 @@ public class AppBuilder {
 
         // 4.  Interactor (uses shared teamDataAccess)
         DisplayTeamInputBoundary interactor = new DisplayTeamInteractor(
-                teamDataAccess,  // Already exists - shared with other use cases
+                displayTeamDataAccess,  // Already exists - shared with other use cases
                 presenter
         );
 
@@ -276,6 +295,7 @@ public class AppBuilder {
                 startingLineupController,
                 displayIndividualStatController,
                 riskAssessmentController,
+                transferSuggestionsController,
                 viewManagerModel
         );
         homePageView.setHomeController(homeController);
@@ -340,6 +360,7 @@ public class AppBuilder {
      *
      * @return this builder instance
      */
+
     public AppBuilder addTeamEntryViewUseCase() {
         final TeamEntryPresenter presenter =
                 new TeamEntryPresenter(viewManagerModel, teamEntryViewModel, homeViewModel);
@@ -357,7 +378,7 @@ public class AppBuilder {
 
     public AppBuilder addDisplayIndividualStatUseCase() {
         final DisplayIndividualStatOutputBoundary outputBoundary = new DisplayIndividualStatPresenter(
-                viewManagerModel,displayIndividualStatViewModel);
+                viewManagerModel, displayIndividualStatViewModel);
 
         final DisplayIndividualStatInputBoundary interactor = new DisplayIndividualStatInteractor(
                 outputBoundary, playerDataAccess);
@@ -387,6 +408,43 @@ public class AppBuilder {
         bestTeamController = new BestTeamController(interactor);
         // connect controller to home page
         homePageView.setBestTeamController(bestTeamController);
+        return this;
+    }
+
+    public AppBuilder addTransferSuggestionsView() {
+        transferSuggestionsViewModel = new TransferSuggestionsViewModel();
+        transferSuggestionsView = new TransferSuggestionsView(
+                transferSuggestionsViewModel,
+                viewManagerModel
+        );
+        cardPanel.add(transferSuggestionsView, transferSuggestionsView.getViewName());
+        return this;
+    }
+
+    public AppBuilder addTransferSuggestionsUseCase() {
+        // Create Presenter
+        final TransferSuggestionsPresenter presenter = new TransferSuggestionsPresenter(
+                transferSuggestionsViewModel,
+                viewManagerModel,
+                homeViewModel
+        );
+
+        // Create Interactor
+        final TransferSuggestionsInteractor interactor = new TransferSuggestionsInteractor(
+                transferSuggestionsTeamDataAccess,      // Need to add this field - see below
+                playerDataAccess,    // Already exists
+                presenter
+        );
+
+        // Create Controller
+        transferSuggestionsController = new TransferSuggestionsController(
+                interactor,
+                transferSuggestionsViewModel
+        );
+
+        // Inject controller into view
+        transferSuggestionsView.setController(transferSuggestionsController);
+
         return this;
     }
 

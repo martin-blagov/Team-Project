@@ -2,7 +2,7 @@ package use_case.display_team;
 
 import entity.Player;
 import entity.Team;
-import use_case.TeamDataAccessInterface;
+import use_case.display_team.DisplayTeamDataAccessInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +17,10 @@ import java.util.List;
  */
 public class DisplayTeamInteractor implements DisplayTeamInputBoundary {
 
-    private final TeamDataAccessInterface teamDataAccess;
+    private final DisplayTeamDataAccessInterface teamDataAccess;
     private final DisplayTeamOutputBoundary presenter;
 
-    public DisplayTeamInteractor(TeamDataAccessInterface teamDataAccess,
+    public DisplayTeamInteractor(DisplayTeamDataAccessInterface teamDataAccess,
                                  DisplayTeamOutputBoundary presenter) {
         this.teamDataAccess = teamDataAccess;
         this.presenter = presenter;

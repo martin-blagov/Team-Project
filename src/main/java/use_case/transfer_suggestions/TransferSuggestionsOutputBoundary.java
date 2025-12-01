@@ -24,4 +24,10 @@ public interface TransferSuggestionsOutputBoundary {
      * Switch to the home page view.
      */
     void switchToHomePage();
+
+    /**
+     * Present the transfer suggestions page with the current team loaded.
+     * @param outputData Contains the current team
+     */
+    void presentOpenPage(TransferSuggestionsOutputData outputData);
 }

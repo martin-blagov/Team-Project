@@ -22,6 +22,7 @@ public class Main {
                 .addBestTeamView()
                 .addRiskAssessmentView()
                 .addTeamEntryView()
+                .addTransferSuggestionsView()
                 .addDisplayIndividualStatUseCase()
                 .addTeamEntryViewUseCase()
                 .addTestDisplayPlayersUseCase() //  todo remove
@@ -30,6 +31,7 @@ public class Main {
                 .addRiskAssessmentUseCase()
                 .addHomeUseCase()
                 .addBestTeamUseCase()
+                .addTransferSuggestionsUseCase()
                 .addHomeUseCase()
                 .build();
 

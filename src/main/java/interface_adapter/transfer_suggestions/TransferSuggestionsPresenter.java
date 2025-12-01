@@ -5,6 +5,8 @@ import interface_adapter.home.HomeViewModel;
 import use_case.transfer_suggestions.TransferSuggestionsOutputBoundary;
 import use_case.transfer_suggestions.TransferSuggestionsOutputData;
 
+import java.util.ArrayList;
+
 /**
  * Presenter for the Transfer Suggestions use case.
  * Formats the interactor's output data for the view.
@@ -63,6 +65,31 @@ public class TransferSuggestionsPresenter implements TransferSuggestionsOutputBo
         // Notify view
         viewModel.setState(state);
         viewModel.firePropertyChange();
+
+        // ADD THIS: Switch back to home page so user can fix their team
+        viewManagerModel.setState(homeViewModel.getViewName());
+        viewManagerModel.firePropertyChange();
+    }
+
+    @Override
+    public void presentOpenPage(TransferSuggestionsOutputData outputData) {
+        TransferSuggestionsState state = viewModel.getState();
+
+        // Set the original team
+        state.setOriginalTeam(outputData.getOriginalTeam());
+        state.setSuggestedTeam(outputData.getOriginalTeam());  // Start with same team
+        state.setSwaps(new ArrayList<>());  // No swaps yet
+        state.setTotalPointsImprovement(0.0);
+        state.setErrorMessage(null);
+        state.setSuccessMessage(null);
+
+        // Update ViewModel
+        viewModel.setState(state);
+        viewModel.firePropertyChange();
+
+        // Switch to the view
+        viewManagerModel.setState("transfer suggestions");
+        viewManagerModel.firePropertyChange();
     }
 
     @Override

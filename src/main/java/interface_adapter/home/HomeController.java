@@ -4,7 +4,9 @@ import interface_adapter.display_individual_stat.DisplayIndividualStatController
 import interface_adapter.risk_assessment.RiskAssessmentController;
 import interface_adapter.team_entry.TeamEntryController;
 import interface_adapter.starting_lineup.StartingLineupController;
+import interface_adapter.transfer_suggestions.TransferSuggestionsController;
 import use_case.display_individual_stat.DisplayIndividualStatInputData;
+// todo - why are we accessing inputdata in home controller?
 import use_case.team_entry.TeamEntryInputBoundary;
 
 
@@ -22,6 +24,7 @@ public class HomeController {
     private final StartingLineupController startingLineupController;
     private final DisplayIndividualStatController displayIndividualStatController;
     private final RiskAssessmentController riskAssessmentController;
+    private final TransferSuggestionsController transferSuggestionsController;
 
 
     //TODO Check whether to remove:
@@ -30,6 +33,9 @@ public class HomeController {
     public HomeController(HomeViewModel homeViewModel, TeamEntryController teamEntryController,
                           TeamEntryInputBoundary teamEntryInputBoundary,
                           StartingLineupController startingLineupController, DisplayIndividualStatController displayIndividualStatController, RiskAssessmentController riskAssessmentController,
+                          StartingLineupController startingLineupController,
+                          DisplayIndividualStatController displayIndividualStatController,
+                          TransferSuggestionsController transferSuggestionsController,
                           ViewManagerModel viewManagerModel) {
         this.homeViewModel = homeViewModel;
         this.teamEntryInputBoundary = teamEntryInputBoundary;
@@ -37,6 +43,7 @@ public class HomeController {
         this.startingLineupController = startingLineupController;
         this.displayIndividualStatController = displayIndividualStatController;
         this.riskAssessmentController = riskAssessmentController;
+        this.transferSuggestionsController = transferSuggestionsController;
 
         //TODO Check whether to remove:
         this.viewManagerModel = viewManagerModel;
@@ -72,6 +79,8 @@ public class HomeController {
     public void openLineupPage() {
             startingLineupController.execute();
     }
+
+    public void openTransferSuggestionsPage() {transferSuggestionsController.openPage();}
 
     // TODO REMOVE
     public void openTestDisplayPlayersPage() {
