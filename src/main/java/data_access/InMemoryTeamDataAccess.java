@@ -1,9 +1,15 @@
 package data_access;
 
 import entity.Team;
+import use_case.display_team.DisplayTeamDataAccessInterface;
+import use_case.team_entry.TeamDataAccessInterface;
+import use_case.transfer_suggestions.TransferSuggestionsTeamDataAccessInterface;
+
+// todo remove
 import use_case.team_entry.TeamDataAccessInterface;
 
-public class InMemoryTeamDataAccess implements TeamDataAccessInterface {
+public class InMemoryTeamDataAccess implements TeamDataAccessInterface, DisplayTeamDataAccessInterface,
+TransferSuggestionsTeamDataAccessInterface, use_case.TeamDataAccessInterface{
 
     private Team storedTeam = null;
 

@@ -21,12 +21,14 @@ public class Main {
                 .addStartingLineupView()
                 .addBestTeamView()
                 .addTeamEntryView()
+                .addTransferSuggestionsView()
                 .addDisplayIndividualStatUseCase()
                 .addTeamEntryViewUseCase()
                 .addTestDisplayPlayersUseCase() //  todo remove
                 .addTestTeamVisualizationUseCase() // todo remove
                 .addStartingLineupUseCase()
                 .addBestTeamUseCase()
+                .addTransferSuggestionsUseCase()
                 .addHomeUseCase()
                 .build();
 

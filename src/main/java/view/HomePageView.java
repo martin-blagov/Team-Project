@@ -137,6 +137,14 @@ public class HomePageView extends JPanel implements PropertyChangeListener {
                 }
         );
 
+        transferButton.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        homeController.openTransferSuggestionsPage();  // Change to this
+                    }
+                }
+        );
+
         //TODO REMOVE
         testDisplayPlayersButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
