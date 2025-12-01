@@ -32,9 +32,9 @@ public class HomeController {
 
     public HomeController(HomeViewModel homeViewModel, TeamEntryController teamEntryController,
                           TeamEntryInputBoundary teamEntryInputBoundary,
-                          StartingLineupController startingLineupController, DisplayIndividualStatController displayIndividualStatController, RiskAssessmentController riskAssessmentController,
                           StartingLineupController startingLineupController,
                           DisplayIndividualStatController displayIndividualStatController,
+                          RiskAssessmentController riskAssessmentController,
                           TransferSuggestionsController transferSuggestionsController,
                           ViewManagerModel viewManagerModel) {
         this.homeViewModel = homeViewModel;
