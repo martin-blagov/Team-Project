@@ -24,7 +24,7 @@ public class HomePageView extends JPanel implements PropertyChangeListener {
 
     private final JButton bestTeamButton;
     private final JButton teamInputButton;
-    private final JButton replacementButton;
+    private final JButton riskAssessmentButton;
     private final JButton bestPlayersButton;
     private final JButton transferButton;
     private final JButton statsButton;
@@ -52,7 +52,7 @@ public class HomePageView extends JPanel implements PropertyChangeListener {
         // Page Buttons
         bestTeamButton = new JButton(HomeViewModel.BEST_TEAM_BUTTON_LABEL);
         teamInputButton = new JButton(HomeViewModel.TEAM_INPUT_BUTTON_LABEL);
-        replacementButton = new JButton(HomeViewModel.REPLACEMENT_BUTTON_LABEL);
+        riskAssessmentButton = new JButton(HomeViewModel.RISK_ASSESSMENT_BUTTON_LABEL);
         bestPlayersButton = new JButton(HomeViewModel.BEST_PLAYERS_BUTTON_LABEL);
         transferButton = new JButton(HomeViewModel.TRANSFER_BUTTON_LABEL);
         statsButton = new JButton(HomeViewModel.STATS_BUTTON_LABEL);
@@ -67,7 +67,7 @@ public class HomePageView extends JPanel implements PropertyChangeListener {
         // Set consistent button size
         Dimension buttonSize = new Dimension(250, 40);
         JButton[] buttons = {
-                bestTeamButton, teamInputButton, replacementButton,
+                bestTeamButton, teamInputButton, riskAssessmentButton,
                 bestPlayersButton, transferButton, statsButton, lineupButton,
                 testDisplayPlayersButton, testTeamVisualizationButton //TODO REMOVE
         };
@@ -99,13 +99,14 @@ public class HomePageView extends JPanel implements PropertyChangeListener {
                 }
         );
 
-        replacementButton.addActionListener(
+        riskAssessmentButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent evt) {
-                        homeController.openReplacementPage();
+                        homeController.openRiskAssessmentPage();
                     }
                 }
         );
+
 
         bestPlayersButton.addActionListener(
                 new ActionListener() {

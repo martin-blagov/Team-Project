@@ -2,6 +2,7 @@ package data_access;
 
 import entity.Player;
 import entity.Team;
+import use_case.risk_assessment.RiskAssessmentTeamAccessInterface;
 import use_case.transfer_suggestions.TransferSuggestionsTeamDataAccessInterface;
 import use_case.team_entry.TeamDataAccessInterface;
 import use_case.display_team.DisplayTeamDataAccessInterface;
@@ -24,7 +25,7 @@ import java.util.Map;
  * DAO for saving/loading the user's confirmed FPL team to a local JSON file.
  */
 public class FileTeamDataAccessObject implements TeamDataAccessInterface, TransferSuggestionsTeamDataAccessInterface,
-    DisplayTeamDataAccessInterface, use_case.TeamDataAccessInterface, StartingLineupTeamDataAccessInterface {
+    DisplayTeamDataAccessInterface, use_case.TeamDataAccessInterface, StartingLineupTeamDataAccessInterface, RiskAssessmentTeamAccessInterface {
 
     private final String filepath;
     private Team savedTeam;

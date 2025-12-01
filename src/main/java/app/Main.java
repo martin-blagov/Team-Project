@@ -20,6 +20,7 @@ public class Main {
                 .addDisplayIndividualStatsView()
                 .addStartingLineupView()
                 .addBestTeamView()
+                .addRiskAssessmentView()
                 .addTeamEntryView()
                 .addTransferSuggestionsView()
                 .addDisplayIndividualStatUseCase()
@@ -27,6 +28,8 @@ public class Main {
                 .addTestDisplayPlayersUseCase() //  todo remove
                 .addTestTeamVisualizationUseCase() // todo remove
                 .addStartingLineupUseCase()
+                .addRiskAssessmentUseCase()
+                .addHomeUseCase()
                 .addBestTeamUseCase()
                 .addTransferSuggestionsUseCase()
                 .addHomeUseCase()

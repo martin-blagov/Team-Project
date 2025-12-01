@@ -12,7 +12,7 @@ public class HomeViewModel extends ViewModel<Void> {
     // Button labels
     public static final String BEST_TEAM_BUTTON_LABEL = "Best Team";
     public static final String TEAM_INPUT_BUTTON_LABEL = "Build/Edit Team";
-    public static final String REPLACEMENT_BUTTON_LABEL = "Replacement Suggestions";
+    public static final String RISK_ASSESSMENT_BUTTON_LABEL = "Player Risk Assessment";
     public static final String BEST_PLAYERS_BUTTON_LABEL = "Best Players";
     public static final String TRANSFER_BUTTON_LABEL = "Transfers";
     public static final String STATS_BUTTON_LABEL = "Player Stats";
