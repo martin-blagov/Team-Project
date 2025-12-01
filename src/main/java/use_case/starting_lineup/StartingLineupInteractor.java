@@ -2,7 +2,7 @@ package use_case.starting_lineup;
 
 import entity.Player;
 import entity.Team;
-import use_case.TeamDataAccessInterface;
+import use_case.PlayerDataAccessInterface;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -16,18 +16,22 @@ import java.util.stream.Collectors;
 public class StartingLineupInteractor implements StartingLineupInputBoundary {
 
     private final StartingLineupOutputBoundary outputBoundary;
-    private final TeamDataAccessInterface teamDataAccess;
+    private final StartingLineupTeamDataAccessInterface teamDataAccess;
+    private final PlayerDataAccessInterface playerDataAccess;
 
     /**
      * Constructs a new interactor for the Starting Lineup use case.
      *
      * @param outputBoundary    presenter used to display the computed lineup
      * @param teamDataAccess    gateway for reading the user's saved team
+     * @param playerDataAccess  gateway for reading player data
      */
     public StartingLineupInteractor(StartingLineupOutputBoundary outputBoundary,
-                                    TeamDataAccessInterface teamDataAccess) {
+                                    StartingLineupTeamDataAccessInterface teamDataAccess,
+                                    PlayerDataAccessInterface playerDataAccess) {
         this.outputBoundary = outputBoundary;
         this.teamDataAccess = teamDataAccess;
+        this.playerDataAccess = playerDataAccess;
     }
 
     @Override
@@ -42,7 +46,7 @@ public class StartingLineupInteractor implements StartingLineupInputBoundary {
         }
 
         // Get all players in the user's team.
-        List<Player> teamPlayers = savedTeam.getPlayers();
+        List<Player> teamPlayers = getPrediction(savedTeam.getPlayers());
 
         List<Player> gkp = filterByPosition(teamPlayers, 1);
         List<Player> dfd = filterByPosition(teamPlayers, 2);
@@ -65,11 +69,35 @@ public class StartingLineupInteractor implements StartingLineupInputBoundary {
         List<Player> bench = new ArrayList<>(teamPlayers);
         bench.removeAll(starting);
 
-        Team startingTeam = new Team(starting, 0.0f, true);
+        Team startingTeam = new Team(starting, savedTeam.getBudget(), savedTeam.isConfirmed());
 
         // Output the starting team and bench list.
         StartingLineupOutputData outputData = new StartingLineupOutputData(startingTeam, bench);
         outputBoundary.presentLineup(outputData);
+    }
+
+    /**
+     * Get latest prediction data for players objects in the given list from the player data gateway.
+     *
+     * @param players     list of players to get data.
+     * @return list of player objects with prediction data.
+     */
+    private List<Player> getPrediction(List<Player> players) {
+        if (players == null) {
+            return new ArrayList<>();
+        }
+
+        List<Player> result = new ArrayList<>(players.size());
+        for (Player player : players) {
+            Player current = playerDataAccess.getPlayerById(player.getId());
+            if (current != null && current.getPredictedPoints() != null) {
+                result.add(current);
+            }
+            else {
+                result.add(player);
+            }
+        }
+        return result;
     }
 
     /**
@@ -94,7 +122,8 @@ public class StartingLineupInteractor implements StartingLineupInputBoundary {
      */
     private void addTopPlayers(List<Player> source, List<Player> dest, int count) {
         List<Player> sorted = source.stream()
-                .sorted(Comparator.comparing(Player::getPredictedPoints).reversed())
+                .sorted(Comparator.comparing(Player::getPredictedPoints,
+                        Comparator.nullsLast(Double::compareTo)).reversed())
                 .collect(Collectors.toList());
         for (int i = 0; i < Math.min(count, sorted.size()); i++) {
             dest.add(sorted.get(i));

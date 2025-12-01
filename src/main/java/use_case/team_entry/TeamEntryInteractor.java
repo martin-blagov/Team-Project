@@ -2,91 +2,106 @@ package use_case.team_entry;
 
 import entity.Player;
 import entity.Team;
-import use_case.PlayerDataAccessInterface;
-import use_case.team_entry.TeamDataAccessInterface;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class TeamEntryInteractor implements TeamEntryInputBoundary {
 
     private final TeamEntryOutputBoundary presenter;
-    private final PlayerDataAccessInterface dataAccess;
     private final TeamDataAccessInterface teamDataAccess;
 
-    public TeamEntryInteractor(TeamEntryOutputBoundary presenter, PlayerDataAccessInterface dataAccess, TeamDataAccessInterface teamDataAccess) {
+    public TeamEntryInteractor(
+            TeamEntryOutputBoundary presenter,
+            TeamDataAccessInterface teamDataAccess
+    ) {
         this.presenter = presenter;
-        this.dataAccess = dataAccess;
         this.teamDataAccess = teamDataAccess;
     }
 
+    @Override
     public void execute(TeamEntryInputData inputData) {
 
-        String[] players = inputData.getPlayerNames();
-        int[] ids = inputData.getPlayerIds();
-        String budget = inputData.getRemainingBudet();
+        final String[] players = inputData.getPlayerNames();
+        final int[] ids = inputData.getPlayerIds();
+        final String[] positions = inputData.getPlayerPositions();
+        final String budget = inputData.getRemainingBudget();
 
-        boolean noEmptyFields = validateNoEmptyFields(players);
-        boolean playerExists = validatePlayersExist(ids);
-        boolean isDuplicate = validateNonDuplicate(inputData.getPlayerIds());
+        final boolean noEmptyFields = validateNoEmptyFields(players);
+        final boolean isDuplicate = validateNonDuplicate(ids);
+        final boolean validBudget = validateBudget(budget);
 
-        List<Player> enteredPlayerObjects = new ArrayList<>();
-
-        // Create arraylist of player objects that match entered players
+        final List<Player> enteredPlayerObjects = new ArrayList<>();
         for (int i = 0; i < ids.length; i++) {
-            int actualId = ids[i];
-            Player p = dataAccess.getPlayerById(actualId);
-            enteredPlayerObjects.add(p);
-        }
-
-        boolean validBudget = validateBudget(budget);
-        boolean correctPositions = validatePositions(enteredPlayerObjects);
-
-        // Order of checks: empty fields, exists, duplicate, positions, budget
-        if (!noEmptyFields) {
-            presenter.prepareFailView("Please fill in all 15 player fields before confirming your team.");
-            return;
-        } else if (!playerExists) {
-            presenter.prepareFailView("One or more entered players do not exist. Please check spelling and try again.");
-            return;
-        } else if (isDuplicate) {
-            presenter.prepareFailView("You have entered duplicate players. Please ensure each player appears only once.");
-            return;
-        } else if (!correctPositions) {
-            presenter.prepareFailView("One or more players are not in the correct position slots. Please check the lineup format.");
-            return;
-        } else if (!validBudget) {
-            presenter.prepareFailView("The remaining budget is not a valid number. Please try again.");
-            return;
-        } else {
-            // New Team object
-            Team confirmedTeam = new Team(
-                    enteredPlayerObjects,
-                    Float.parseFloat(budget), // get player's entered remaining budget
-                    true
+            enteredPlayerObjects.add(
+                    new Player(
+                            ids[i],
+                            players[i],
+                            -1,
+                            "a",
+                            0.0,
+                            mapPositionToInt(positions[i]),
+                            "ClubX",
+                            new HashMap<>(),
+                            new HashMap<>(),
+                            new HashMap<>(),
+                            new HashMap<>()
+                    )
             );
+        }
 
-            // Save it permanently
-            teamDataAccess.saveTeam(confirmedTeam);
+        final boolean correctPositions =
+                validatePositions(enteredPlayerObjects);
 
-            presenter.prepareSuccessView(new TeamEntryOutputData(players));
+        if (!noEmptyFields) {
+            presenter.prepareFailView(
+                    "Please fill in all 15 player fields before confirming your team."
+            );
             return;
         }
+
+        if (isDuplicate) {
+            presenter.prepareFailView(
+                    "You have entered duplicate players. Please ensure each player appears only once."
+            );
+            return;
+        }
+
+        if (!correctPositions) {
+            presenter.prepareFailView(
+                    "One or more players are not in the correct position slots. Please check the lineup format."
+            );
+            return;
+        }
+
+        if (!validBudget) {
+            presenter.prepareFailView(
+                    "The remaining budget is not a valid number. Please try again."
+            );
+            return;
+        }
+
+        final Team confirmedTeam = new Team(
+                enteredPlayerObjects,
+                Float.parseFloat(budget),
+                true
+        );
+
+        teamDataAccess.saveTeam(confirmedTeam);
+
+        presenter.prepareSuccessView(new TeamEntryOutputData(players));
     }
 
     @Override
     public void openPage() {
-        Team saved = teamDataAccess.getTeam();
+        final Team saved = teamDataAccess.getTeam();
 
         if (saved != null && saved.getPlayers() != null && !saved.getPlayers().isEmpty()) {
 
-            String[] names = new String[saved.getPlayers().size()];
-            int[] ids = new int[saved.getPlayers().size()];
+            final String[] names = new String[saved.getPlayers().size()];
+            final int[] ids = new int[saved.getPlayers().size()];
 
             for (int i = 0; i < saved.getPlayers().size(); i++) {
-                Player p = saved.getPlayers().get(i);
+                final Player p = saved.getPlayers().get(i);
                 names[i] = p.getWebName();
                 ids[i] = p.getId();
             }
@@ -94,10 +109,9 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
             presenter.prepareSavedTeamView(names, ids);
         }
         else {
-            presenter.prepareOpenPageView(); // empty view as usual
+            presenter.prepareOpenPageView();
         }
     }
-
 
     @Override
     public void switchToHomePage() {
@@ -113,16 +127,8 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
         return true;
     }
 
-    private boolean validatePlayersExist(int[] ids) {
-        for (int id : ids) {
-            if (id == -1) return false; // no player selected
-            if (dataAccess.getPlayerById(id) == null) return false; // invalid ID
-        }
-        return true;
-    }
-
     private boolean validateNonDuplicate(int[] ids) {
-        Set<Integer> seen = new HashSet<>();
+        final Set<Integer> seen = new HashSet<>();
         for (int id : ids) {
             if (seen.contains(id)) {
                 return true;
@@ -135,36 +141,67 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
     private boolean validatePositions(List<Player> enteredPlayerObjects) {
 
         // Expected position slots
-        String[] requiredPositions = new String[]{
+        final String[] requiredPositions = new String[]{
                 "forward", "forward", "forward",
                 "midfielder", "midfielder", "midfielder", "midfielder", "midfielder",
                 "defender", "defender", "defender", "defender", "defender",
                 "goalkeeper", "goalkeeper"
         };
 
-        for (int i = 0; i < enteredPlayerObjects.size(); i++) {
-            Player p = enteredPlayerObjects.get(i);
-            String required = requiredPositions[i];
+        // Safety check
+        if (enteredPlayerObjects.size() != requiredPositions.length) {
+            return false;
+        }
 
-            if (p == null) {
+        for (int i = 0; i < enteredPlayerObjects.size(); i++) {
+            final Player p = enteredPlayerObjects.get(i);
+            final String required = requiredPositions[i];
+
+            if (p == null || p.getPosition() == null) {
                 return false;
             }
 
-            String actual = p.getPosition(); // already "forward" / "defender" / etc.
+            final String actual = p.getPosition();
 
             if (!actual.equalsIgnoreCase(required)) {
-                return false; // wrong position in this slot
+                return false;
             }
         }
-        return true; // all positions correct
+
+        return true;
     }
 
     private boolean validateBudget(String remainingBudget) {
         try {
-            Integer.parseInt(remainingBudget);
+            Float.parseFloat(remainingBudget);
             return true;
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return false;
+        }
+    }
+
+    private int mapPositionToInt(String position) {
+        if (position == null) {
+            return -1;
+        }
+
+        final String p = position.toLowerCase();
+
+        if (p.equals("goalkeeper")) {
+            return 1;
+        }
+        else if (p.equals("defender")) {
+            return 2;
+        }
+        else if (p.equals("midfielder")) {
+            return 3;
+        }
+        else if (p.equals("forward")) {
+            return 4;
+        }
+        else {
+            return -1;
         }
     }
 }

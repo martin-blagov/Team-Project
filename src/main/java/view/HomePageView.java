@@ -125,9 +125,7 @@ public class HomePageView extends JPanel implements PropertyChangeListener {
 
         statsButton.addActionListener(
                 new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        homeController.openStatsPage();
-                    }
+                    public void actionPerformed(ActionEvent evt) { homeController.openStatsPage(); }
                 }
         );
 

@@ -8,6 +8,7 @@ import use_case.display_team.DisplayTeamDataAccessInterface;
 
 //todo remove
 import use_case.team_entry.TeamDataAccessInterface;
+import use_case.starting_lineup.StartingLineupTeamDataAccessInterface;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,14 +24,13 @@ import java.util.Map;
  * DAO for saving/loading the user's confirmed FPL team to a local JSON file.
  */
 public class FileTeamDataAccessObject implements TeamDataAccessInterface, TransferSuggestionsTeamDataAccessInterface,
-DisplayTeamDataAccessInterface, use_case.TeamDataAccessInterface{
+    DisplayTeamDataAccessInterface, use_case.TeamDataAccessInterface, StartingLineupTeamDataAccessInterface {
 
     private final String filepath;
     private Team savedTeam;
 
     public FileTeamDataAccessObject(String filepath) {
         this.filepath = filepath;
-        System.out.println("Team JSON file path: " + new File(filepath).getAbsolutePath());
         loadTeamFromFile();
     }
 
@@ -39,11 +39,11 @@ DisplayTeamDataAccessInterface, use_case.TeamDataAccessInterface{
     public void saveTeam(Team team) {
         savedTeam = team;
 
-        JSONObject json = new JSONObject();
-        JSONArray playersArray = new JSONArray();
+        final JSONObject json = new JSONObject();
+        final JSONArray playersArray = new JSONArray();
 
         for (Player p : team.getPlayers()) {
-            JSONObject obj = new JSONObject();
+            final JSONObject obj = new JSONObject();
             obj.put("id", p.getId());
             obj.put("webName", p.getWebName());
             obj.put("elementType", p.getElementType());
@@ -66,7 +66,7 @@ DisplayTeamDataAccessInterface, use_case.TeamDataAccessInterface{
         json.put("confirmed", team.isConfirmed());
 
         try (FileWriter writer = new FileWriter(filepath)) {
-            writer.write(json.toString(4)); // Readable JSON data
+            writer.write(json.toString(4));
         }
         catch (IOException ex) {
             throw new RuntimeException("Failed to save team JSON file.", ex);
@@ -84,42 +84,44 @@ DisplayTeamDataAccessInterface, use_case.TeamDataAccessInterface{
     public void clearTeam() {
         savedTeam = null;
 
-        File f = new File(filepath);
-        if (f.exists()) f.delete();
+        final File f = new File(filepath);
+        if (f.exists()) {
+            f.delete();
+        }
     }
 
     // Load the saved team from the JSON file
     private void loadTeamFromFile() {
-        File f = new File(filepath);
+        final File f = new File(filepath);
         if (!f.exists()) {
             savedTeam = null;
             return;
         }
 
         try {
-            String content = readFile(filepath);
-            JSONObject json = new JSONObject(content);
+            final String content = readFile(filepath);
+            final JSONObject json = new JSONObject(content);
 
-            JSONArray array = json.getJSONArray("players");
-            List<Player> players = new ArrayList<>();
+            final JSONArray array = json.getJSONArray("players");
+            final List<Player> players = new ArrayList<>();
 
             for (int i = 0; i < array.length(); i++) {
                 JSONObject p = array.getJSONObject(i);
 
-                int id = p.getInt("id");
-                String webName = p.getString("webName");
-                int elementType = p.getInt("elementType");
-                String status = p.getString("status");
-                double nowCost = p.getDouble("nowCost");
-                int position = convertPositionToInt(p.getString("position"));
-                String teamName = p.getString("team");
+                final int id = p.getInt("id");
+                final String webName = p.getString("webName");
+                final int elementType = p.getInt("elementType");
+                final String status = p.getString("status");
+                final double nowCost = p.getDouble("nowCost");
+                final int position = convertPositionToInt(p.getString("position"));
+                final String teamName = p.getString("team");
 
-                Map<String, Double> seasonTotal = jsonToMap(p.getJSONObject("seasonTotalStats"));
-                Map<String, Double> seasonAvg = jsonToMap(p.getJSONObject("seasonAvgStats"));
-                Map<String, Double> last3 = jsonToMap(p.getJSONObject("last3Stats"));
-                Map<String, Double> last5 = jsonToMap(p.getJSONObject("last5Stats"));
+                final Map<String, Double> seasonTotal = jsonToMap(p.getJSONObject("seasonTotalStats"));
+                final Map<String, Double> seasonAvg = jsonToMap(p.getJSONObject("seasonAvgStats"));
+                final Map<String, Double> last3 = jsonToMap(p.getJSONObject("last3Stats"));
+                final Map<String, Double> last5 = jsonToMap(p.getJSONObject("last5Stats"));
 
-                Player player = new Player(
+                final Player player = new Player(
                         id,
                         webName,
                         elementType,
@@ -136,19 +138,20 @@ DisplayTeamDataAccessInterface, use_case.TeamDataAccessInterface{
                 players.add(player);
             }
 
-            float budget = (float) json.getDouble("budget");
-            boolean confirmed = json.getBoolean("confirmed");
+            final float budget = (float) json.getDouble("budget");
+            final boolean confirmed = json.getBoolean("confirmed");
 
             savedTeam = new Team(players, budget, confirmed);
 
         }
-        catch (IOException | JSONException ex) { // If there's an issue with getting the JSON file
+        // If there's an issue with getting the JSON file
+        catch (IOException | JSONException ex) {
             throw new RuntimeException("Could not load team JSON file.", ex);
         }
     }
 
     private Map<String, Double> jsonToMap(JSONObject obj) {
-        Map<String, Double> map = new HashMap<>();
+        final Map<String, Double> map = new HashMap<>();
         for (String key : obj.keySet()) {
             map.put(key, obj.getDouble(key));
         }
@@ -158,16 +161,16 @@ DisplayTeamDataAccessInterface, use_case.TeamDataAccessInterface{
     private int convertPositionToInt(String pos) {
         switch (pos.toLowerCase()) {
             case "goalkeeper": return 1;
-            case "defender":   return 2;
+            case "defender": return 2;
             case "midfielder": return 3;
-            case "forward":    return 4;
+            case "forward": return 4;
             default: return -1;
         }
     }
 
     private String readFile(String path) throws IOException {
-        BufferedReader r = new BufferedReader(new FileReader(path));
-        StringBuilder sb = new StringBuilder();
+        final BufferedReader r = new BufferedReader(new FileReader(path));
+        final StringBuilder sb = new StringBuilder();
 
         String line;
         while ((line = r.readLine()) != null) {
