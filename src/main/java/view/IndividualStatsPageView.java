@@ -42,7 +42,8 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
     final JLabel assistsLabel = new JLabel();
     final JLabel pointsLabel = new JLabel();
     final JPanel statsPanel = new JPanel();
-    JLabel imageBox = new JLabel();
+    JPanel imageBox = new JPanel();
+    JLabel imageLabel = new JLabel();
 
     private static final String BASE_PATH = "src/main/resources/images/kits/";
 
@@ -83,13 +84,14 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         // Stats Panel Display
         JPanel outerStats = new JPanel();
         outerStats.setLayout(new BoxLayout(outerStats, BoxLayout.Y_AXIS));
-        outerStats.add(Box.createHorizontalStrut(100));
+        outerStats.add(Box.createHorizontalStrut(200));
         outerStats.add(Box.createVerticalStrut(50));
         outerStats.add(statsPanel);
 
         JPanel wrapperStatsPanel = new JPanel(new BorderLayout());
         wrapperStatsPanel.add(outerStats, BorderLayout.NORTH);
-        wrapperStatsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Player Stats"));
+        wrapperStatsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+                "Player Stats - Current Season"));
 
         wrapperStatsPanel.setPreferredSize(new Dimension(500, 500));
         wrapperStatsPanel.setMaximumSize(new Dimension(500, 500));
@@ -136,8 +138,8 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         wrapperPlayerListPanel.add(scrollableListView);
 
         // Home Button
-        JPanel buttonPanel = new JPanel();
-        JButton homeButton = new JButton("Home");
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JButton homeButton = new JButton("Back");
 
         homeButton.addActionListener(e -> {
             viewManagerModel.setState("home");
@@ -159,14 +161,10 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         JPanel screen = new JPanel(new BorderLayout());
         screen.add(wrapperPlayerListPanel, BorderLayout.WEST);
         screen.add(wrapperStatsPanel, BorderLayout.CENTER);
-        screen.add(buttonPanel, BorderLayout.PAGE_END);
+        screen.add(buttonPanel, BorderLayout.PAGE_START);
 
         setLayout(new BorderLayout());
         add(screen);
-
-        JPanel imagePanel = new JPanel(new FlowLayout());
-        imagePanel.add(imageBox);
-        wrapperStatsPanel.add(imagePanel);
     }
 
     private String retrievePlayerImagePath() {
@@ -177,10 +175,10 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
             String playerType = isGoalkeeper ? "GK" : "Home";
             String playerPath = BASE_PATH + "Kit=" + teamName + " (" + playerType + ").png";
 
-            System.out.println("Kit path for " + selectedPlayer.getWebName() + ": " + playerPath);
+            System.out.println("Image path for " + selectedPlayer.getWebName() + ": " + playerPath);
             return playerPath;
         }
-        return null;
+        return "";
     }
 
     private void displayImage() {
@@ -200,7 +198,14 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         if (image != null) {
             Image scaledImage = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
             ImageIcon imageIcon = new ImageIcon(scaledImage);
-            imageBox.setIcon(imageIcon);
+            imageLabel.setText("");
+            imageLabel.setIcon(imageIcon);
+            imageBox.add(imageLabel);
+            imageBox.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        }
+        else {
+            imageLabel.setIcon(null);
+            imageLabel.setText("Error");
         }
     }
 
@@ -234,6 +239,12 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
     private void setStatsPanelLayout(JPanel statsPanel) {
         setLabelSize();
 
+
+        imageBox.setPreferredSize(new Dimension(100, 100));
+        imageBox.setMinimumSize(new Dimension(100, 100));
+        imageBox.setMaximumSize(new Dimension(100, 100));
+        imageBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         filterComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
         nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         positionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -245,6 +256,10 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
 
         statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
         statsPanel.add(filterComboBox);
+        statsPanel.add(Box.createVerticalStrut(100));
+        statsPanel.add(imageBox);
+        statsPanel.add(nameLabel);
+        statsPanel.add(imageBox);
         statsPanel.add(nameLabel);
         statsPanel.add(positionLabel);
         statsPanel.add(teamLabel);
@@ -277,7 +292,6 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         goalsScoredLabel.setText("Goals: " + state.getPlayerGoals());
         assistsLabel.setText("Assists: " + state.getPlayerAssists());
         pointsLabel.setText("Points: " + state.getPlayerPoints());
-        retrievePlayerImagePath();
         displayImage();
     }
 

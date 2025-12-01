@@ -78,6 +78,11 @@ public class DisplayIndividualStatInteractor implements DisplayIndividualStatInp
                 break;
         }
 
+        if ("goalkeeper".equals(position)) {
+            goals = "N/A";
+            assists = "N/A";
+        }
+
         final DisplayIndividualStatOutputData outputData = new DisplayIndividualStatOutputData(
                 name,
                 position,
