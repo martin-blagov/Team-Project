@@ -1,11 +1,11 @@
 package interface_adapter.starting_lineup;
 
+import java.util.List;
+
 import entity.Player;
 import entity.Team;
 import interface_adapter.ViewModel;
 import interface_adapter.team_view.TeamViewModel;
-
-import java.util.List;
 
 /**
  * ViewModel for the Starting Lineup use case.
@@ -20,6 +20,8 @@ public class StartingLineupViewModel extends ViewModel<StartingLineupState> {
     }
 
     /**
+     * Returns the Team View Model.
+     *
      * @return the underlying Team View Model.
      */
     public TeamViewModel getTeamViewModel() {
@@ -28,6 +30,9 @@ public class StartingLineupViewModel extends ViewModel<StartingLineupState> {
 
     /**
      * Replace the current lineup state with the given starting team and bench.
+     *
+     * @param startingTeam the starting team.
+     * @param benchPlayers the list of bench players.
      */
     public void updateLineup(Team startingTeam, List<Player> benchPlayers) {
         StartingLineupState newState = new StartingLineupState();
