@@ -3,6 +3,7 @@ package use_case.risk_assessment;
 import entity.Team;
 import entity.Player;
 import use_case.risk_assessment.risk.*;
+import use_case.PlayerDataAccessInterface;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -11,11 +12,13 @@ import java.util.List;
 public class RiskAssessmentInteractor implements RiskAssessmentInputBoundary {
 
     private final RiskAssessmentTeamAccessInterface teamDataAccess;
+    private final PlayerDataAccessInterface playerDataAccess;
     private final RiskAssessmentOutputBoundary presenter;
 
-    public RiskAssessmentInteractor(RiskAssessmentTeamAccessInterface teamDataAccess,
+    public RiskAssessmentInteractor(RiskAssessmentTeamAccessInterface teamDataAccess, PlayerDataAccessInterface playerDataAccess,
                                     RiskAssessmentOutputBoundary presenter) {
         this.teamDataAccess = teamDataAccess;
+        this.playerDataAccess = playerDataAccess;
         this.presenter = presenter;
     }
 
@@ -39,7 +42,13 @@ public class RiskAssessmentInteractor implements RiskAssessmentInputBoundary {
         List<PlayerRisk> profiles = new ArrayList<>();
 
         for (Player player : team.getPlayers()) {
-            PlayerRisk playerRisk = new PlayerRisk(player, rules);
+            if(player == null) continue;
+            // cross-referencing with actual player data
+            Player fullPlayer = playerDataAccess.getPlayerById(player.getId());
+
+            if (fullPlayer == null) continue;
+
+            PlayerRisk playerRisk = new PlayerRisk(fullPlayer, rules);
             if (playerRisk.getRiskCount() > 0) {
                 profiles.add(playerRisk);
             }

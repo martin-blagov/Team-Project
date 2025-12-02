@@ -263,7 +263,7 @@ public class AppBuilder {
 
         // Interactor depends on TeamDataAccessInterface
         RiskAssessmentInteractor interactor =
-                new RiskAssessmentInteractor(teamAccess, presenter);
+                new RiskAssessmentInteractor(teamAccess, playerDataAccess, presenter);
 
         riskAssessmentController = new RiskAssessmentController(interactor);
 
