@@ -3,9 +3,8 @@ package use_case.team_entry;
 public interface TeamEntryOutputBoundary {
     /**
      * Prepares the success view for the Team Entry Page Use Case.
-     * @param outputData the output data
      */
-    void prepareSuccessView(TeamEntryOutputData outputData);
+    void prepareSuccessView();
 
     /**
      * Prepares the fail view for the Team Entry Page Use Case.
