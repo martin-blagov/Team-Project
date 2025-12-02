@@ -19,6 +19,8 @@ public interface TeamDataAccessInterface {
      */
     Team getTeam();
 
-    // Clears the saved team.
+    /**
+     * Clears the saved team.
+     */
     void clearTeam();
 }

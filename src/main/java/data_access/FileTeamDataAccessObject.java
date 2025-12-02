@@ -94,63 +94,63 @@ public class FileTeamDataAccessObject implements TeamDataAccessInterface, Transf
     // Load the saved team from the JSON file
     private void loadTeamFromFile() {
         final File f = new File(filepath);
-        if (!f.exists()) {
-            savedTeam = null;
-            return;
-        }
 
         try {
-            final String content = readFile(filepath);
+            if (f.exists()) {
+                final String content = readFile(filepath);
 
-            // Check if content is empty or just whitespace
-            if (content == null || content.trim().isEmpty()) {
+                // Check if content is not empty and not just whitespace
+                if (content != null && !content.trim().isEmpty()) {
+                    final JSONObject json = new JSONObject(content);
+
+                    final JSONArray array = json.getJSONArray("players");
+                    final List<Player> players = new ArrayList<>();
+
+                    for (int i = 0; i < array.length(); i++) {
+                        final JSONObject p = array.getJSONObject(i);
+
+                        final int id = p.getInt("id");
+                        final String webName = p.getString("webName");
+                        final int elementType = p.getInt("elementType");
+                        final String status = p.getString("status");
+                        final double nowCost = p.getDouble("nowCost");
+                        final int position = convertPositionToInt(p.getString("position"));
+                        final String teamName = p.getString("team");
+
+                        final Map<String, Double> seasonTotal = jsonToMap(p.getJSONObject("seasonTotalStats"));
+                        final Map<String, Double> seasonAvg = jsonToMap(p.getJSONObject("seasonAvgStats"));
+                        final Map<String, Double> last3 = jsonToMap(p.getJSONObject("last3Stats"));
+                        final Map<String, Double> last5 = jsonToMap(p.getJSONObject("last5Stats"));
+
+                        final Player player = new Player(
+                                id,
+                                webName,
+                                elementType,
+                                status,
+                                nowCost,
+                                position,
+                                teamName,
+                                seasonTotal,
+                                seasonAvg,
+                                last3,
+                                last5
+                        );
+
+                        players.add(player);
+                    }
+
+                    final float budget = (float) json.getDouble("budget");
+                    final boolean confirmed = json.getBoolean("confirmed");
+
+                    savedTeam = new Team(players, budget, confirmed);
+                }
+                else {
+                    savedTeam = null;
+                }
+            }
+            else {
                 savedTeam = null;
-                return;
             }
-
-            final JSONObject json = new JSONObject(content);
-
-            final JSONArray array = json.getJSONArray("players");
-            final List<Player> players = new ArrayList<>();
-
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject p = array.getJSONObject(i);
-
-                final int id = p.getInt("id");
-                final String webName = p.getString("webName");
-                final int elementType = p.getInt("elementType");
-                final String status = p.getString("status");
-                final double nowCost = p.getDouble("nowCost");
-                final int position = convertPositionToInt(p.getString("position"));
-                final String teamName = p.getString("team");
-
-                final Map<String, Double> seasonTotal = jsonToMap(p.getJSONObject("seasonTotalStats"));
-                final Map<String, Double> seasonAvg = jsonToMap(p.getJSONObject("seasonAvgStats"));
-                final Map<String, Double> last3 = jsonToMap(p.getJSONObject("last3Stats"));
-                final Map<String, Double> last5 = jsonToMap(p.getJSONObject("last5Stats"));
-
-                final Player player = new Player(
-                        id,
-                        webName,
-                        elementType,
-                        status,
-                        nowCost,
-                        position,
-                        teamName,
-                        seasonTotal,
-                        seasonAvg,
-                        last3,
-                        last5
-                );
-
-                players.add(player);
-            }
-
-            final float budget = (float) json.getDouble("budget");
-            final boolean confirmed = json.getBoolean("confirmed");
-
-            savedTeam = new Team(players, budget, confirmed);
-
         }
         // If there's an issue with getting the JSON file
         catch (IOException | JSONException ex) {
@@ -167,13 +167,30 @@ public class FileTeamDataAccessObject implements TeamDataAccessInterface, Transf
     }
 
     private int convertPositionToInt(String pos) {
-        switch (pos.toLowerCase()) {
-            case "goalkeeper": return 1;
-            case "defender": return 2;
-            case "midfielder": return 3;
-            case "forward": return 4;
-            default: return -1;
+        int result = -1;
+
+        if (pos != null) {
+            final String lower = pos.toLowerCase();
+
+            switch (lower) {
+                case "goalkeeper":
+                    result = 1;
+                    break;
+                case "defender":
+                    result = 2;
+                    break;
+                case "midfielder":
+                    result = 3;
+                    break;
+                case "forward":
+                    result = 4;
+                    break;
+                default:
+                    result = -1;
+                    break;
+            }
         }
+        return result;
     }
 
     private String readFile(String path) throws IOException {

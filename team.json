@@ -3,9 +3,9 @@
         {
             "last3Stats": {},
             "seasonAvgStats": {},
-            "webName": "Watkins",
+            "webName": "João Pedro",
             "nowCost": 0,
-            "id": 64,
+            "id": 249,
             "position": "forward",
             "team": "ClubX",
             "seasonTotalStats": {},
@@ -146,19 +146,6 @@
         {
             "last3Stats": {},
             "seasonAvgStats": {},
-            "webName": "Van de Ven",
-            "nowCost": 0,
-            "id": 575,
-            "position": "defender",
-            "team": "ClubX",
-            "seasonTotalStats": {},
-            "last5Stats": {},
-            "elementType": -1,
-            "status": "a"
-        },
-        {
-            "last3Stats": {},
-            "seasonAvgStats": {},
             "webName": "Diouf",
             "nowCost": 0,
             "id": 603,
@@ -172,9 +159,22 @@
         {
             "last3Stats": {},
             "seasonAvgStats": {},
-            "webName": "Dúbravka",
+            "webName": "Calafiori",
             "nowCost": 0,
-            "id": 470,
+            "id": 7,
+            "position": "defender",
+            "team": "ClubX",
+            "seasonTotalStats": {},
+            "last5Stats": {},
+            "elementType": -1,
+            "status": "a"
+        },
+        {
+            "last3Stats": {},
+            "seasonAvgStats": {},
+            "webName": "Ramsdale",
+            "nowCost": 0,
+            "id": 674,
             "position": "goalkeeper",
             "team": "ClubX",
             "seasonTotalStats": {},
@@ -185,9 +185,9 @@
         {
             "last3Stats": {},
             "seasonAvgStats": {},
-            "webName": "Sánchez",
+            "webName": "Hein",
             "nowCost": 0,
-            "id": 220,
+            "id": 3,
             "position": "goalkeeper",
             "team": "ClubX",
             "seasonTotalStats": {},
@@ -197,5 +197,5 @@
         }
     ],
     "confirmed": true,
-    "budget": 0
+    "budget": 10
 }
