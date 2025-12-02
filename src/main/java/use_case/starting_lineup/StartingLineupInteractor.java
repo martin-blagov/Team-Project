@@ -1,13 +1,13 @@
 package use_case.starting_lineup;
 
-import entity.Player;
-import entity.Team;
-import use_case.PlayerDataAccessInterface;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import entity.Player;
+import entity.Team;
+import use_case.PlayerDataAccessInterface;
 
 /**
  * Use case interactor for computing an optimal starting lineup from the user's team
@@ -37,7 +37,7 @@ public class StartingLineupInteractor implements StartingLineupInputBoundary {
     @Override
     public void execute() {
         // Access the user's team.
-        Team savedTeam = teamDataAccess.getTeam();
+        final Team savedTeam = teamDataAccess.getTeam();
 
         // Empty starting lineup if user has no team saved.
         if (savedTeam == null) {
@@ -46,12 +46,12 @@ public class StartingLineupInteractor implements StartingLineupInputBoundary {
         }
 
         // Get all players in the user's team.
-        List<Player> teamPlayers = getPrediction(savedTeam.getPlayers());
+        final List<Player> teamPlayers = getPrediction(savedTeam.getPlayers());
 
-        List<Player> gkp = filterByPosition(teamPlayers, 1);
-        List<Player> dfd = filterByPosition(teamPlayers, 2);
-        List<Player> mdf = filterByPosition(teamPlayers, 3);
-        List<Player> fwd = filterByPosition(teamPlayers, 4);
+        final List<Player> gkp = filterByPosition(teamPlayers, 1);
+        final List<Player> dfd = filterByPosition(teamPlayers, 2);
+        final List<Player> mdf = filterByPosition(teamPlayers, 3);
+        final List<Player> fwd = filterByPosition(teamPlayers, 4);
 
         List<Player> starting = new ArrayList<>();
 
@@ -109,7 +109,7 @@ public class StartingLineupInteractor implements StartingLineupInputBoundary {
      */
     private List<Player> filterByPosition(List<Player> players, int elementType) {
         return players.stream()
-                .filter(p -> p.getElementType() == elementType)
+                .filter(player -> player.getElementType() == elementType)
                 .collect(Collectors.toList());
     }
 

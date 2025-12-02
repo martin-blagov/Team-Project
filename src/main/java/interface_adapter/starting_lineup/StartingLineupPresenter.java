@@ -27,7 +27,6 @@ public class StartingLineupPresenter implements StartingLineupOutputBoundary {
         Team startingTeam = outputData.getStartingTeam();
         List<Player> benchPlayers = outputData.getBenchPlayers();
 
-        // Update the backing TeamViewModel so the TeamDisplayView renders the players.
         TeamViewModel teamViewModel = viewModel.getTeamViewModel();
         teamViewModel.setTeam(startingTeam);
 

@@ -6,17 +6,19 @@ import interface_adapter.ViewModel;
 /**
  * Reusable ViewModel for displaying players in the team in table format.
  */
-public class TeamViewModel extends ViewModel<Team>{
+public class TeamViewModel extends ViewModel<Team> {
 
     public static final String TEAM_STATE_LABEL = "team";
     private final DisplayConfig displayConfig;
 
-    public TeamViewModel(String viewName, DisplayConfig displayConfig){
+    public TeamViewModel(String viewName, DisplayConfig displayConfig) {
         super(viewName);
         this.displayConfig = displayConfig;
     }
 
     /**
+     * Returns the display configuration.
+     *
      * @return immutable display configuration describing how the team should be displayed.
      */
     public DisplayConfig getDisplayConfig() {
@@ -34,6 +36,8 @@ public class TeamViewModel extends ViewModel<Team>{
     }
 
     /**
+     * Returns the stored team.
+     *
      * @return the current team being stored.
      */
     public Team getTeam() {
@@ -41,6 +45,8 @@ public class TeamViewModel extends ViewModel<Team>{
     }
 
     /**
+     * Checks if a non-null team is currently stored.
+     *
      * @return true if a non-null team is currently stored.
      */
     public boolean hasTeam() {
@@ -82,6 +88,11 @@ public class TeamViewModel extends ViewModel<Team>{
             return emptyStateMessage;
         }
 
+        /**
+         * Checks whether the budget should be displayed.
+         *
+         * @return true if the budget column should be shown.
+         */
         public boolean shouldShowBudget() {
             return showBudget;
         }
