@@ -172,6 +172,9 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
     }
 
     private boolean validateBudget(String remainingBudget) {
+        if (remainingBudget == null || remainingBudget.trim().isEmpty()) {
+            return false;
+        }
         try {
             Float.parseFloat(remainingBudget);
             return true;
