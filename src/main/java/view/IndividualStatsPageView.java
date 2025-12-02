@@ -38,22 +38,22 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
     private TestDisplayPlayersController playerListController;
 
     // Labels
-    final JLabel nameLabel = new JLabel();
-    final JLabel positionLabel = new JLabel();
-    final JLabel teamLabel = new JLabel();
-    final JLabel costLabel = new JLabel();
-    final JLabel goalsScoredLabel = new JLabel();
-    final JLabel assistsLabel = new JLabel();
-    final JLabel pointsLabel = new JLabel();
-    final JPanel statsPanel = new JPanel();
-    JPanel imageBox = new JPanel();
-    JLabel imageLabel = new JLabel();
+    private final JLabel nameLabel = new JLabel();
+    private final JLabel positionLabel = new JLabel();
+    private final JLabel teamLabel = new JLabel();
+    private final JLabel costLabel = new JLabel();
+    private final JLabel goalsScoredLabel = new JLabel();
+    private final JLabel assistsLabel = new JLabel();
+    private final JLabel pointsLabel = new JLabel();
+    private final JPanel statsPanel = new JPanel();
+    private JPanel imageBox = new JPanel();
+    private JLabel imageLabel = new JLabel();
 
     private static final String BASE_PATH = "src/main/resources/images/kits/";
 
     // Stats Filtering Options
-    final String[] filterOptions = {"Total", "Average", "Last 3", "Last 5"};
-    final JComboBox<String> filterComboBox = new JComboBox<>(filterOptions);
+    private final String[] filterOptions = {"Total", "Average", "Last 3", "Last 5"};
+    private final JComboBox<String> filterComboBox = new JComboBox<>(filterOptions);
 
     private Player selectedPlayer = null;
 
@@ -125,7 +125,6 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
             displayIndividualStatController.execute(inputData);
         });
 
-
         addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentShown(java.awt.event.ComponentEvent e) {
@@ -185,7 +184,6 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
 
     private void displayImage() {
         // Create Player Image
-
         final String imagePath = retrievePlayerImagePath();
 
         BufferedImage image = null;
@@ -273,7 +271,6 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         statsPanel.add(pointsLabel);
     }
 
-
     private void setLabelSize() {
         final JLabel[] labels = {nameLabel, positionLabel, teamLabel, costLabel, goalsScoredLabel, assistsLabel, pointsLabel};
         final int WIDTH = 500;
@@ -302,7 +299,7 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         this.playerListController = controller;
     }
 
-    public void setDisplayIndividualStatController(DisplayIndividualStatController controller){
+    public void setDisplayIndividualStatController(DisplayIndividualStatController controller) {
         this.displayIndividualStatController = controller;
     }
 
