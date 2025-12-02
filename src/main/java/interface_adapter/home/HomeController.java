@@ -5,8 +5,6 @@ import interface_adapter.risk_assessment.RiskAssessmentController;
 import interface_adapter.team_entry.TeamEntryController;
 import interface_adapter.starting_lineup.StartingLineupController;
 import interface_adapter.transfer_suggestions.TransferSuggestionsController;
-import use_case.display_individual_stat.DisplayIndividualStatInputData;
-// todo - why are we accessing inputdata in home controller?
 import use_case.team_entry.TeamEntryInputBoundary;
 
 

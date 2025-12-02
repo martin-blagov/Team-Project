@@ -1,5 +1,8 @@
 package use_case.display_individual_stat;
 
+/**
+ * Output Data for the Individual Stats Use Case.
+ */
 public class DisplayIndividualStatOutputData {
     private final String playerName;
     private final String playerPosition;
@@ -22,10 +25,16 @@ public class DisplayIndividualStatOutputData {
     }
 
     public String getPlayerName() { return playerName; }
+
     public String getPlayerPosition() { return playerPosition; }
+
     public String getPlayerTeam() { return playerTeam; }
+
     public String getPlayerCost() { return playerCost; }
+
     public String getPlayerGoals() { return playerGoals; }
+
     public String getPlayerAssists() { return playerAssists; }
+
     public String getPlayerPoints() { return playerPoints; }
 }
