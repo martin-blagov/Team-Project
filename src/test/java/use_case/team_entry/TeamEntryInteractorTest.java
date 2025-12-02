@@ -124,6 +124,140 @@ class TeamEntryInteractorTest {
     }
 
     @Test
+    void testInvalidPositionsFailure() {
+        InMemoryTeamDataAccess teamRepo = new InMemoryTeamDataAccess();
+
+        List<Player> valid = makeValid15Players();
+        String[] positions = slotPositions();
+        positions[0] = "goalkeeper";
+
+        TeamEntryInputData input =
+                new TeamEntryInputData(namesOf(valid), idsOf(valid), positions, "10");
+
+        TeamEntryOutputBoundary presenter = new TeamEntryOutputBoundary() {
+            @Override public void prepareFailView(String error) {
+                assertEquals("One or more players are not in the correct position slots. Please check the lineup format.", error);
+            }
+            @Override public void prepareSuccessView(TeamEntryOutputData d) { fail(); }
+            @Override public void prepareSavedTeamView(String[] n, int[] i) {}
+            @Override public void prepareOpenPageView() {}
+            @Override public void switchToHomePage() {}
+        };
+
+        new TeamEntryInteractor(presenter, teamRepo).execute(input);
+    }
+
+    @Test
+    void testInvalidPositionsSize() {
+        InMemoryTeamDataAccess teamRepo = new InMemoryTeamDataAccess();
+
+        // Only 14 players instead of 15
+        List<Player> invalid = makeValid15Players().subList(0, 14);
+
+        TeamEntryInputData input =
+                new TeamEntryInputData(
+                        namesOf(invalid),
+                        idsOf(invalid),
+                        slotPositions(),  // still 15 slots
+                        "10"
+                );
+
+        TeamEntryOutputBoundary presenter = new TeamEntryOutputBoundary() {
+            @Override public void prepareFailView(String error) {
+                assertEquals(
+                        "One or more players are not in the correct position slots. Please check the lineup format.",
+                        error
+                );
+            }
+            @Override public void prepareSuccessView(TeamEntryOutputData d) { fail(); }
+            @Override public void prepareSavedTeamView(String[] n, int[] i) {}
+            @Override public void prepareOpenPageView() {}
+            @Override public void switchToHomePage() {}
+        };
+
+        new TeamEntryInteractor(presenter, teamRepo).execute(input);
+    }
+
+
+    @Test
+    void testEmptyBudgetFailure() {
+        InMemoryTeamDataAccess teamRepo = new InMemoryTeamDataAccess();
+
+        List<Player> valid = makeValid15Players();
+
+        TeamEntryInputData input =
+                new TeamEntryInputData(namesOf(valid), idsOf(valid), slotPositions(), "");
+
+        TeamEntryOutputBoundary presenter = new TeamEntryOutputBoundary() {
+            @Override public void prepareFailView(String error) {
+                assertEquals("The remaining budget is not a valid number. Please try again.", error);
+            }
+            @Override public void prepareSuccessView(TeamEntryOutputData d) { fail(); }
+            @Override public void prepareSavedTeamView(String[] n, int[] i) {}
+            @Override public void prepareOpenPageView() {}
+            @Override public void switchToHomePage() {}
+        };
+
+        new TeamEntryInteractor(presenter, teamRepo).execute(input);
+    }
+
+    @Test
+    void testNullPositionFailure() {
+        InMemoryTeamDataAccess teamRepo = new InMemoryTeamDataAccess();
+
+        List<Player> valid = makeValid15Players();
+        String[] positions = slotPositions();
+        positions[0] = null;  // Null position
+
+        TeamEntryInputData input =
+                new TeamEntryInputData(namesOf(valid), idsOf(valid), positions, "10");
+
+        TeamEntryOutputBoundary presenter = new TeamEntryOutputBoundary() {
+            @Override public void prepareFailView(String error) {
+                assertEquals("One or more players are not in the correct position slots. Please check the lineup format.", error);
+            }
+            @Override public void prepareSuccessView(TeamEntryOutputData d) { fail(); }
+            @Override public void prepareSavedTeamView(String[] n, int[] i) {}
+            @Override public void prepareOpenPageView() {}
+            @Override public void switchToHomePage() {}
+        };
+
+        new TeamEntryInteractor(presenter, teamRepo).execute(input);
+    }
+
+    @Test
+    void testValidatePositionsWithNullPlayer() throws Exception {
+        InMemoryTeamDataAccess teamRepo = new InMemoryTeamDataAccess();
+
+        TeamEntryOutputBoundary presenter = new TeamEntryOutputBoundary() {
+            @Override public void prepareFailView(String s) {}
+            @Override public void prepareSuccessView(TeamEntryOutputData d) {}
+            @Override public void prepareSavedTeamView(String[] n, int[] i) {}
+            @Override public void prepareOpenPageView() {}
+            @Override public void switchToHomePage() {}
+        };
+
+        TeamEntryInteractor interactor = new TeamEntryInteractor(presenter, teamRepo);
+
+        // Force a null Player into the list
+        List<Player> listWithNull = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+            listWithNull.add(makePlayer(i, "X", 4));
+        }
+        listWithNull.set(0, null);
+
+        // Use reflection to access private method
+        var method = TeamEntryInteractor.class
+                .getDeclaredMethod("validatePositions", List.class);
+        method.setAccessible(true);
+
+        boolean result = (boolean) method.invoke(interactor, listWithNull);
+
+        assertFalse(result);  // Must fail due to null player
+    }
+
+
+    @Test
     void testInvalidBudgetFailure() {
         InMemoryTeamDataAccess teamRepo = new InMemoryTeamDataAccess();
 
@@ -173,7 +307,7 @@ class TeamEntryInteractorTest {
     }
 
     @Test
-    void testOpenPage_NoSavedTeam() {
+    void testOpenPageNoSavedTeam() {
         InMemoryTeamDataAccess teamRepo = new InMemoryTeamDataAccess();
 
         TeamEntryOutputBoundary presenter = new TeamEntryOutputBoundary() {
@@ -188,7 +322,7 @@ class TeamEntryInteractorTest {
     }
 
     @Test
-    void testOpenPage_LoadSavedTeam() {
+    void testOpenPageLoadSavedTeam() {
         InMemoryTeamDataAccess teamRepo = new InMemoryTeamDataAccess();
 
         List<Player> savedPlayers = List.of(
@@ -225,5 +359,30 @@ class TeamEntryInteractorTest {
         };
 
         new TeamEntryInteractor(presenter, teamRepo).switchToHomePage();
+    }
+
+    @Test
+    void testMapPositionToIntEdgeCases() {
+        InMemoryTeamDataAccess teamRepo = new InMemoryTeamDataAccess();
+        TeamEntryOutputBoundary presenter = new TeamEntryOutputBoundary() {
+            @Override public void prepareFailView(String s) {}
+            @Override public void prepareSuccessView(TeamEntryOutputData d) {}
+            @Override public void prepareSavedTeamView(String[] n, int[] i) {}
+            @Override public void prepareOpenPageView() {}
+            @Override public void switchToHomePage() {}
+        };
+
+        TeamEntryInteractor interactor = new TeamEntryInteractor(presenter, teamRepo);
+
+        // This will internally call mapPositionToInt with various positions
+        // The method is private, but we can trigger it through execute with an invalid position
+        List<Player> players = makeValid15Players();
+        String[] positions = slotPositions();
+        positions[0] = "invalid_position"; // This will test the default case
+
+        TeamEntryInputData input = new TeamEntryInputData(
+                namesOf(players), idsOf(players), positions, "10");
+
+        interactor.execute(input);
     }
 }

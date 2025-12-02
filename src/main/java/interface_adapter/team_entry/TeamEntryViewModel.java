@@ -10,7 +10,7 @@ public class TeamEntryViewModel extends ViewModel<TeamEntryState> {
     // Labels
     public static final String TITLE_LABEL = "Enter Your Team";
     public static final String CONFIRM_BUTTON_LABEL = "Confirm Team";
-    public static final String MENU_BUTTON_LABEL = "Menu";
+    public static final String MENU_BUTTON_LABEL = "Back";
 
     // Player labels
     private final String[] playerLabels = {
@@ -46,14 +46,12 @@ public class TeamEntryViewModel extends ViewModel<TeamEntryState> {
         return CONFIRM_BUTTON_LABEL;
     }
 
-    public String getMenuButtonLabel() {
-        return MENU_BUTTON_LABEL;
-    }
-
     public String[] getPlayerLabels() {
         return playerLabels;
     }
 
-    public String getBudgetLabel() { return budgetLabel; }
+    public String getBudgetLabel() {
+        return budgetLabel;
+    }
 
 }

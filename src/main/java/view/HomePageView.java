@@ -63,12 +63,10 @@ public class HomePageView extends JPanel implements PropertyChangeListener {
         testTeamVisualizationButton = new JButton(HomeViewModel.TEST_TEAM_BUTTON_LABEL);
 
 
-
         // Set consistent button size
         Dimension buttonSize = new Dimension(250, 40);
         JButton[] buttons = {
-                bestTeamButton, teamInputButton, riskAssessmentButton,
-                bestPlayersButton, transferButton, statsButton, lineupButton,
+                bestTeamButton, teamInputButton, riskAssessmentButton, transferButton, statsButton, lineupButton,
                 testDisplayPlayersButton, testTeamVisualizationButton //TODO REMOVE
         };
 

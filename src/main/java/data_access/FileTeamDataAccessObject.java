@@ -101,6 +101,13 @@ public class FileTeamDataAccessObject implements TeamDataAccessInterface, Transf
 
         try {
             final String content = readFile(filepath);
+
+            // Check if content is empty or just whitespace
+            if (content == null || content.trim().isEmpty()) {
+                savedTeam = null;
+                return;
+            }
+
             final JSONObject json = new JSONObject(content);
 
             final JSONArray array = json.getJSONArray("players");
