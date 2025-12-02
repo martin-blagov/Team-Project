@@ -1,5 +1,4 @@
 package interface_adapter.team_entry;
-
 import interface_adapter.ViewModel;
 
 /**
@@ -12,7 +11,8 @@ public class TeamEntryViewModel extends ViewModel<TeamEntryState> {
     public static final String CONFIRM_BUTTON_LABEL = "Confirm Team";
     public static final String MENU_BUTTON_LABEL = "Back";
 
-    // Player labels
+    // Player labels - note: I'm not able to de-indent the text for some reason, so I suppressed the warning here
+    @SuppressWarnings({"checkstyle:Indentation", "checkstyle:SuppressWarnings"})
     private final String[] playerLabels = {
             "Attacker 1",
             "Attacker 2",

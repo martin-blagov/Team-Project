@@ -3,7 +3,6 @@ package interface_adapter.team_entry;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.home.HomeViewModel;
 import use_case.team_entry.TeamEntryOutputBoundary;
-import use_case.team_entry.TeamEntryOutputData;
 
 public class TeamEntryPresenter implements TeamEntryOutputBoundary {
 
@@ -36,6 +35,8 @@ public class TeamEntryPresenter implements TeamEntryOutputBoundary {
 
         state.setPlayers(names);
         state.setPlayerIds(ids);
+        state.setErrorMessage(null);
+        state.setSuccessMessage(null);
 
         teamEntryViewModel.setState(state);
         teamEntryViewModel.firePropertyChange();

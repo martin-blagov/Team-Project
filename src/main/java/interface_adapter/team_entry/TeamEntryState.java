@@ -66,7 +66,7 @@ public class TeamEntryState {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("TeamEntryState{ players=[");
+        final StringBuilder sb = new StringBuilder("TeamEntryState{ players=[");
 
         if (players != null) {
             for (int i = 0; i < players.length; i++) {
