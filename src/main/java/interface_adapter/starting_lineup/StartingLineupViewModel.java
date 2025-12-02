@@ -35,39 +35,61 @@ public class StartingLineupViewModel extends ViewModel<StartingLineupState> {
      * @param benchPlayers the list of bench players.
      */
     public void updateLineup(Team startingTeam, List<Player> benchPlayers) {
-        StartingLineupState newState = new StartingLineupState();
+        final StartingLineupState newState = new StartingLineupState();
         newState.setStartingTeam(startingTeam);
         newState.setBenchPlayers(benchPlayers);
         this.setState(newState);
         this.firePropertyChange("startingLineup");
     }
 
+    /**
+     * Returns the current view mode.
+     *
+     * @return the current view mode.
+     */
     public StartingLineupState.ViewMode getViewMode() {
-        StartingLineupState state = getState();
+        final StartingLineupState state = getState();
         return state == null ? StartingLineupState.ViewMode.TABLE : state.getViewMode();
     }
 
+    /**
+     * Set a new view mode.
+     *
+     * @param viewMode the new view mode.
+     */
     public void setViewMode(StartingLineupState.ViewMode viewMode) {
-        StartingLineupState newState = new StartingLineupState(getState());
+        final StartingLineupState newState = new StartingLineupState(getState());
         newState.setViewMode(viewMode);
         this.setState(newState);
         this.firePropertyChange("viewMode");
     }
 
+    /**
+     * Returns the current starting team.
+     *
+     * @return the starting team.
+     */
     public Team getStartingTeam() {
-        StartingLineupState state = getState();
+        final StartingLineupState state = getState();
         if (state == null) {
             return null;
-        } else {
+        }
+        else {
             return state.getStartingTeam();
         }
     }
 
+    /**
+     * Returns the current bench players.
+     *
+     * @return list of bench players.
+     */
     public List<Player> getBenchPlayers() {
-        StartingLineupState state = getState();
+        final StartingLineupState state = getState();
         if (state == null) {
             return null;
-        } else {
+        }
+        else {
             return state.getBenchPlayers();
         }
     }

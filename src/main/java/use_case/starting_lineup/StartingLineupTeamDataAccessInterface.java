@@ -8,6 +8,8 @@ import entity.Team;
 public interface StartingLineupTeamDataAccessInterface {
     /**
      * Retrieves the saved team or {@code null} if none exists.
+     *
+     * @return the saved team, or null if none exists.
      */
     Team getTeam();
 }

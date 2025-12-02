@@ -1,11 +1,11 @@
 package interface_adapter.starting_lineup;
 
-import entity.Player;
-import entity.Team;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import entity.Player;
+import entity.Team;
 
 /**
  * State for the starting lineup view.

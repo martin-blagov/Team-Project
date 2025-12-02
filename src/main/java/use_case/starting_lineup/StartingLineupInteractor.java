@@ -69,10 +69,10 @@ public class StartingLineupInteractor implements StartingLineupInputBoundary {
         List<Player> bench = new ArrayList<>(teamPlayers);
         bench.removeAll(starting);
 
-        Team startingTeam = new Team(starting, savedTeam.getBudget(), savedTeam.isConfirmed());
+        final Team startingTeam = new Team(starting, savedTeam.getBudget(), savedTeam.isConfirmed());
 
         // Output the starting team and bench list.
-        StartingLineupOutputData outputData = new StartingLineupOutputData(startingTeam, bench);
+        final StartingLineupOutputData outputData = new StartingLineupOutputData(startingTeam, bench);
         outputBoundary.presentLineup(outputData);
     }
 
@@ -83,10 +83,6 @@ public class StartingLineupInteractor implements StartingLineupInputBoundary {
      * @return list of player objects with prediction data.
      */
     private List<Player> getPrediction(List<Player> players) {
-        if (players == null) {
-            return new ArrayList<>();
-        }
-
         List<Player> result = new ArrayList<>(players.size());
         for (Player player : players) {
             Player current = playerDataAccess.getPlayerById(player.getId());
@@ -121,9 +117,9 @@ public class StartingLineupInteractor implements StartingLineupInputBoundary {
      * @param count  maximum number of players to add.
      */
     private void addTopPlayers(List<Player> source, List<Player> dest, int count) {
-        List<Player> sorted = source.stream()
+        final List<Player> sorted = source.stream()
                 .sorted(Comparator.comparing(Player::getPredictedPoints,
-                        Comparator.nullsLast(Double::compareTo)).reversed())
+                        Comparator.nullsFirst(Double::compareTo)).reversed())
                 .collect(Collectors.toList());
         for (int i = 0; i < Math.min(count, sorted.size()); i++) {
             dest.add(sorted.get(i));
