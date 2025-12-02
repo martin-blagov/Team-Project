@@ -2,10 +2,12 @@ package use_case.risk_assessment.risk;
 
 import entity.Player;
 
+import java.util.Map;
+
 public class ValueRiskRule implements RiskRule {
 
     // Example threshold: predicted points must be at least 0.5 per cost unit
-    private static final double MIN_POINTS_PER_COST = 0.5;
+    private static final double MIN_VALUE_THRESHOLD = 3.0;
 
     @Override
     public String getName() {
@@ -14,11 +16,20 @@ public class ValueRiskRule implements RiskRule {
 
     @Override
     public boolean isTriggered(Player player) {
-        Double predicted = player.getPredictedPoints();
+        if (player == null) return false;
         double cost = player.getNowCost();
+        if (cost <= 0) return false;
 
-        if (predicted == null) return false;
+        // Season total points
+        Map<String, Double> totals = player.getAllSeasonTotalStats();
+        if (totals == null) return false;
 
-        return predicted/cost <= MIN_POINTS_PER_COST;
+        Double totalPoints = totals.get("total_points");
+        if (totalPoints == null || totalPoints < 0) return false;
+
+        // Value = points / cost
+        double value = totalPoints / cost;
+
+        return value < MIN_VALUE_THRESHOLD;
     }
 }

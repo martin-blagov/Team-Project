@@ -250,7 +250,7 @@ public class AppBuilder {
 
     public AppBuilder addRiskAssessmentView() {
         riskAssessmentViewModel = new RiskAssessmentViewModel();
-        riskAssessmentView = new RiskAssessmentView(riskAssessmentViewModel);
+        riskAssessmentView = new RiskAssessmentView(riskAssessmentViewModel, viewManagerModel);
         riskAssessmentView.setViewManagerModel(viewManagerModel);
         cardPanel.add(riskAssessmentView, riskAssessmentView.getViewName());
         return this;
@@ -263,7 +263,7 @@ public class AppBuilder {
 
         // Interactor depends on TeamDataAccessInterface
         RiskAssessmentInteractor interactor =
-                new RiskAssessmentInteractor(teamAccess, presenter);
+                new RiskAssessmentInteractor(teamAccess, playerDataAccess, presenter);
 
         riskAssessmentController = new RiskAssessmentController(interactor);
 
