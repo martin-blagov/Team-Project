@@ -25,7 +25,7 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
     public TransferSuggestionsInteractor(TransferSuggestionsTeamDataAccessInterface teamDataAccess,
                                          PlayerDataAccessInterface playerDataAccess,
                                          TransferSuggestionsOutputBoundary presenter) {
-        this. teamDataAccess = teamDataAccess;
+        this.teamDataAccess = teamDataAccess;
         this.playerDataAccess = playerDataAccess;
         this.presenter = presenter;
     }
@@ -43,7 +43,7 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
 
             currentTeam = enrichTeamWithFullPlayerData(currentTeam);
 
-            int numberOfTransfers = inputData. getNumberOfTransfers();
+            int numberOfTransfers = inputData.getNumberOfTransfers();
 
             // Validate input
             if (numberOfTransfers < 0 || numberOfTransfers > 15) {

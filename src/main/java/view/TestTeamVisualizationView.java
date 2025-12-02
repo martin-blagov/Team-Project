@@ -1,14 +1,14 @@
 package view;
 
 import interface_adapter.ViewManagerModel;
-import interface_adapter.display_team. DisplayTeamController;
+import interface_adapter.display_team.DisplayTeamController;
 import interface_adapter.display_team.DisplayTeamState;
 import interface_adapter.display_team.DisplayTeamViewModel;
 import view.components.TeamVisualizationPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java. beans.PropertyChangeEvent;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 /**
@@ -49,13 +49,13 @@ public class TestTeamVisualizationView extends JPanel implements PropertyChangeL
         JPanel titlePanel = new JPanel(new BorderLayout());
 
         JLabel titleLabel = new JLabel("Team Visualization - Clean Architecture Demo");
-        titleLabel.setFont(new Font("Arial", Font. BOLD, 24));
-        titlePanel. add(titleLabel, BorderLayout.WEST);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        titlePanel.add(titleLabel, BorderLayout.WEST);
 
 
         statusLabel = new JLabel("No team loaded");
         statusLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        titlePanel.add(statusLabel, BorderLayout. EAST);
+        titlePanel.add(statusLabel, BorderLayout.EAST);
 
         add(titlePanel, BorderLayout.NORTH);
 
@@ -77,7 +77,7 @@ public class TestTeamVisualizationView extends JPanel implements PropertyChangeL
                     this,
                     message,
                     "Player Details",
-                    JOptionPane. INFORMATION_MESSAGE
+                    JOptionPane.INFORMATION_MESSAGE
             );
 
             statusLabel.setText("Selected: " + player.getWebName());
@@ -95,13 +95,13 @@ public class TestTeamVisualizationView extends JPanel implements PropertyChangeL
                     this,
                     message,
                     "Add Player",
-                    JOptionPane. YES_NO_OPTION
+                    JOptionPane.YES_NO_OPTION
             );
 
             if (result == JOptionPane.YES_OPTION) {
-                statusLabel.setText("Would navigate to add " + position + " player.. .");
+                statusLabel.setText("Would navigate to add " + position + " player...");
                 // In real app: controller.openPlayerSelection(position);
-                // Or: viewManagerModel. setState("player selection");
+                // Or: viewManagerModel.setState("player selection");
             }
         });
 
@@ -110,7 +110,7 @@ public class TestTeamVisualizationView extends JPanel implements PropertyChangeL
         JPanel wrapperPanel = new JPanel();
         wrapperPanel.setLayout(new BoxLayout(wrapperPanel, BoxLayout.X_AXIS));
         // NOTE: If you add the following lines in the opposite order( add panel first then glue),
-        // panel is pushed to the left. This order pushes the panel to the right.
+        // panel is pushed to the left.This order pushes the panel to the right.
         wrapperPanel.add(Box.createHorizontalGlue());
         wrapperPanel.add(teamVisualizationPanel);
 
@@ -126,28 +126,28 @@ public class TestTeamVisualizationView extends JPanel implements PropertyChangeL
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
         JButton refreshButton = new JButton("Refresh Team");
-        refreshButton. addActionListener(e -> {
+        refreshButton.addActionListener(e -> {
             if (controller != null) {
-                controller. loadTeam();
+                controller.loadTeam();
             }
         });
 
         JButton backButton = new JButton("Back to Home");
-        backButton. addActionListener(e -> {
+        backButton.addActionListener(e -> {
             viewManagerModel.setState("home");
             viewManagerModel.firePropertyChange();
         });
 
-        buttonPanel. add(refreshButton);
-        buttonPanel. add(backButton);
-        add(buttonPanel, BorderLayout. SOUTH);
+        buttonPanel.add(refreshButton);
+        buttonPanel.add(backButton);
+        add(buttonPanel, BorderLayout.SOUTH);
 
         // Load data when component is actually shown (not when constructed)
-        addComponentListener(new java. awt.event.ComponentAdapter() {
+        addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentShown(java.awt.event.ComponentEvent e) {
                 if (controller != null) {
-                    controller. loadTeam();
+                    controller.loadTeam();
                 }
             }
         });
@@ -183,8 +183,8 @@ public class TestTeamVisualizationView extends JPanel implements PropertyChangeL
 
         for (String line : instructions) {
             JLabel label = new JLabel(line);
-            label. setAlignmentX(Component.LEFT_ALIGNMENT);
-            panel. add(label);
+            label.setAlignmentX(Component.LEFT_ALIGNMENT);
+            panel.add(label);
             panel.add(Box.createVerticalStrut(3));
         }
 
@@ -230,7 +230,7 @@ public class TestTeamVisualizationView extends JPanel implements PropertyChangeL
      * @param controller The Controller for this use case
      */
     public void setController(DisplayTeamController controller) {
-        this. controller = controller;
+        this.controller = controller;
         // Don't load here - let componentShown() do it when view is actually displayed
     }
 
@@ -245,10 +245,10 @@ public class TestTeamVisualizationView extends JPanel implements PropertyChangeL
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         // Get the updated state from ViewModel
-        DisplayTeamState state = viewModel. getState();
+        DisplayTeamState state = viewModel.getState();
 
         // Check for errors
-        if (state. getErrorMessage() != null) {
+        if (state.getErrorMessage() != null) {
             statusLabel.setText("Error: " + state.getErrorMessage());
             JOptionPane.showMessageDialog(
                     this,
