@@ -1,8 +1,8 @@
 package interface_adapter.best_team;
 
+import interface_adapter.ViewManagerModel;
 import use_case.best_team.BestTeamOutputBoundary;
 import use_case.best_team.BestTeamResponseModel;
-import interface_adapter.ViewManagerModel;
 
 public class BestTeamPresenter implements BestTeamOutputBoundary {
     private final BestTeamViewModel viewModel;
@@ -14,11 +14,11 @@ public class BestTeamPresenter implements BestTeamOutputBoundary {
     }
 
     @Override
-    public void present(BestTeamResponseModel responseModel){
+    public void present(BestTeamResponseModel responseModel) {
         viewModel.setPlayers(responseModel.getPlayers());
         viewModel.setTotalCost(responseModel.getTotalCost());
         viewModel.setTotalPredictedPoints(responseModel.getTotalPredictedPoints());
-
+        viewModel.setTeam(responseModel.getTeam());
         viewManagerModel.setState(BestTeamViewModel.VIEW_TITLE);
         viewManagerModel.firePropertyChange();
     }
