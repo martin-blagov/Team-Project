@@ -80,8 +80,9 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
                     pricePercentiles
             );
 
-            // 3. Find best replacement combinations
-            List<TransferSuggestionsOutputData. PlayerSwap> bestSwaps = findBestReplacements(playersToReplace, currentTeam);
+            // 3. Find the best replacement combinations
+            List<TransferSuggestionsOutputData. PlayerSwap> bestSwaps = findBestReplacements(playersToReplace,
+                    currentTeam);
 
             // Check if we found any valid swaps
             if (bestSwaps.isEmpty()) {

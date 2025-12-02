@@ -80,14 +80,4 @@ public class HomeController {
 
     public void openTransferSuggestionsPage() {transferSuggestionsController.openPage();}
 
-    // TODO REMOVE
-    public void openTestDisplayPlayersPage() {
-        viewManagerModel.setState("test scrollable list v2");
-        viewManagerModel.firePropertyChange();
-    }
-
-    public void openTestTeamVisualizationPage() {
-        viewManagerModel.setState("test team visualization");
-        viewManagerModel.firePropertyChange();
-    }
 }
