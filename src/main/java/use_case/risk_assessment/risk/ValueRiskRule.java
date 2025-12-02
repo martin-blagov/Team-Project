@@ -7,7 +7,7 @@ import java.util.Map;
 public class ValueRiskRule implements RiskRule {
 
     // Example threshold: predicted points must be at least 0.5 per cost unit
-    private static final double MIN_VALUE_THRESHOLD = 10.0;
+    private static final double MIN_VALUE_THRESHOLD = 3.0;
 
     @Override
     public String getName() {

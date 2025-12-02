@@ -44,14 +44,49 @@ public class RiskAssessmentView extends JPanel implements PropertyChangeListener
         // Build UI
         this.tablePanel = buildTablePanel();
         JPanel pitchTab = buildPitchTab();
+        // Top bar
+        JPanel topBar = new JPanel(new BorderLayout());
 
-        tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("Table", tablePanel);
-        tabbedPane.addTab("Pitch", pitchTab);
+        // Back button on the RIGHT
+        backButton = new JButton("Back");
+        backButton.addActionListener(e -> {
+            viewManagerModel.setState("home");
+            viewManagerModel.firePropertyChange();
+        });
+        topBar.add(backButton, BorderLayout.WEST);
 
+
+        JLabel title = new JLabel("Risk Assessment Results");
+        title.setFont(new Font("Arial", Font.BOLD, 20));
+        title.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // Switch buttons
+        JPanel switchPanel = new JPanel();
+        JButton tableBtn = new JButton("Table");
+        JButton pitchBtn = new JButton("Pitch");
+        switchPanel.add(tableBtn);
+        switchPanel.add(pitchBtn);
+
+        // Combine top bar + switch panel
+        JPanel topArea = new JPanel(new BorderLayout());
+        topArea.add(topBar, BorderLayout.NORTH);
+        topArea.add(title, BorderLayout.CENTER);
+        topArea.add(switchPanel, BorderLayout.SOUTH);
+
+
+        // ---------------- CONTENT PANEL ----------------
+        JPanel contentPanel = new JPanel(new CardLayout());
+        contentPanel.add(tablePanel, "TABLE");
+        contentPanel.add(pitchTab, "PITCH");
+
+        CardLayout layout = (CardLayout) contentPanel.getLayout();
+        tableBtn.addActionListener(e -> layout.show(contentPanel, "TABLE"));
+        pitchBtn.addActionListener(e -> layout.show(contentPanel, "PITCH"));
+
+        // ---------------- FINAL LAYOUT ----------------
         setLayout(new BorderLayout());
-        add(tabbedPane, BorderLayout.CENTER);
-
+        add(topArea, BorderLayout.NORTH);   // top = back + table/pitch buttons
+        add(contentPanel, BorderLayout.CENTER); // content fills the screen
     }
 
     public void setViewManagerModel(ViewManagerModel viewManagerModel) {
@@ -66,25 +101,10 @@ public class RiskAssessmentView extends JPanel implements PropertyChangeListener
         private JPanel buildTablePanel() {
         JPanel root = new JPanel(new BorderLayout());
 
-        JLabel title = new JLabel("Risk Assessment Results");
-        title.setFont(new Font("Arial", Font.BOLD, 20));
-        title.setHorizontalAlignment(SwingConstants.CENTER);
-
         table = new JTable();
         JScrollPane scrollPane = new JScrollPane(table);
 
-        backButton = new JButton("Back");
-        backButton.addActionListener(e -> {
-            viewManagerModel.setState("home");
-            viewManagerModel.firePropertyChange();
-        });
-
-        JPanel bottom = new JPanel();
-        bottom.add(backButton);
-
-        root.add(title, BorderLayout.NORTH);
         root.add(scrollPane, BorderLayout.CENTER);
-        root.add(bottom, BorderLayout.SOUTH);
 
         return root;
     }
