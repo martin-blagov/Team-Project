@@ -3,9 +3,9 @@
         {
             "last3Stats": {},
             "seasonAvgStats": {},
-            "webName": "Haaland",
+            "webName": "Watkins",
             "nowCost": 0,
-            "id": 430,
+            "id": 64,
             "position": "forward",
             "team": "ClubX",
             "seasonTotalStats": {},
@@ -29,9 +29,9 @@
         {
             "last3Stats": {},
             "seasonAvgStats": {},
-            "webName": "João Pedro",
+            "webName": "Füllkrug",
             "nowCost": 0,
-            "id": 249,
+            "id": 625,
             "position": "forward",
             "team": "ClubX",
             "seasonTotalStats": {},
@@ -81,9 +81,9 @@
         {
             "last3Stats": {},
             "seasonAvgStats": {},
-            "webName": "Longstaff",
+            "webName": "Caicedo",
             "nowCost": 0,
-            "id": 493,
+            "id": 241,
             "position": "midfielder",
             "team": "ClubX",
             "seasonTotalStats": {},
@@ -197,5 +197,5 @@
         }
     ],
     "confirmed": true,
-    "budget": 1
+    "budget": 0
 }
