@@ -250,7 +250,7 @@ public class AppBuilder {
 
     public AppBuilder addRiskAssessmentView() {
         riskAssessmentViewModel = new RiskAssessmentViewModel();
-        riskAssessmentView = new RiskAssessmentView(riskAssessmentViewModel);
+        riskAssessmentView = new RiskAssessmentView(riskAssessmentViewModel, viewManagerModel);
         riskAssessmentView.setViewManagerModel(viewManagerModel);
         cardPanel.add(riskAssessmentView, riskAssessmentView.getViewName());
         return this;

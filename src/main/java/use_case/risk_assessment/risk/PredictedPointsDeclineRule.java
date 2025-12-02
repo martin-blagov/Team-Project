@@ -8,12 +8,19 @@ public class PredictedPointsDeclineRule implements RiskRule {
     @Override
     public boolean isTriggered(Player player) {
 
+        if (player == null) {
+            return false;
+        }
         Double predicted = player.getPredictedPoints();
         if (predicted == null) {
             return false;
         }
+        if (predicted <= 0) {
+            return false;
+        }
 
         double last5 = player.getLast5Stat("total_points");
+
         if (last5 <= 0) {
             return false;
         }
