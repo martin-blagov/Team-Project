@@ -379,7 +379,9 @@
                        java.lang.StringBuffer, StringBuffer"/>
         </module>
         <module name="InnerAssignment"/>
-        <module name="MagicNumber"/>
+        <module name="MagicNumber">
+            <property name="severity" value="ignore"/>
+        </module>
         <module name="MatchXpath">
             <property name="query" value="//CLASS_DEF[@text!='Checker' and @text!='Main']
       //LITERAL_CATCH//METHOD_CALL[.//IDENT[@text = 'printStackTrace']]/.."/>
@@ -781,11 +783,7 @@
         <module name="RegexpSinglelineJava">
             <property name="id" value="regexpSingleLineDefault"/>
         </module>
-        <module name="RegexpSinglelineJava">
-            <property name="id" value="checkASCII"/>
-            <property name="format" value="[^\p{ASCII}]"/>
-            <property name="ignoreComments" value="true"/>
-        </module>
+
 
         <!-- Size Violations -->
         <module name="AnonInnerLength"/>

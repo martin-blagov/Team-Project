@@ -3,7 +3,7 @@ package app;
 import javax.swing.*;
 
 public class Main {
-    private static final int APP_WIDTH = 1100;
+    private static final int APP_WIDTH = 1300;
     private static final int APP_HEIGHT = 800;
 
     /**
