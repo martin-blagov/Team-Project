@@ -57,6 +57,7 @@ public class TeamDisplayView extends JPanel implements PropertyChangeListener {
     private final JPanel contentCardPanel;
     private final CardLayout contentCardLayout;
     private final TeamVisualizationPanel visualizationPanel;
+    private ViewMode currentViewMode;
 
     public TeamDisplayView(TeamViewModel teamViewModel) {
         this(teamViewModel, null);

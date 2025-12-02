@@ -1,6 +1,7 @@
 package interface_adapter.best_team;
 
 import entity.Player;
+import entity.Team;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Collections;
@@ -13,6 +14,7 @@ public class BestTeamViewModel {
     private List<Player> players = Collections.emptyList();
     private double totalCost;
     private double totalPredictedPoints;
+    private Team team;
 
     public void setPlayers(List<Player> players){
         this.players = players;
@@ -34,5 +36,14 @@ public class BestTeamViewModel {
     public double getTotalPredictedPoints(){return totalPredictedPoints;}
     public void addPropertyChangeListener(PropertyChangeListener listener){
         support.addPropertyChangeListener(listener);
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+        support.firePropertyChange("team", null, team);
     }
 }

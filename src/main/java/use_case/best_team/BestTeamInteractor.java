@@ -1,6 +1,7 @@
 package use_case.best_team;
 
 import entity.Player;
+import entity.Team;
 import use_case.PlayerDataAccessInterface;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -98,22 +99,44 @@ public class BestTeamInteractor implements BestTeamInputBoundary {
         }
 
         // build response from best result
+        // build response from best result
         List<Player> squad;
         double totalCost;
         double totalPoints;
+        Team bestTeam;  // for visualization
 
         if (found && bestOverall != null) {
             squad = bestOverall.squad;
             totalCost = bestOverall.totalCost;
             totalPoints = bestOverall.totalPoints;
+
+            bestTeam = buildTeamFromSquad(squad, totalCost);
         } else {
             squad = new ArrayList<>();
             totalCost = 0.0;
             totalPoints = 0.0;
+            bestTeam = null;
         }
 
-        BestTeamResponseModel response = new BestTeamResponseModel(squad, totalCost, totalPoints);
+        BestTeamResponseModel response = new BestTeamResponseModel(
+                bestTeam,
+                squad,
+                totalCost,
+                totalPoints
+        );
         presenter.present(response);
+
+    }
+
+    private Team buildTeamFromSquad(List<Player> squad, double totalCost) {
+        // Remaining budget cannot be negative
+        final float remainingBudget = (float) Math.max(0.0, BUDGET - totalCost);
+
+        // Team should be marked confirmed only if it has all 15 players
+        final boolean isConfirmed = squad.size() == 15;
+
+        // Use a defensive copy of the list
+        return new Team(new ArrayList<>(squad), remainingBudget, isConfirmed);
     }
 
     private List<Player> topByPosition(List<Player> all, int pos, int limit) {
@@ -128,12 +151,16 @@ public class BestTeamInteractor implements BestTeamInputBoundary {
     }
 
     private void searchGK(List<Player> gks, int index, int gkNeeded, List<Player> defs, List<Player> mids, List<Player> fwds, List<Player> current, Map<String, Integer> teamCounts, double costSoFar, double pointsSoFar, BestResult best) {
-        if (costSoFar > BUDGET) {return;}
+        if (costSoFar > BUDGET) {
+            return;
+        }
         if (gkNeeded == 0) {
             searchDEF(defs, 0, DEF_COUNT, mids, fwds, current, teamCounts, costSoFar, pointsSoFar, best);
             return;
         }
-        if (index >= gks.size()) {return;}
+        if (index >= gks.size()) {
+            return;
+        }
         Player p = gks.get(index);
 
         searchGK(gks, index+1, gkNeeded, defs, mids, fwds, current, teamCounts, costSoFar, pointsSoFar, best);
@@ -149,7 +176,9 @@ public class BestTeamInteractor implements BestTeamInputBoundary {
     }
 
     private void searchDEF(List<Player> defs, int index, int defNeeded, List<Player> mids, List<Player> fwds, List<Player> current, Map<String, Integer> teamCounts, double costSoFar, double pointsSoFar, BestResult best) {
-        if (costSoFar > BUDGET) {return;}
+        if (costSoFar > BUDGET) {
+            return;
+        }
         if (defNeeded == 0) {
             searchMID(mids, 0, MID_COUNT, fwds, current, teamCounts, costSoFar, pointsSoFar, best);
             return;
@@ -170,12 +199,16 @@ public class BestTeamInteractor implements BestTeamInputBoundary {
     }
 
     private void searchMID(List<Player> mids, int index, int midNeeded, List<Player> fwds, List<Player> current, Map<String, Integer> teamCounts, double costSoFar, double pointsSoFar, BestResult best) {
-        if (costSoFar > BUDGET) {return;}
+        if (costSoFar > BUDGET) {
+            return;
+        }
         if (midNeeded == 0) {
             searchFWD(fwds, 0, FWD_COUNT, current, teamCounts, costSoFar, pointsSoFar, best);
             return;
         }
-        if (index >= mids.size()) {return;}
+        if (index >= mids.size()) {
+            return;
+        }
         Player p = mids.get(index);
 
         searchMID(mids, index + 1, midNeeded, fwds, current, teamCounts, costSoFar, pointsSoFar, best);
@@ -191,7 +224,9 @@ public class BestTeamInteractor implements BestTeamInputBoundary {
     }
 
     private void searchFWD(List<Player> fwds, int index, int fwdNeeded, List<Player> current, Map<String, Integer> teamCounts, double costSoFar, double pointsSoFar, BestResult best) {
-        if (costSoFar > BUDGET) {return;}
+        if (costSoFar > BUDGET) {
+            return;
+        }
         if (fwdNeeded == 0) {
             // full squad chosen
             if (pointsSoFar > best.totalPoints) {
