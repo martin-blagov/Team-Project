@@ -106,7 +106,7 @@ public class PlayerKitButton extends JButton {
         }
 
         // Draw player name or "Add Player" below kit
-        String displayText = (player != null) ? player.getWebName() : "Add Player";
+        String displayText = (player != null) ? player.getWebName() : "";
         Color textColor = (player != null) ? Color.WHITE : Color.DARK_GRAY;
 
         g2d.setFont(new Font("Arial", Font.BOLD, 11));
