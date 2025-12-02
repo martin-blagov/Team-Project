@@ -88,7 +88,7 @@ public class TeamEntryInteractor implements TeamEntryInputBoundary {
 
         teamDataAccess.saveTeam(confirmedTeam);
 
-        presenter.prepareSuccessView(new TeamEntryOutputData(players));
+        presenter.prepareSuccessView();
     }
 
     @Override
