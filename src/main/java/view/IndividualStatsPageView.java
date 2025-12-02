@@ -21,6 +21,10 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 
+
+/**
+ * The View for when the user selects player to display stats.
+ */
 public class IndividualStatsPageView extends JPanel implements PropertyChangeListener {
     private final String viewName = "display individual stats";
 
@@ -97,7 +101,6 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         wrapperStatsPanel.setMaximumSize(new Dimension(500, 500));
         wrapperStatsPanel.setMinimumSize(new Dimension(500, 500));
 
-
         // Scrollable Player List
         scrollableListView = new ScrollableListViewV2();
 
@@ -156,7 +159,6 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
 
         buttonPanel.add(homeButton);
 
-
         // Final Screen Display
         JPanel screen = new JPanel(new BorderLayout());
         screen.add(wrapperPlayerListPanel, BorderLayout.WEST);
@@ -196,8 +198,8 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         }
 
         if (image != null) {
-            Image scaledImage = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-            ImageIcon imageIcon = new ImageIcon(scaledImage);
+            final Image scaledImage = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+            final ImageIcon imageIcon = new ImageIcon(scaledImage);
             imageLabel.setText("");
             imageLabel.setIcon(imageIcon);
             imageBox.add(imageLabel);
@@ -209,7 +211,10 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         }
     }
 
-    // View Property Change
+    /**
+     * React to a player selection that results in evt.
+     * @param evt the PropertyChangeEvent to react to
+     */
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getSource() == playerListViewModel) {
             TestDisplayPlayersState playerListState = playerListViewModel.getState();
@@ -238,7 +243,6 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
 
     private void setStatsPanelLayout(JPanel statsPanel) {
         setLabelSize();
-
 
         imageBox.setPreferredSize(new Dimension(100, 100));
         imageBox.setMinimumSize(new Dimension(100, 100));
@@ -283,7 +287,6 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         }
     }
 
-
     private void updateStatsField(DisplayIndividualStatState state) {
         nameLabel.setText("Name: " + state.getPlayerName());
         positionLabel.setText("Position: " + state.getPlayerPosition());
@@ -295,18 +298,15 @@ public class IndividualStatsPageView extends JPanel implements PropertyChangeLis
         displayImage();
     }
 
-
     public void setPlayerListController(TestDisplayPlayersController controller) {
         this.playerListController = controller;
     }
 
-
-    public void setDisplayIndividualStatController (DisplayIndividualStatController controller){
+    public void setDisplayIndividualStatController(DisplayIndividualStatController controller){
         this.displayIndividualStatController = controller;
     }
 
-
-    public String getViewName () {
+    public String getViewName() {
         return viewName;
     }
 }

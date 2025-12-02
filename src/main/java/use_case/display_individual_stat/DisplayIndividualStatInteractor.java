@@ -3,6 +3,9 @@ package use_case.display_individual_stat;
 import entity.Player;
 import use_case.PlayerDataAccessInterface;
 
+/**
+ * The Interactor for Display Individual Stats Use Case.
+ */
 public class DisplayIndividualStatInteractor implements DisplayIndividualStatInputBoundary {
     private final DisplayIndividualStatOutputBoundary presenter;
     private final PlayerDataAccessInterface playerDataAccess;
