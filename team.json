@@ -81,9 +81,9 @@
         {
             "last3Stats": {},
             "seasonAvgStats": {},
-            "webName": "Caicedo",
+            "webName": "Longstaff",
             "nowCost": 0,
-            "id": 241,
+            "id": 493,
             "position": "midfielder",
             "team": "ClubX",
             "seasonTotalStats": {},
@@ -197,5 +197,5 @@
         }
     ],
     "confirmed": true,
-    "budget": 10
+    "budget": 1
 }
