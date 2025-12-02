@@ -12,7 +12,7 @@ public class TransferSuggestionsViewModel extends ViewModel<TransferSuggestionsS
     public static final String TITLE_LABEL = "Transfer Suggestions";
     public static final String NUMBER_OF_TRANSFERS_LABEL = "Number of Transfers:";
     public static final String SUGGEST_BUTTON_LABEL = "Suggest Transfers";
-    public static final String BACK_BUTTON_LABEL = "Back to Home";
+    public static final String BACK_BUTTON_LABEL = "Back";
 
     public TransferSuggestionsViewModel() {
         super("transfer suggestions");
