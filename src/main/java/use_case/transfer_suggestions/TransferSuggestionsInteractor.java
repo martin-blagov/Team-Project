@@ -157,10 +157,8 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
 
         // Get set of player IDs in current team
         Set<Integer> teamPlayerIds = new HashSet<>();
-        if (currentTeam != null) {
-            for (Player player : currentTeam.getPlayers()) {
-                teamPlayerIds.add(player.getId());
-            }
+        for (Player player : currentTeam.getPlayers()) {
+            teamPlayerIds.add(player.getId());
         }
 
         // For each position (1=GK, 2=DEF, 3=MID, 4=FWD)
@@ -170,19 +168,11 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
             // Build list of eligible players: non-zero points OR in current team
             List<Player> eligiblePlayers = new ArrayList<>();
             for (Player player : playersInPosition) {
-                if (player.getPredictedPoints() == null) {
-                    continue; // Skip players with null predictions
-                }
 
                 // Include if: has non-zero points OR is in the team
                 if (player.getPredictedPoints() > 0.0 || teamPlayerIds.contains(player.getId())) {
                     eligiblePlayers.add(player);
                 }
-            }
-
-            // Skip if no eligible players in this position
-            if (eligiblePlayers.isEmpty()) {
-                continue;
             }
 
             // Sort by predicted points (ascending: worst to best)
@@ -195,12 +185,7 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
 
                 // Only store percentile if this player is in our team
                 if (teamPlayerIds.contains(player.getId())) {
-                    double percentile;
-                    if (eligiblePlayers.size() == 1) {
-                        percentile = 50.0; // Single player gets middle percentile
-                    } else {
-                        percentile = (i / (double)(eligiblePlayers. size() - 1)) * 100.0;
-                    }
+                    double percentile = (i / (double)(eligiblePlayers. size() - 1)) * 100.0;
                     percentiles.put(player.getId(), percentile);
                 }
             }
@@ -222,10 +207,8 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
 
         // Get set of player IDs in current team
         Set<Integer> teamPlayerIds = new HashSet<>();
-        if (currentTeam != null) {
-            for (Player player : currentTeam. getPlayers()) {
-                teamPlayerIds.add(player. getId());
-            }
+        for (Player player : currentTeam. getPlayers()) {
+            teamPlayerIds.add(player. getId());
         }
 
         // For each position (1=GK, 2=DEF, 3=MID, 4=FWD)
@@ -241,11 +224,6 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
                 }
             }
 
-            // Skip if no valid players in this position
-            if (validPlayers. isEmpty()) {
-                continue;
-            }
-
             // Sort by price (ascending: cheapest to most expensive)
             validPlayers.sort((a, b) ->
                     Double.compare(a.getNowCost(), b.getNowCost()));
@@ -256,12 +234,7 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
 
                 // Only store percentile if this player is in our team
                 if (teamPlayerIds. contains(player.getId())) {
-                    double percentile;
-                    if (validPlayers.size() == 1) {
-                        percentile = 50.0; // Single player gets middle percentile
-                    } else {
-                        percentile = (i / (double)(validPlayers.size() - 1)) * 100.0;
-                    }
+                    double percentile = (i / (double)(validPlayers.size() - 1)) * 100.0;
                     percentiles.put(player.getId(), percentile);
                 }
             }
@@ -309,7 +282,7 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
 
         // Return the N worst players
         List<Player> worstPlayers = new ArrayList<>();
-        for (int i = 0; i < numberOfTransfers && i < playersWithPriorities.size(); i++) {
+        for (int i = 0; i < numberOfTransfers; i++) {
             worstPlayers.add(playersWithPriorities. get(i).player);
         }
 
@@ -721,7 +694,7 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
             Team currentTeam = teamDataAccess.getTeam();
 
             if (currentTeam == null) {
-                presenter.presentFailure("No team found.  Please create a team first.");
+                presenter.presentFailure("No team found. Please create a team first.");
                 return;
             }
 
@@ -748,9 +721,6 @@ public class TransferSuggestionsInteractor implements TransferSuggestionsInputBo
      * The saved team has minimal player data, so we need to fetch full stats.
      */
     private Team enrichTeamWithFullPlayerData(Team team) {
-        if (team == null) {
-            return null;
-        }
 
         List<Player> enrichedPlayers = new ArrayList<>();
 
