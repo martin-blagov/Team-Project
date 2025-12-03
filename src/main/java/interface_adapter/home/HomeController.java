@@ -6,9 +6,6 @@ import interface_adapter.team_entry.TeamEntryController;
 import interface_adapter.starting_lineup.StartingLineupController;
 import interface_adapter.transfer_suggestions.TransferSuggestionsController;
 import use_case.team_entry.TeamEntryInputBoundary;
-
-
-//TODO Check whether to remove:
 import interface_adapter.ViewManagerModel;
 
 /**
@@ -23,9 +20,6 @@ public class HomeController {
     private final DisplayIndividualStatController displayIndividualStatController;
     private final RiskAssessmentController riskAssessmentController;
     private final TransferSuggestionsController transferSuggestionsController;
-
-
-    //TODO Check whether to remove:
     private final ViewManagerModel viewManagerModel;
 
     public HomeController(HomeViewModel homeViewModel, TeamEntryController teamEntryController,
@@ -42,8 +36,6 @@ public class HomeController {
         this.displayIndividualStatController = displayIndividualStatController;
         this.riskAssessmentController = riskAssessmentController;
         this.transferSuggestionsController = transferSuggestionsController;
-
-        // TODO Check whether to remove:
         this.viewManagerModel = viewManagerModel;
     }
 

@@ -5,9 +5,8 @@ import use_case.display_team.DisplayTeamDataAccessInterface;
 import use_case.team_entry.TeamDataAccessInterface;
 import use_case.transfer_suggestions.TransferSuggestionsTeamDataAccessInterface;
 
-
 public class InMemoryTeamDataAccess implements TeamDataAccessInterface, DisplayTeamDataAccessInterface,
-TransferSuggestionsTeamDataAccessInterface{
+TransferSuggestionsTeamDataAccessInterface, use_case.TeamDataAccessInterface{
 
     private Team storedTeam = null;
 
