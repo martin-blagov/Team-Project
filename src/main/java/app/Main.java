@@ -25,8 +25,6 @@ public class Main {
                 .addTransferSuggestionsView()
                 .addDisplayIndividualStatUseCase()
                 .addTeamEntryViewUseCase()
-                .addTestDisplayPlayersUseCase() //  todo remove
-                .addTestTeamVisualizationUseCase() // todo remove
                 .addStartingLineupUseCase()
                 .addRiskAssessmentUseCase()
                 .addHomeUseCase()
