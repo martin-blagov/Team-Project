@@ -90,7 +90,7 @@ class TeamEntryInteractorTest {
             @Override public void prepareFailView(String error) {
                 assertEquals("Please fill in all 15 player fields before confirming your team.", error);
             }
-            @Override public void prepareSuccessView(TeamEntryOutputData d) { fail(); }
+            @Override public void prepareSuccessView() { fail(); }
             @Override public void prepareSavedTeamView(String[] n, int[] i) {}
             @Override public void prepareOpenPageView() {}
             @Override public void switchToHomePage() {}
@@ -114,7 +114,7 @@ class TeamEntryInteractorTest {
             @Override public void prepareFailView(String error) {
                 assertEquals("You have entered duplicate players. Please ensure each player appears only once.", error);
             }
-            @Override public void prepareSuccessView(TeamEntryOutputData d) { fail(); }
+            @Override public void prepareSuccessView() { fail(); }
             @Override public void prepareSavedTeamView(String[] n, int[] i) {}
             @Override public void prepareOpenPageView() {}
             @Override public void switchToHomePage() {}
@@ -138,7 +138,7 @@ class TeamEntryInteractorTest {
             @Override public void prepareFailView(String error) {
                 assertEquals("One or more players are not in the correct position slots. Please check the lineup format.", error);
             }
-            @Override public void prepareSuccessView(TeamEntryOutputData d) { fail(); }
+            @Override public void prepareSuccessView() { fail(); }
             @Override public void prepareSavedTeamView(String[] n, int[] i) {}
             @Override public void prepareOpenPageView() {}
             @Override public void switchToHomePage() {}
@@ -169,7 +169,7 @@ class TeamEntryInteractorTest {
                         error
                 );
             }
-            @Override public void prepareSuccessView(TeamEntryOutputData d) { fail(); }
+            @Override public void prepareSuccessView() { fail(); }
             @Override public void prepareSavedTeamView(String[] n, int[] i) {}
             @Override public void prepareOpenPageView() {}
             @Override public void switchToHomePage() {}
@@ -192,7 +192,7 @@ class TeamEntryInteractorTest {
             @Override public void prepareFailView(String error) {
                 assertEquals("The remaining budget is not a valid number. Please try again.", error);
             }
-            @Override public void prepareSuccessView(TeamEntryOutputData d) { fail(); }
+            @Override public void prepareSuccessView() { fail(); }
             @Override public void prepareSavedTeamView(String[] n, int[] i) {}
             @Override public void prepareOpenPageView() {}
             @Override public void switchToHomePage() {}
@@ -216,7 +216,7 @@ class TeamEntryInteractorTest {
             @Override public void prepareFailView(String error) {
                 assertEquals("One or more players are not in the correct position slots. Please check the lineup format.", error);
             }
-            @Override public void prepareSuccessView(TeamEntryOutputData d) { fail(); }
+            @Override public void prepareSuccessView() { fail(); }
             @Override public void prepareSavedTeamView(String[] n, int[] i) {}
             @Override public void prepareOpenPageView() {}
             @Override public void switchToHomePage() {}
@@ -231,7 +231,7 @@ class TeamEntryInteractorTest {
 
         TeamEntryOutputBoundary presenter = new TeamEntryOutputBoundary() {
             @Override public void prepareFailView(String s) {}
-            @Override public void prepareSuccessView(TeamEntryOutputData d) {}
+            @Override public void prepareSuccessView() {}
             @Override public void prepareSavedTeamView(String[] n, int[] i) {}
             @Override public void prepareOpenPageView() {}
             @Override public void switchToHomePage() {}
@@ -270,7 +270,7 @@ class TeamEntryInteractorTest {
             @Override public void prepareFailView(String error) {
                 assertEquals("The remaining budget is not a valid number. Please try again.", error);
             }
-            @Override public void prepareSuccessView(TeamEntryOutputData d) { fail(); }
+            @Override public void prepareSuccessView() { fail(); }
             @Override public void prepareSavedTeamView(String[] n, int[] i) {}
             @Override public void prepareOpenPageView() {}
             @Override public void switchToHomePage() {}
@@ -290,7 +290,7 @@ class TeamEntryInteractorTest {
 
         TeamEntryOutputBoundary presenter = new TeamEntryOutputBoundary() {
             @Override
-            public void prepareSuccessView(TeamEntryOutputData out) {
+            public void prepareSuccessView() {
                 Team saved = teamRepo.getTeam();
                 assertNotNull(saved);
                 assertEquals(15, saved.getPlayers().size());
@@ -313,7 +313,7 @@ class TeamEntryInteractorTest {
         TeamEntryOutputBoundary presenter = new TeamEntryOutputBoundary() {
             @Override public void prepareOpenPageView() { assertTrue(true); }
             @Override public void prepareSavedTeamView(String[] n, int[] i) { fail(); }
-            @Override public void prepareSuccessView(TeamEntryOutputData d) {}
+            @Override public void prepareSuccessView() {}
             @Override public void prepareFailView(String s) {}
             @Override public void switchToHomePage() {}
         };
@@ -338,7 +338,7 @@ class TeamEntryInteractorTest {
                 assertEquals(10, ids[0]);
             }
             @Override public void prepareOpenPageView() { fail(); }
-            @Override public void prepareSuccessView(TeamEntryOutputData d) {}
+            @Override public void prepareSuccessView() {}
             @Override public void prepareFailView(String s) {}
             @Override public void switchToHomePage() {}
         };
@@ -354,7 +354,7 @@ class TeamEntryInteractorTest {
             @Override public void switchToHomePage() { assertTrue(true); }
             @Override public void prepareOpenPageView() {}
             @Override public void prepareSavedTeamView(String[] n, int[] i) {}
-            @Override public void prepareSuccessView(TeamEntryOutputData d) {}
+            @Override public void prepareSuccessView() {}
             @Override public void prepareFailView(String s) {}
         };
 
@@ -366,7 +366,7 @@ class TeamEntryInteractorTest {
         InMemoryTeamDataAccess teamRepo = new InMemoryTeamDataAccess();
         TeamEntryOutputBoundary presenter = new TeamEntryOutputBoundary() {
             @Override public void prepareFailView(String s) {}
-            @Override public void prepareSuccessView(TeamEntryOutputData d) {}
+            @Override public void prepareSuccessView() {}
             @Override public void prepareSavedTeamView(String[] n, int[] i) {}
             @Override public void prepareOpenPageView() {}
             @Override public void switchToHomePage() {}

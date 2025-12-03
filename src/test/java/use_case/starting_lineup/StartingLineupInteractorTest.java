@@ -56,7 +56,7 @@ class StartingLineupInteractorTest {
         players.addAll(createPlayers(2, 1, 0.5, 0));
         players.addAll(createPlayers(5, 2, 2.5, 2));
         players.addAll(createPlayers(5, 3, 4.5, 7));
-        players.addAll(createPlayers(3, 4, 6.5, 10));
+        players.addAll(createPlayers(3, 4, 6.5, 12));
         playerGateway.saveAll(players);
 
         Team testTeam = new Team(players, 0.0f, true);
@@ -66,6 +66,7 @@ class StartingLineupInteractorTest {
 
         assertNotNull(presenter.capturedOutput, "No output data.");
         Team startingLineup = presenter.capturedOutput.getStartingTeam();
+
         assertNotNull(startingLineup, "Starting lineup should not be null.");
         assertEquals(11, startingLineup.getPlayers().size(),
                 "Starting lineup should have 11 players.");
@@ -95,6 +96,7 @@ class StartingLineupInteractorTest {
 
         assertNotNull(presenter.capturedOutput, "No output data.");
         Team startingLineup = presenter.capturedOutput.getStartingTeam();
+
         assertNotNull(startingLineup, "Starting team should not be null.");
         assertEquals(5, startingLineup.getPlayers().size(),
                 "Starting lineup should have 5 players.");
@@ -102,6 +104,77 @@ class StartingLineupInteractorTest {
         List<Player> bench = presenter.capturedOutput.getBenchPlayers();
         assertNotNull(bench, "Bench list should not be null.");
         assertTrue(bench.isEmpty(), "Bench list should be empty.");
+    }
+
+    /**
+     * Test case with complete team but one player has no prediction points.
+     */
+    @Test
+    void testPlayerNoPrediction() {
+        List<Player> players = new ArrayList<>();
+        Player noPredictionPlayer = new Player(999, "Name", 1, "a",
+                5.0, 1, "Club", null, null,
+                null, null);
+        players.add(noPredictionPlayer);
+
+        players.addAll(createPlayers(1, 1, 0.6, 0));
+        players.addAll(createPlayers(5, 2, 2.6, 1));
+        players.addAll(createPlayers(5, 3, 4.6, 6));
+        players.addAll(createPlayers(3, 4, 6.6, 11));
+        playerGateway.saveAll(players);
+
+        Team testTeam = new Team(players, 0.0f, false);
+        teamGateway.setTeam(testTeam);
+
+        interactor.execute();
+
+        assertNotNull(presenter.capturedOutput, "No output data.");
+        Team startingLineup = presenter.capturedOutput.getStartingTeam();
+
+        assertNotNull(startingLineup, "Starting lineup should not be null.");
+        assertEquals(11, startingLineup.getPlayers().size(),
+                "Starting lineup should have 11 players.");
+
+        List<Player> bench = presenter.capturedOutput.getBenchPlayers();
+        assertNotNull(bench, "Bench list should not be null.");
+        assertEquals(players.size() - startingLineup.getPlayers().size(), bench.size(),
+               "Bench should contain all remaining players.");
+    }
+
+    /**
+     * Test case with complete team but one player is not found in gateway.
+     */
+    @Test
+    void testPlayerNotFound() {
+        List<Player> players = new ArrayList<>();
+        Player ghostPlayer = new Player(999, "Name", 1, "a",
+                5.0, 1, "Club", null, null,
+                null, null);
+
+        players.addAll(createPlayers(1, 1, 0.6, 0));
+        players.addAll(createPlayers(5, 2, 2.6, 1));
+        players.addAll(createPlayers(5, 3, 4.6, 6));
+        players.addAll(createPlayers(3, 4, 6.6, 11));
+        playerGateway.saveAll(players);
+
+        players.add(ghostPlayer);
+
+        Team testTeam = new Team(players, 0.0f, false);
+        teamGateway.setTeam(testTeam);
+
+        interactor.execute();
+
+        assertNotNull(presenter.capturedOutput, "No output data.");
+        Team startingLineup = presenter.capturedOutput.getStartingTeam();
+
+        assertNotNull(startingLineup, "Starting lineup should not be null.");
+        assertEquals(11, startingLineup.getPlayers().size(),
+                "Starting lineup should have 11 players.");
+
+        List<Player> bench = presenter.capturedOutput.getBenchPlayers();
+        assertNotNull(bench, "Bench list should not be null.");
+        assertEquals(players.size() - startingLineup.getPlayers().size(), bench.size(),
+                "Bench should contain all remaining players.");
     }
 
     /**
