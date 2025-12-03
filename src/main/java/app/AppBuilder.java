@@ -114,8 +114,6 @@ public class AppBuilder {
     private final TransferSuggestionsTeamDataAccessInterface transferSuggestionsTeamDataAccess = fileTeamDAO;  // Transfer Suggestions
     private final StartingLineupTeamDataAccessInterface startingLineupTeamDataAccess = fileTeamDAO;
 
-    // todo remove
-    private final use_case.TeamDataAccessInterface useCaseTeamDataAccess = fileTeamDAO;
 
     // Transfer Suggestions components
     private TransferSuggestionsView transferSuggestionsView;

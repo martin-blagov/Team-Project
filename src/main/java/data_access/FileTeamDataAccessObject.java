@@ -25,7 +25,7 @@ import java.util.Map;
  * DAO for saving/loading the user's confirmed FPL team to a local JSON file.
  */
 public class FileTeamDataAccessObject implements TeamDataAccessInterface, TransferSuggestionsTeamDataAccessInterface,
-    DisplayTeamDataAccessInterface, use_case.TeamDataAccessInterface, StartingLineupTeamDataAccessInterface, RiskAssessmentTeamAccessInterface {
+    DisplayTeamDataAccessInterface, StartingLineupTeamDataAccessInterface, RiskAssessmentTeamAccessInterface {
 
     private final String filepath;
     private Team savedTeam;
