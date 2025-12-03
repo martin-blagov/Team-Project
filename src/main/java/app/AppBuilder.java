@@ -62,6 +62,8 @@ public class AppBuilder {
     private final DisplayTeamDataAccessInterface displayTeamDataAccess = fileTeamDAO;  // Display Team
     private final TransferSuggestionsTeamDataAccessInterface transferSuggestionsTeamDataAccess = fileTeamDAO;  // Transfer Suggestions
     private final StartingLineupTeamDataAccessInterface startingLineupTeamDataAccess = fileTeamDAO;
+    private final RiskAssessmentTeamAccessInterface teamAccess = fileTeamDAO;
+
     ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
     private HomePageView homePageView;
     private HomeViewModel homeViewModel;
@@ -85,10 +87,11 @@ public class AppBuilder {
     private InitialisePredictionsViewModel initViewModel;
     private InitialisePredictionsController initController;
     private final InMemoryPlayerDataAccess playerDataAccess = new InMemoryPlayerDataAccess();
+
+    // Risk Assessment components
     private RiskAssessmentViewModel riskAssessmentViewModel;
     private RiskAssessmentView riskAssessmentView;
     private RiskAssessmentController riskAssessmentController;
-    private final RiskAssessmentTeamAccessInterface teamAccess = new FileTeamDataAccessObject("team.json");
     // Transfer Suggestions components
     private TransferSuggestionsView transferSuggestionsView;
     private TransferSuggestionsViewModel transferSuggestionsViewModel;
