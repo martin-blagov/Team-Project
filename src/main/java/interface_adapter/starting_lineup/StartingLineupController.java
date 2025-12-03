@@ -12,6 +12,9 @@ public class StartingLineupController {
         this.inputBoundary = inputBoundary;
     }
 
+    /**
+     * Executes the logic.
+     */
     public void execute() {
         inputBoundary.execute();
     }

@@ -1,10 +1,10 @@
 package use_case.starting_lineup;
 
-import entity.Player;
-import entity.Team;
-
 import java.util.Collections;
 import java.util.List;
+
+import entity.Player;
+import entity.Team;
 
 /**
  * Data output object for starting lineup use case.
@@ -20,6 +20,8 @@ public class StartingLineupOutputData {
     }
 
     /**
+     * Get the starting team.
+     *
      * @return the computed starting lineup.
      */
     public Team getStartingTeam() {
@@ -27,6 +29,8 @@ public class StartingLineupOutputData {
     }
 
     /**
+     * Gets the bench players.
+     *
      * @return an unmodifiable view of the bench players list.
      */
     public List<Player> getBenchPlayers() {
