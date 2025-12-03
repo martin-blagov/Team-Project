@@ -26,7 +26,6 @@ public class Main {
                 .addDisplayIndividualStatUseCase()
                 .addTeamEntryViewUseCase()
                 .addTestDisplayPlayersUseCase() //  todo remove
-                .addTestTeamVisualizationUseCase() // todo remove
                 .addStartingLineupUseCase()
                 .addRiskAssessmentUseCase()
                 .addHomeUseCase()
